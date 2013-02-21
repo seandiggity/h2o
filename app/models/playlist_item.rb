@@ -16,6 +16,7 @@ class PlaylistItem < ActiveRecord::Base
   belongs_to :playlist
 
   belongs_to :resource_item, :polymorphic => true, :dependent => :destroy
+  has_many :session_assignments
 
   #This is a self-referential relationship, renamed so as to not conflict with methods exported by ancestry.
   belongs_to :playlist_item_parent, :class_name => 'PlaylistItem'
