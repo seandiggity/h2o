@@ -25,4 +25,7 @@ class ItemCollage < ActiveRecord::Base
     return preview_content
   end
 
+  def word_count
+    self.actual_object ? self.actual_object.words_shown.to_i : 0
+  end
 end

@@ -48,6 +48,7 @@
 		<% end -%>
     <%= render :partial => 'playlist_meta' %>
 		<div class="cl"></div>
+    <h5>AVERAGE WORD COUNT PER SESSION: <%= (@playlist.all_playlist_items.inject(0) { |sum, pi| sum += pi.word_count })/@playlist.number_of_sessions %></h5> 
 		<% if !@playlist.description.nil? -%>
 		<% if @playlist.description.length > 500 -%>
 			<div id="description_less">

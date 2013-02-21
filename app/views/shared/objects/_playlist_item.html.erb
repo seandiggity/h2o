@@ -37,6 +37,12 @@
 		    <span class="icon-type icon-type-<%= item.resource_item_type.downcase %>"></span>
         <% end -%>
 			</h3>
+			<% if show_session -%>
+			<h5>
+				Session: <%= @session_assignment_map[item.id] %> --
+        Word Count: <%= item.respond_to?(:word_count) ? item.word_count.to_i : 0 %>
+			</h5>
+			<% end -%>
 			<% if recursive_level == 0 %>
 			<%= link_to "REMOVE", url_for(:controller => item.resource_item_type.tableize, :action => 'destroy', :id => item.resource_item), :class => "action delete-action delete-playlist-item requires_remove" %>
 			<%= link_to "EDIT", url_for(:controller => item.resource_item_type.tableize, :action => 'edit', :id => item.resource_item), :class => "action edit-action requires_edit" %>
@@ -60,7 +66,8 @@
 			    :locals => { :item => nested_item,
 				  :parent_index => parent_index == '' ? index : "#{parent_index}.#{index}",
 				  :index => nested_index + 1,
-				  :recursive_level => recursive_level + 1 } %>
+				  :recursive_level => recursive_level + 1,
+					:show_session => show_session } %>
 			<% end -%>
 		</ul>
 	</section>

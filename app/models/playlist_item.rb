@@ -41,4 +41,8 @@ class PlaylistItem < ActiveRecord::Base
   def object_type
     self.resource_item_type.downcase.gsub(/^item/, '')
   end
+
+  def word_count
+    self.resource_item.respond_to?(:word_count) ? self.resource_item.word_count.to_i : 0
+  end
 end

@@ -1,11 +1,12 @@
 <section class="playlists">
 	<ul class="sortable">
 		<% @playlist.playlist_items.each_with_index do |item, index| -%>
-		  <%= render :partial => 'shared/objects/playlist_item',
-		    :locals => { :item => item,
-			  :parent_index => '',
-			  :index => index + @playlist.counter_start,
-			  :recursive_level => 0 } %>
+			<%= render :partial => 'shared/objects/playlist_item',
+				:locals => { :item => item,
+				:parent_index => '',
+				:index => index + @playlist.counter_start,
+				:recursive_level => 0,
+				:show_session => true } %>
 		<% end -%>
 	</ul>
 </section>

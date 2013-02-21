@@ -254,15 +254,14 @@ ActiveRecord::Schema.define(:version => 20130221185520) do
 
   create_table "item_defaults", :force => true do |t|
     t.string   "title"
-    t.string   "name",                 :limit => 1024
-    t.string   "url",                  :limit => 1024
+    t.string   "name",        :limit => 1024
+    t.string   "url",         :limit => 1024
     t.text     "description"
-    t.boolean  "active",                               :default => true
+    t.boolean  "active",                      :default => true
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "public",                               :default => true
-    t.integer  "word_count",                           :default => 0
-    t.integer  "effecitve_word_count",                 :default => 0
+    t.boolean  "public",                      :default => true
+    t.integer  "word_count",                  :default => 0
   end
 
   add_index "item_defaults", ["active"], :name => "index_item_defaults_on_active"
@@ -476,11 +475,12 @@ ActiveRecord::Schema.define(:version => 20130221185520) do
     t.string   "name"
     t.text     "content"
     t.integer  "media_type_id"
-    t.boolean  "public",                           :default => true
-    t.boolean  "active",                           :default => true
+    t.boolean  "public",                                  :default => true
+    t.boolean  "active",                                  :default => true
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "description",   :limit => 5242880
+    t.string   "description",          :limit => 5242880
+    t.integer  "effective_word_count",                    :default => 0
   end
 
   create_table "metadata", :force => true do |t|

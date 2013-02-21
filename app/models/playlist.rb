@@ -110,4 +110,63 @@ class Playlist < ActiveRecord::Base
     end
     actual_objects.include?(item)
   end
+
+  def all_playlist_items
+    b = []
+    self.playlist_items.each do |pi|
+      b << pi
+      if pi.resource_item_type == 'ItemPlaylist'
+        b << pi.resource_item.actual_object.all_playlist_items
+      end
+    end
+    return b.flatten
+  end
+
+  def syllabus_split
+    self.all_playlist_items
+
+    total_word_count = p.all_playlist_items.inject(0) { |sum, pi| sum += pi.word_count }
+    avg_words_per_session = total_word_count / self.number_of_sessions
+
+    SessionAssignment.destroy(self.session_assignments)    
+    sessions = [[]]
+    session = 0
+    unadded_sessions = self.all_playlist_items
+    playlist_no_words = []
+    while unadded_sessions.any?
+    Rails.logger.warn "stephie: session is: #{session.inspect}"
+      playlist_item = unadded_sessions.shift
+      if playlist_item.resource_item_type == "ItemPlaylist"
+        playlist_no_words << playlist_item
+        next
+      end
+      current_session_word_count = sessions[session].inject(0) { |sum, pi| sum += pi.word_count }
+      session_with_item_word_count = current_session_word_count + playlist_item.word_count
+      if session_with_item_word_count > avg_words_per_session
+        if (session_with_item_word_count - avg_words_per_session).abs > (current_session_word_count - avg_words_per_session).abs
+          session += 1
+          sessions[session] ||= []
+        end
+      end
+      if playlist_no_words.any?
+        playlist_no_words.each do |playlist|
+          sessions[session] << playlist
+        end
+        playlist_no_words = []
+      end
+      sessions[session] << playlist_item
+    end
+
+    sessions.each_with_index do |s, i|
+      s.each do |playlist_item|
+        SessionAssignment.create(:playlist_id => self.id, 
+                                 :session_number => i + 1,
+                                 :playlist_item_id => playlist_item.id)
+      end
+    end
+
+    # average words per session is total_word_count / # sessions
+    
+    return sessions
+  end
 end

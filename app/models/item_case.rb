@@ -25,4 +25,7 @@ class ItemCase < ActiveRecord::Base
     return preview_content
   end
 
+  def word_count
+    0  #self.actual_object ? self.actual_object.words_shown.to_i : 0
+  end
 end
