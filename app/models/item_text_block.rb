@@ -25,4 +25,7 @@ class ItemTextBlock < ActiveRecord::Base
     return preview_content
   end
 
+  def word_count
+    self.actual_object ? self.actual_object.word_count.to_i : 0
+  end
 end

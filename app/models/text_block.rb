@@ -84,8 +84,4 @@ class TextBlock < ActiveRecord::Base
     owner = self.accepted_roles.find_by_name('owner')
     owner.nil? ? nil : owner.user.login.downcase
   end
-
-  def word_count
-    self.actual_object ? self.actual_object.word_count.to_i : 0
-  end
 end

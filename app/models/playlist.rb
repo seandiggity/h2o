@@ -123,9 +123,7 @@ class Playlist < ActiveRecord::Base
   end
 
   def syllabus_split
-    self.all_playlist_items
-
-    total_word_count = p.all_playlist_items.inject(0) { |sum, pi| sum += pi.word_count }
+    total_word_count = self.all_playlist_items.inject(0) { |sum, pi| sum += pi.word_count }
     avg_words_per_session = total_word_count / self.number_of_sessions
 
     SessionAssignment.destroy(self.session_assignments)    
@@ -134,7 +132,6 @@ class Playlist < ActiveRecord::Base
     unadded_sessions = self.all_playlist_items
     playlist_no_words = []
     while unadded_sessions.any?
-    Rails.logger.warn "stephie: session is: #{session.inspect}"
       playlist_item = unadded_sessions.shift
       if playlist_item.resource_item_type == "ItemPlaylist"
         playlist_no_words << playlist_item
@@ -144,8 +141,10 @@ class Playlist < ActiveRecord::Base
       session_with_item_word_count = current_session_word_count + playlist_item.word_count
       if session_with_item_word_count > avg_words_per_session
         if (session_with_item_word_count - avg_words_per_session).abs > (current_session_word_count - avg_words_per_session).abs
-          session += 1
-          sessions[session] ||= []
+          if (session + 1) != self.number_of_sessions
+            session += 1
+            sessions[session] ||= []
+          end
         end
       end
       if playlist_no_words.any?
@@ -157,6 +156,9 @@ class Playlist < ActiveRecord::Base
       sessions[session] << playlist_item
     end
 
+    # TODO HERE: Add hierarchical control / adjustment,
+    # which will take into account hierarchical splits to adjust
+
     sessions.each_with_index do |s, i|
       s.each do |playlist_item|
         SessionAssignment.create(:playlist_id => self.id, 
@@ -164,8 +166,6 @@ class Playlist < ActiveRecord::Base
                                  :playlist_item_id => playlist_item.id)
       end
     end
-
-    # average words per session is total_word_count / # sessions
     
     return sessions
   end

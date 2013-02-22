@@ -12,6 +12,7 @@
         <%= form.input :public, :input_html => {:class => 'privacy_toggle'} %>
         <%= form.input :description, :as => :text, :required => false  %>
         <%= form.input :media_type, :as => :radio %>
+        <%= form.input :effective_word_count, :hint => 'Word count to be used in syllabus splitting.' %>
         <li id="media_detail">
           <label for="media_content">Content <abbr title="required">*</abbr></label>
           <p>You can add media items by inserting the HTML embed code of the item in the box below. You can learn more about HTML embed code <a href="http://www.htmlcodetutorial.com/embeddedobjects/_EMBED.html" target="_blank">here</a>.</p>
