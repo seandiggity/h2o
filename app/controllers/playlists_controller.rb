@@ -140,6 +140,7 @@ class PlaylistsController < BaseController
         add_stylesheets 'playlists'
 
         @session_assignment_map = @playlist.session_assignments.inject({}) { |h, p| h[p.playlist_item_id] = p.session_number; h }
+        @show_session = true
         @can_edit = current_user && (@playlist.admin? || @playlist.owner?)
         @parents = Playlist.find(:all, :conditions => { :id => @playlist.relation_ids })
         (@shown_words, @total_words) = @playlist.collage_word_count

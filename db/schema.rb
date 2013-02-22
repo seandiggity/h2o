@@ -103,6 +103,7 @@ ActiveRecord::Schema.define(:version => 20130221185520) do
     t.boolean  "public",                                  :default => true
     t.boolean  "active",                                  :default => false
     t.integer  "case_request_id"
+    t.integer  "word_count",                              :default => 0
   end
 
   add_index "cases", ["active"], :name => "index_cases_on_active"
@@ -827,6 +828,7 @@ ActiveRecord::Schema.define(:version => 20130221185520) do
     t.boolean  "public",                         :default => true
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "word_count",                     :default => 0
   end
 
   add_index "text_blocks", ["created_at"], :name => "index_text_blocks_on_created_at"

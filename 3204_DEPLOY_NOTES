@@ -1,0 +1,4 @@
+# Deployment steps:
+## Run rake db:migration. Note this will take a while, because it updates word_count for all text blocks, cases, and journal articles
+## Restart app
+## Clear cache (rake h2o:clear_all_cache)

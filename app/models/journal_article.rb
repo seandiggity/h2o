@@ -14,6 +14,8 @@ class JournalArticle < ActiveRecord::Base
   has_and_belongs_to_many :journal_article_types
   has_many :collages, :as => :annotatable, :dependent => :destroy
 
+  after_create :set_word_count
+
   validates_presence_of :name, :description, :publish_date, :author,
     :volume, :issue, :page, :bluebook_citation, :attribution
 
