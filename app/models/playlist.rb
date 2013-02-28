@@ -41,11 +41,6 @@ class Playlist < ActiveRecord::Base
     time :created_at
   end
 
-  def author
-    owner = self.accepted_roles.find_by_name('owner')
-    owner.nil? ? nil : owner.user.login.downcase
-  end
-
   def display_name
     owners = self.accepted_roles.find_by_name('owner')
     "\"#{self.name}\",  #{self.created_at.to_s(:simpledatetime)} #{(owners.blank?) ? '' : ' by ' + owners.users.collect{|u| u.login}.join(',')}"

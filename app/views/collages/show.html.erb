@@ -12,8 +12,14 @@ Your annotation will start here. Please click another word to set the end point.
 <div id="collage" class="singleitem" data-itemid="<%= @collage.id %>">
   <div id="fixed_header">
   <hgroup class="description">
-    <h2 class="collage-id"><%= @collage.name %></h2>
+    <h2 class="collage-id"><%= @collage.name %>
+      <% if @collage.copy? %><br/> (Currently viewing Version <%= @collage.version %> edited on <%= @collage.updated_at.to_s(:simpledatetime)%>)<br/>
+		  <a href="<%= collage_path(@collage) %>">Go back to the most recent version of this collage</a>
+		    <% end %>
+		  
+      </h2>
     <aside class="toolbar">
+      <% unless @collage.copy? %>
       <ul>
         <li class="requires_logged_in">
           <% form_tag(spawn_copy_collage_path(@collage)) do %>
@@ -30,6 +36,7 @@ Your annotation will start here. Please click another word to set the end point.
           </form>
         </li>
       </ul>
+      <% end %>
     </aside>
     <aside class="buttons">
       <ul>
@@ -114,7 +121,7 @@ Your annotation will start here. Please click another word to set the end point.
       <%= @collage.created_at.to_s(:simpledatetime) %> by <%= raw @collage.creators.collect { |u| link_to(u.display, user_path(u)) }.join(',') %>
       <a href="#" id="collage-stats" title="test"><strong>COLLAGE STATS</strong></a>
       <div class="popup" id="collage-stats-popup">
-        <%= render :partial => 'collage_meta' %>
+        <%= render :partial => 'collages/collage_meta' %>
       </div>
       <% if @collage.annotatable_type == 'Case' %>
       <br />Original Case: <%= link_to "\"#{@collage.annotatable.short_name}\"", case_path(@collage.annotatable), :id => 'original_name' %>
@@ -133,11 +140,14 @@ Your annotation will start here. Please click another word to set the end point.
       <div id="description_more">
       <%= Collage.format_content(@collage.description) %> <a href="#" class="link-less">LESS</a>
       </div>
+		  <%= render :partial => 'shared/objects/version', :locals => {:obj => @collage}%>
       <%= link_to "EDIT", edit_collage_path(@collage), :class => "edit-action requires_edit collage_edit" %>
+      <%= render :partial => 'shared/objects/version', :locals => {:obj => @collage}%>
     <% else -%>
       <div id="description">
         <%= Collage.format_content(@collage.description) %>
         <%= link_to "EDIT", edit_collage_path(@collage), :class => "edit-action requires_edit collage_edit" %>
+        <%= render :partial => 'shared/objects/version', :locals => {:obj => @collage}%>
       </div>
     <% end -%>
     <div class="clear"></div>

@@ -45,6 +45,7 @@ class Collage < ActiveRecord::Base
   has_many :color_mappings
 
   has_many :collage_links, :foreign_key => "host_collage_id"
+  has_many :parent_collage_links, :class_name =>  "CollageLink", :foreign_key => "linked_collage_id"
   # Create the content we're going to annotate. This is a might bit inefficient, mainly because
   # we're doing a heavy bit of parsing on each attempted save. It is probably better than allowing
   # the creation of a contentless collage, though.
@@ -70,12 +71,7 @@ class Collage < ActiveRecord::Base
     string :annotations, :multiple => true
     string :layer_list, :multiple => true
   end
-
-  def author
-    owner = self.accepted_roles.find_by_name('owner')
-    owner.nil? ? nil : owner.user.login.downcase
-  end
-
+  
   def fork_it(new_user)
     collage_copy = self.clone
     collage_copy.name = "#{self.name} copy"

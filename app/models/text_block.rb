@@ -77,9 +77,4 @@ class TextBlock < ActiveRecord::Base
     string :collages, :stored => true, :multiple => true
     string :metadatum, :stored => true, :multiple => true
   end
-
-  def author
-    owner = self.accepted_roles.find_by_name('owner')
-    owner.nil? ? nil : owner.user.login.downcase
-  end
 end

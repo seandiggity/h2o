@@ -35,9 +35,4 @@ class Media < ActiveRecord::Base
 
     # TODO: add stored media type slug here
   end
-
-  def author
-    owner = self.accepted_roles.find_by_name('owner')
-    owner.nil? ? nil : owner.user.login.downcase
-  end
 end

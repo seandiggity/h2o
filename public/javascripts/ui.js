@@ -227,6 +227,18 @@ jQuery.extend({
       jQuery(this).parent().siblings('.cases_details').find('.case_collages').removeClass('active');
     });
   },
+  observeCasesVersions: function() {
+    jQuery('.case_versions').click(function(e) {
+      e.preventDefault();
+      jQuery('#versions' + jQuery(this).data('id')).toggle();
+      jQuery(this).toggleClass('active');
+    });
+    jQuery('.hide_versions').click(function(e) {
+      e.preventDefault();
+      jQuery('#versions' + jQuery(this).data('id')).toggle();
+      jQuery(this).parent().siblings('.versions_details').find('.case_versions').removeClass('active');
+    });
+  },
   addItemToPlaylistDialog: function(itemController, itemName, itemId, playlistId) {
     var url_string = jQuery.rootPathWithFQDN() + itemController + '/' + itemId;
     if(itemController == 'defaults') {
@@ -333,6 +345,7 @@ jQuery.extend({
         jQuery.observePagination(); 
         jQuery.observeTabDisplay(region);
         jQuery.observeCasesCollage();
+        jQuery.observeCasesVersions();
       }
     });
   },
@@ -841,6 +854,7 @@ jQuery(function() {
   jQuery.observeSort();
   jQuery.observeTabDisplay('');
   jQuery.observeCasesCollage();
+  jQuery.observeCasesVersions();
   jQuery.observeLoginPanel();
   jQuery.initializeTabBehavior();
   jQuery.loadEscapeListener();

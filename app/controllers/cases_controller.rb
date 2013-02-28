@@ -102,9 +102,8 @@ class CasesController < BaseController
   # GET /cases/1
   # GET /cases/1.xml
   def show
-    add_stylesheets 'cases'
-    add_javascripts 'cases'
-
+    add_case_assets
+    
     if !@case.public || !@case.active
       flash[:notice] = "This case is not public or active."
       redirect_to cases_url
@@ -197,11 +196,11 @@ class CasesController < BaseController
     end
     add_javascripts ['tiny_mce/tiny_mce.js', 'h2o_wysiwig', 'switch_editor', 'cases']
     add_stylesheets ['new_case']
-
+    @case.updated_at = Time.now #<=This ensures that version is incremented when docket numbers or citations are only updated
     respond_to do |format|
       if @case.update_attributes(params[:case])
         if @case.active
-          Notifier.deliver_case_notify_updated(@case)
+          #Notifier.deliver_case_notify_updated(@case)
           flash[:notice] = 'Case was successfully updated.'
           format.html { redirect_to "/cases/#{@case.id}" }
         else

@@ -29,7 +29,9 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :case_citations
   
   map.resources :case_requests
-  map.resources :cases, :collection => {:embedded_pager => :get}, :member => {:metadata => :get, :export => :get, :approve => :post}
+  map.resources :cases, :collection => {:embedded_pager => :get}, :member => {:metadata => :get, :export => :get, :approve => :post} do |case_obj|
+    case_obj.resources :versions
+  end
   map.case_tag "cases/tag/:tag", :controller => :cases, :action => :index
 
   map.resources :collages, :collection => {:embedded_pager => :get, :collage_lookup => :get },
@@ -39,7 +41,9 @@ ActionController::Routing::Routes.draw do |map|
               :access_level => :get, 
               :export => :get,
               :export_unique => :post,
-              :heatmap => :get }
+              :heatmap => :get } do |collage|
+    collage.resources :versions
+  end
   map.collage_tag "collages/tag/:tag", :controller => :collages, :action => :index
   map.resources :collage_links, :collection => {:embedded_pager => :get}
 

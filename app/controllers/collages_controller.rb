@@ -7,7 +7,7 @@ class CollagesController < BaseController
 
   protect_from_forgery :except => [:spawn_copy, :export_unique]
   before_filter :restrict_if_private, :only => [:layers, :show, :edit, :update, :destroy, :undo_annotation, :spawn_copy, :export, :export_unique, :access_level, :heatmap]
-  caches_page :show, :if => Proc.new{|c| c.instance_variable_get('@collage').public?}
+  #caches_page :show, :if => Proc.new{|c| c.instance_variable_get('@collage').public?}
   access_control do
     allow all, :to => [:layers, :index, :show, :new, :create, :spawn_copy, :description_preview, :embedded_pager, :export, :export_unique, :access_level, :heatmap]
 
@@ -150,9 +150,7 @@ class CollagesController < BaseController
   # GET /collages/1
   # GET /collages/1.xml
   def show
-    add_javascripts ['collages', 'jquery.hoverIntent.minified', 'markitup/jquery.markitup.js','markitup/sets/textile/set.js','markitup/sets/html/set.js', 'jquery.tipsy', 'mustache', 'jquery.xcolor']
-    add_stylesheets ['/javascripts/markitup/skins/markitup/style.css','/javascripts/markitup/sets/textile/style.css', 'collages']
-
+    add_collage_assets
     @color_map = {}
     @collage.layers.each do |layer|
       map = @collage.color_mappings.detect { |cm| cm.tag_id == layer.id }

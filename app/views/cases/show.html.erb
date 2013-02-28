@@ -1,11 +1,16 @@
 <%= render :partial => 'shared/second_nav', :locals => { :nav_id => 'cases-logo',
 	:url => cases_path,
 	:right_search => 'cases/nav_search' } %>
-
+	
 <div id="case" class="singleitem" data-itemid="<%= @case.id %>">
 	<hgroup class="description">
-		<h2><%= @case.display_name %></h2>
+		<h2><%= @case.display_name %>
+		  <% if @case.copy? %><br/> (Currently viewing Version <%= @case.version %> edited on <%= @case.updated_at.to_s(:simpledatetime)%>)<br/>
+		  <a href="<%= case_path(@case) %>">Go back to the most recent version of this case</a>
+		    <% end %>
+		  </h2>
 		<aside class="toolbar">
+      <% unless @case.copy? %>
 			<ul>
 				<% if false -%><li><a href="#" class="link-share">Share</a></li><% end -%>
 				<% if current_user -%>
@@ -18,15 +23,18 @@
 					</a>
 				</li>
 			</ul>
+			<% end %>
 		</aside>
 		<div class="cl"></div>
 	</hgroup>
 	<div class="details">
 		<% cache "case-#{@case.id}-tags" do -%>
 		<div class="tags">
-			<% @case.tags.each do |tag| -%>
-			<%= link_to tag.name, case_tag_path(CGI.escape(tag.name)) %>
-			<% end -%>
+		  <% unless self.copy? %>
+          <% @case.tags.each do |tag| -%>
+            <%= link_to tag.name, case_tag_path(CGI.escape(tag.name)) %>
+          <% end -%>
+      <% end %>
 		</div>
 		<% end -%>
 		<div class="cl"></div>
@@ -45,12 +53,24 @@
 				<p>Jurisdiction: <%= @case.case_jurisdiction.display_name %></p> 
 				<% end %>
 		<% end -%>
-		<% if current_user &&	(@is_case_admin || @my_cases.include?(@case)) %>
+		<% if !@case.copy? && current_user &&	(@is_case_admin || @my_cases.include?(@case)) %>
 		<%= link_to "EDIT", edit_case_path(@case) %>
 		<% end -%>
-	</div>
+		<span id="results">
+		<p><a href="#" class="case_collages" data-id="<%= @case.id %>"><%= pluralize @case.collages.size, 'Collage' %> &raquo;</a></p>
+		<div id="collages<%= @case.id %>" class="collages">
+    			<ul id="collages<%= @case.id %>">
+    				<% @case.top_ancestors.each do |collage| -%>
+    				<%= render :partial => 'cases/ancestry', :locals => { :collage => collage } -%>
+    				<% end -%>
+    			</ul>
+    			<a href="#" class="hide_collages" data-id="<%= @case.id %>">HIDE &raquo;</a>
+    		</div>
+  
+		  </span>
+		 <%= render :partial => 'shared/objects/version', :locals => {:obj => @case}%>
+	  </div>
 	<article>
 			<%= raw @case.content %>
 	</article>
 </div>
-

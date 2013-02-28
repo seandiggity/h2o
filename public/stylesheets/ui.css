@@ -337,6 +337,13 @@ background: url(/images/ui/pagination-divider.png) left 0px no-repeat; }
 #results .collages a { color: #669500; font-weight: bold; }
 #results .collages .hide_collages { color: #369; font-size: 10px; font-weight: normal; margin-top: 10px; display: inline-block; }
 
+#results .case_versions { color: #669500; text-transform: uppercase; font-size: 12px;}
+#results .versions { display: none; padding-top: 5px; clear: both; font-size: 12px;}
+#results .versions ul { list-style: disc outside url(/images/ui/grey-list-style.jpg); margin-left: 10px; }
+#results .versions ul li ul { margin-left: 45px; list-style: disc outside url(/images/ui/grey-list-style.jpg); }
+#results .versions li { margin-top: 5px; color: #999; }
+#results .versions a { color: #669500; font-weight: bold; }
+#results .versions .hide_versions { color: #369; font-size: 10px; font-weight: normal; margin-top: 10px; display: inline-block; }
 
 /* Collage index */
 #results #collage_hgroup { border:1px solid #a6db31; background:url(/images/ui/green_bg.png) 0px 0px; }

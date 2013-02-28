@@ -5,13 +5,13 @@
 <span class="date"><%= collage.created_at.to_s(:simpledatetime) %></span> by 
 <%= raw collage.creators.collect { |u| link_to(u.display, user_path(u)) }.join(',') %><br />
 <%= link_to(collage.name, collage) %>
-<% if collage.children.size > 0 -%>
-	<ul class="lineage">
-	<% collage.children.each do |child| -%>
-	<%= render :partial => 'collage_children',
-  		:locals => { :collage => child,
-  		:recursive_level => recursive_level + 1 } %>
-	<% end -%>
-	</ul>
+<% if not collage.copy? and collage.children.size > 0  -%>
+       <ul class="lineage">
+       <% collage.children.each do |child| -%>
+       <%= render :partial => 'collage_children',
+               :locals => { :collage => child,
+               :recursive_level => recursive_level + 1 } %>
+       <% end -%>
+       </ul>
 <% end -%>
 </li>
