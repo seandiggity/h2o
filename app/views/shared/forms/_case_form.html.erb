@@ -36,7 +36,7 @@
         <% form.semantic_fields_for :case_citations do |cd| %>
           <%= cd.inputs :volume, :reporter, :page, :name => ((cd.object.new_record?) ? "Add citation" : 'Edit existing citation') %>
         <% end %>
-        <hr />
+        <hr /> 
           <div class="mce_switches">
             <a href="#" id="case_content-html" class="html">HTML</a>
             <a href="#" id="case_content-tmce" class="current">Visual</a>
@@ -45,6 +45,7 @@
             :as => :text, 
             :required => true 
           %>
+ 
         <%= form.input :tag_list,
           :as => :string,
           :hint => 'Please define the tags for this case in a comma-separated list.',
