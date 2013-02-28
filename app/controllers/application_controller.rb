@@ -4,14 +4,14 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery # See ActionController::RequestForgeryProtection for details
 
-  include ExceptionNotification::ExceptionNotifiable
+  #include ExceptionNotification::ExceptionNotifiable
   #Comment out the line below if you want to see the normal rails errors in normal development.
   alias :rescue_action_locally :rescue_action_in_public if Rails.env == 'development'
 
   #self.error_layout = 'errors'
 
-  self.exception_notifiable_verbose = true #SEN uses logger.info, so won't be verbose in production
-  self.exception_notifiable_silent_exceptions = [Acl9::AccessDenied, MethodDisabled, ActionController::RoutingError ]
+  # self.exception_notifiable_verbose = true #SEN uses logger.info, so won't be verbose in production
+  # self.exception_notifiable_silent_exceptions = [Acl9::AccessDenied, MethodDisabled, ActionController::RoutingError ]
 
   #specific errors can be handled by something else:
 
@@ -170,7 +170,16 @@ class ApplicationController < ActionController::Base
     end
   end
   
-
+  def add_case_assets
+    add_stylesheets 'cases'
+    add_javascripts 'cases'
+  end
+  
+  def add_collage_assets
+    add_javascripts ['collages', 'jquery.hoverIntent.minified', 'markitup/jquery.markitup.js','markitup/sets/textile/set.js','markitup/sets/html/set.js', 'jquery.tipsy', 'mustache', 'jquery.xcolor']
+    add_stylesheets ['/javascripts/markitup/skins/markitup/style.css','/javascripts/markitup/sets/textile/style.css', 'collages']
+  end
+  
   private
 
     def current_user_session
