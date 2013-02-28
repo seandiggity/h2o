@@ -489,6 +489,7 @@ module ActiveRecord #:nodoc:
               parent_klass = association.options[:foreign_key].gsub("_id", '')
             else
               parent_klass = self.to_s.underscore
+
             end                  
 
             class_methods =  <<-CLASS_METHODS
