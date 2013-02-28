@@ -30,7 +30,7 @@
 	<div class="details">
 		<% cache "case-#{@case.id}-tags" do -%>
 		<div class="tags">
-		  <% unless self.copy? %>
+		  <% unless @case.copy? %>
           <% @case.tags.each do |tag| -%>
             <%= link_to tag.name, case_tag_path(CGI.escape(tag.name)) %>
           <% end -%>
