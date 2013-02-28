@@ -4,14 +4,14 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery # See ActionController::RequestForgeryProtection for details
 
-  include ExceptionNotification::ExceptionNotifiable
+  #include ExceptionNotification::ExceptionNotifiable
   #Comment out the line below if you want to see the normal rails errors in normal development.
   alias :rescue_action_locally :rescue_action_in_public if Rails.env == 'development'
 
   #self.error_layout = 'errors'
 
-  self.exception_notifiable_verbose = true #SEN uses logger.info, so won't be verbose in production
-  self.exception_notifiable_silent_exceptions = [Acl9::AccessDenied, MethodDisabled, ActionController::RoutingError ]
+  # self.exception_notifiable_verbose = true #SEN uses logger.info, so won't be verbose in production
+  # self.exception_notifiable_silent_exceptions = [Acl9::AccessDenied, MethodDisabled, ActionController::RoutingError ]
 
   #specific errors can be handled by something else:
 
@@ -28,6 +28,7 @@ class ApplicationController < ActionController::Base
   before_filter :set_sort_lists, :only => :index
   before_filter :initialize_case         
   before_filter :set_default_font_size
+  
   #Add ability to make page caching conditional
   #to support only caching public items
   def self.caches_page(*actions)
