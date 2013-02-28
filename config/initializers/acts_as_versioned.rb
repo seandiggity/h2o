@@ -1,0 +1,2 @@
+Case.new
+Collage.new

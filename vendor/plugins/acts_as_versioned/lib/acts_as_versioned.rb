@@ -165,8 +165,8 @@ module ActiveRecord #:nodoc:
         #     self.non_versioned_columns << 'comments_count'
         #   end
         # 
-        REJECTED_ASSOCIATIONS = [:versions, :tag, :taggables, :taggings, :tagging, :taggable, :tags,
-                                 :tag_taggings, :base_tags, :playlist, :playlists, :playlist_item, :playlist_items]
+        REJECTED_ASSOCIATIONS = [:versions, :tag, :taggables, :taggings, :tagging, :taggable, :tags, :tag_taggings, :base_tags, :playlist, :playlists, :playlist_item, :playlist_items]
+
         def acts_as_versioned(options = {}, &extension)
           
   
@@ -490,7 +490,6 @@ module ActiveRecord #:nodoc:
             else
               parent_klass = self.to_s.underscore
             end                  
-              
 
             class_methods =  <<-CLASS_METHODS
             
