@@ -5,7 +5,7 @@ class CollageSweeper < ActionController::Caching::Sweeper
 
   def collage_clear(record)
     expire_page :controller => :collages, :action => :show, :id => record.id
-    return if params[:action] == 'save_readable_state'
+    return if params && params[:action] == 'save_readable_state'
 
     Rails.cache.delete_matched(%r{collages-search*})
     Rails.cache.delete_matched(%r{collages-embedded-search*})
