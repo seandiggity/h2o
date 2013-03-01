@@ -6,7 +6,6 @@
 	<% end %>
 	Collaged <%= collage.created_at.to_s(:simpledatetime) %> by
 	<%= raw collage.creators.collect { |u| link_to(u.display, user_path(u)) }.join(',') %>
-	<% if false%>
     <% if collage.children.any? -%>
            <ul>
               <% collage.children.each do |child| -%>
@@ -14,5 +13,4 @@
               <% end -%>
            </ul>
     <% end -%>
-  <% end %>
 </li>
