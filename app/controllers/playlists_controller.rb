@@ -16,7 +16,7 @@ class PlaylistsController < BaseController
   caches_page :show, :export, :if => Proc.new{|c| c.instance_variable_get('@playlist').public?}
   access_control do
     allow all, :to => [:embedded_pager, :show, :index, :export, :access_level, :check_export, :position_update]
-    allow logged_in, :to => [:new, :create, :copy, :spawn_copy]
+    allow logged_in, :to => [:new, :create, :copy, :spawn_copy, :deep_copy]
 
     allow logged_in, :to => [:notes], :if => :allow_notes?
     allow logged_in, :to => [:edit, :update], :if => :allow_edit?
@@ -399,4 +399,8 @@ class PlaylistsController < BaseController
     render :json => { :items => @current_user.playlists.collect { |p| { :display => p.name, :id => p.id } } }
   end
 
+  def deep_copy
+    PlaylistCloneQueue.create({ :playlist_id => @playlist.id, :user_id => current_user.id })
+    render :json => {}
+  end
 end

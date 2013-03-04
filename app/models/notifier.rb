@@ -247,4 +247,13 @@ class Notifier < ActionMailer::Base
     sent_on    Time.now
     body       :new_password_reset_url => new_password_reset_url, :users => users
   end
+
+  def deep_copy_detail(original_playlist, playlist, user)
+    recipients user.email_address
+    subject   "Playlist Deep Copy"
+    from      "noreply@berkmancenter.org"
+    sent_on   Time.now
+    body      :original_playlist => original_playlist, :playlist_url => playlist_path(playlist)
+    content_type "text/html"
+  end
 end

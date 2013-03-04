@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130118154403) do
+ActiveRecord::Schema.define(:version => 20130219212348) do
 
   create_table "annotations", :force => true do |t|
     t.integer  "collage_id"
@@ -550,6 +550,14 @@ ActiveRecord::Schema.define(:version => 20130118154403) do
     t.string   "permission_type"
   end
 
+  create_table "playlist_clone_queues", :force => true do |t|
+    t.integer  "playlist_id"
+    t.integer  "user_id"
+    t.boolean  "running",     :default => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "playlist_items", :force => true do |t|
     t.integer  "playlist_id"
     t.integer  "resource_item_id"
@@ -760,6 +768,14 @@ ActiveRecord::Schema.define(:version => 20130118154403) do
   add_index "rotisserie_trackers", ["rotisserie_discussion_id"], :name => "index_rotisserie_trackers_on_rotisserie_discussion_id"
   add_index "rotisserie_trackers", ["rotisserie_post_id"], :name => "index_rotisserie_trackers_on_rotisserie_post_id"
   add_index "rotisserie_trackers", ["user_id"], :name => "index_rotisserie_trackers_on_user_id"
+
+  create_table "session_assignments", :force => true do |t|
+    t.integer  "playlist_id"
+    t.integer  "session_number"
+    t.integer  "playlist_item_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "sessions", :force => true do |t|
     t.string   "session_id", :null => false

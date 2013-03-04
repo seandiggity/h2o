@@ -1,6 +1,26 @@
 var dragged_element;
 
 jQuery.extend({
+  observeDeepCopy: function() {
+    console.log(jQuery('#deep-copy-playlist'));
+    jQuery('#deep-copy-playlist').live('click', function(e) {
+      e.preventDefault();
+      var form = jQuery(this).closest('form');
+      form.ajaxSubmit({
+        dataType: "JSON",
+        beforeSend: function() {
+          jQuery.showGlobalSpinnerNode();
+        },
+        success: function(data) {
+          alert('Thanks. Your request to deep clone this playlist has been added. You will be notified when it has been created.');
+          jQuery.hideGlobalSpinnerNode();
+        },
+        error: function(xhr) {
+          jQuery.hideGlobalSpinnerNode();
+        }
+      });
+    });
+  },
   new_playlist_item: function(data) {
     if(jQuery.getItemId() == data.id) {
       jQuery.hideGlobalSpinnerNode();
@@ -273,4 +293,5 @@ jQuery(document).ready(function(){
   jQuery.observeFontChange();
   jQuery.initPlaylistItemAddControls();
   jQuery.initializeNoteFunctionality();
+  jQuery.observeDeepCopy();
 });

@@ -7,6 +7,11 @@
 		<h2><%= @playlist.name %></h2>
 		<aside class="toolbar">
 			<ul>
+        <li class="requires_logged_in">
+          <% form_tag(deep_copy_playlist_path(@playlist)) do -%>
+          <%= link_to "Deep Copy Playlist", deep_copy_playlist_path(@playlist), :class => "tooltip link-remix", :title => "Deep Copy #{@playlist.name}", :id => 'deep-copy-playlist' %>
+          <% end -%>
+        </li>
         <li class="requires_logged_in"><%= link_to "Remix Playlist", copy_playlist_path(@playlist), :class => "tooltip link-remix remix-action", :title => "Remix #{@playlist.name}" %></li>
         <li class="requires_logged_in"><%= link_to "Bookmark This Playlist", '#', :class => "tooltip link-bookmark bookmark-action", :title => "Bookmark #{@playlist.name}" %></li>
 				<li id="print-container">
