@@ -28,6 +28,7 @@ class ApplicationController < ActionController::Base
   before_filter :set_sort_lists, :only => :index
   before_filter :initialize_case         
   before_filter :set_default_font_size
+     
   
   #Add ability to make page caching conditional
   #to support only caching public items
