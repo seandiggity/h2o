@@ -43,15 +43,18 @@ namespace :h2o do
   end
  
   def deep_clone(playlist, creator, indent)
-    cloned_playlist = playlist.clone
+    cloned_playlist = playlist.clone    
+    cloned_playlist.save!
     cloned_playlist.accepts_role!(:owner, creator)
     cloned_playlist.accepts_role!(:creator, creator)
     cloned_playlist.tag_list = playlist.tag_list
-
+    
     playlist.playlist_items.each do |pi|
-      cloned_playlist_item = pi.clone
+      cloned_playlist_item = pi.clone 
+      cloned_playlist_item.save!
       cloned_playlist_item.accepts_role!(:owner, creator)
       cloned_resource_item = pi.resource_item.clone
+      cloned_resource_item.save!
       cloned_resource_item.accepts_role!(:owner, creator)
       if pi.resource_item.actual_object
         if pi.resource_item_type == 'ItemPlaylist'
@@ -60,6 +63,7 @@ namespace :h2o do
         else
           puts "#{indent}cloning item: #{pi.resource_item.actual_object}"
           cloned_object = pi.resource_item.actual_object.clone
+          cloned_object.save!
           cloned_object.accepts_role!(:owner, creator)
           cloned_object.accepts_role!(:creator, creator)
           cloned_object.tag_list = pi.resource_item.actual_object.tag_list
@@ -89,16 +93,16 @@ namespace :h2o do
       cloned_playlist_item.playlist_id = cloned_playlist.id
       cloned_playlist_item.save
     end
-
-    cloned_playlist.save
+    
+   cloned_playlist.save
 
     return cloned_playlist
   end
 
   desc 'Deep Playlist Copy'
   task(:deep_playlist_copy => :environment) do
-    p = Playlist.find(ENV['playlist_id'])
-    u = User.find(ENV['user_id'])
+    p = Playlist.find(1304)
+    u = User.find(534)
     if(p.nil? || u.nil?)
       puts "You must enter a valid playlist and user id to clone."
     end

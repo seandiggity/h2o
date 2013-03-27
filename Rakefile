@@ -10,3 +10,10 @@ require 'rake/rdoctask'
 require 'sunspot/rails/tasks'
 
 require 'tasks/rails'
+                       
+begin
+  gem 'delayed_job'
+  require 'delayed/tasks'
+rescue LoadError
+  STDERR.puts "Run `rake gems:install` to install delayed_job"
+end

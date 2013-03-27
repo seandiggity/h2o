@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130205171629) do
+ActiveRecord::Schema.define(:version => 20130327043000) do
 
   create_table "annotation_versions", :force => true do |t|
     t.integer  "annotation_id"
@@ -373,6 +373,21 @@ ActiveRecord::Schema.define(:version => 20130205171629) do
     t.integer  "reporter_version"
     t.integer  "version"
   end
+
+  create_table "delayed_jobs", :force => true do |t|
+    t.integer  "priority",   :default => 0
+    t.integer  "attempts",   :default => 0
+    t.text     "handler"
+    t.text     "last_error"
+    t.datetime "run_at"
+    t.datetime "locked_at"
+    t.datetime "failed_at"
+    t.string   "locked_by"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
 
   create_table "influences", :force => true do |t|
     t.integer  "resource_id"
@@ -1145,8 +1160,8 @@ ActiveRecord::Schema.define(:version => 20130205171629) do
     t.string   "login"
     t.string   "crypted_password"
     t.string   "password_salt"
-    t.string   "persistence_token",                       :null => false
-    t.integer  "login_count",              :default => 0, :null => false
+    t.string   "persistence_token",                          :null => false
+    t.integer  "login_count",              :default => 0,    :null => false
     t.datetime "last_request_at"
     t.datetime "last_login_at"
     t.datetime "current_login_at"
@@ -1162,7 +1177,7 @@ ActiveRecord::Schema.define(:version => 20130205171629) do
     t.string   "perishable_token"
     t.boolean  "default_show_annotations"
     t.boolean  "tab_open_new_items"
-    t.string   "default_font_size"
+    t.string   "default_font_size",        :default => "16"
     t.integer  "version"
   end
 
