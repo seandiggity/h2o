@@ -268,6 +268,23 @@ class PlaylistsController < BaseController
     @playlist = Playlist.find(params[:id])
   end
 
+  def push   
+    if request.get?
+      @playlist = Playlist.find(params[:id])    
+      @collections = current_user.collections
+    else    
+      @collection = UserCollection.find(params[:user_collection_id])
+      @playlist = Playlist.find(params[:id])
+      # @playlist.push!(:recipients => @collection.users)
+      respond_to do |format|
+        format.json { render :json => {:custom_block => 'push_playlist'} }
+        format.js { render :text => nil }
+        format.html { redirect_to(playlists_url) }
+        format.xml  { head :ok }
+      end      
+    end
+  end
+  
   def metadata
     @playlist = Playlist.find(params[:id])
 
@@ -301,7 +318,8 @@ class PlaylistsController < BaseController
           new_item.resource_item = item.resource_item.clone
           item.creators && item.creators.each do|c|
             new_item.accepts_role!(:original_creator,c)
-          end
+          end   
+          new_item.save!
           new_item.accepts_role!(:owner, current_user)
           new_item.playlist_item_parent = item
           new_item

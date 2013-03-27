@@ -670,7 +670,7 @@ jQuery.extend({
 
   /* Generic HTML form elements */
   observeGenericControls: function(region){
-      jQuery(region + ' .remix-action,' + region + ' .edit-action,' + region + ' .new-action').live('click', function(e){
+      jQuery(region + ' .remix-action,' + region + ' .edit-action,' + region + ' .new-action,' + region + '.push-action').live('click', function(e){
       var actionUrl = jQuery(this).attr('href');
       e.preventDefault();
       jQuery.ajax({
@@ -765,9 +765,14 @@ jQuery.extend({
       },
       error: function(xhr) {
         jQuery.hideGlobalSpinnerNode();
-      }
+      },
     });
+  },
+  push_playlist: function(data) {   
+    
+    jQuery('#generic-node').dialog('close');
   }
+  
 });
 
 jQuery(function() {
