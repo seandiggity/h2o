@@ -8,9 +8,15 @@ Your annotation will start here. Please click another word to set the end point.
 <a href="#" id="cancel-annotation">cancel</a>
 </div>
 </div>
-
 <div id="collage" class="singleitem" data-itemid="<%= @collage.id %>">
-  <div id="fixed_header">
+  <div id="fixed_header">   
+  <hgroup>
+    <div class="alert alert-block">
+           
+            <h4>Warning</h4>The case that this collage was based upon has been updated and the text below no longer reflects the current case, <a href="#">a new collage created from the updated case is here</a>, a new collage based on the updated case does not yet exist, create it now?
+            
+       </div>
+  </hgroup>
   <hgroup class="description">
     <h2 class="collage-id"><%= @collage.name %>
       <% if @collage.copy? %><br/> (Currently viewing Version <%= @collage.version %> edited on <%= @collage.updated_at.to_s(:simpledatetime)%>)<br/>
