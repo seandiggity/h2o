@@ -496,15 +496,16 @@ module ActiveRecord #:nodoc:
             class_methods =  <<-CLASS_METHODS
             
             before_validation :update_#{parent_klass}_version_number
-            def update_#{parent_klass}_version_number
-              if self.#{parent_klass}
-                  self.#{parent_klass}.reload 
-                  if self.#{parent_klass}.respond_to?(:version)
-                    self.#{parent_klass}_version = self.#{parent_klass}.version
-                  end
+            unless self.instance_methods.include?("update_#{parent_klass}_version_number")
+              def update_#{parent_klass}_version_number
+                if self.#{parent_klass}
+                    self.#{parent_klass}.reload 
+                    if self.#{parent_klass}.respond_to?(:version)
+                      self.#{parent_klass}_version = self.#{parent_klass}.version
+                    end
+                end
               end
             end
-
             CLASS_METHODS
             association.klass.class_eval(class_methods)
 
