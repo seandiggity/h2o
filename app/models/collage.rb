@@ -171,7 +171,26 @@ class Collage < ActiveRecord::Base
   def bookmark_name
     self.name
   end
-
+  
+  def current?
+    !self.outdated?
+  end
+  
+  def outdated?
+    self.annotatable.version > self.annotatable_version
+  end
+  
+  def update_annotatable_version_number
+    if self.new_record?
+      if self.annotatable
+        self.annotatable.reload 
+        if self.annotatable.respond_to?(:version)
+          self.annotatable_version = self.annotatable.version
+        end
+      end      
+    end
+  end
+  
   private 
 
   def prepare_content

@@ -91,7 +91,11 @@ class Case < ActiveRecord::Base
     end
     res
   end
-
+  
+  def current_collage
+    self.collages.detect{|collage| collage.current?}
+  end
+  
   private
 
   def date_check

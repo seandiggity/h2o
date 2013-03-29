@@ -9,14 +9,14 @@ Your annotation will start here. Please click another word to set the end point.
 </div>
 </div>
 <div id="collage" class="singleitem" data-itemid="<%= @collage.id %>">
-  <div id="fixed_header">   
-  <hgroup>
-    <div class="alert alert-block">
-           
-            <h4>Warning</h4>The case that this collage was based upon has been updated and the text below no longer reflects the current case, <a href="#">a new collage created from the updated case is here</a>, a new collage based on the updated case does not yet exist, create it now?
-            
+  <div id="fixed_header">          
+<% if @collage.outdated? %>
+  <hgroup>                             
+    <div class="alert alert-block">           
+            <h4>Warning</h4>The case that this collage was based upon has been updated and the text below no longer reflects the current case, <% if @collage.annotatable.current_collage %><%= link_to "a new collage created from the updated case is here.", collage_path(@collage.annotatable.current_collage) %><% else %> a new collage based on the updated case does not yet exist,  <%= link_to "create it now?", new_collage_path(:annotatable_type => 'Case', :annotatable_id => @collage.annotatable.id), :class => 'collage-this new-action' %><% end %>            
        </div>
   </hgroup>
+<% end %>
   <hgroup class="description">
     <h2 class="collage-id"><%= @collage.name %>
       <% if @collage.copy? %><br/> (Currently viewing Version <%= @collage.version %> edited on <%= @collage.updated_at.to_s(:simpledatetime)%>)<br/>
