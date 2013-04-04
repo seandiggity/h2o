@@ -50,11 +50,13 @@
 	<ul id="bookmarks" class="playlists">
 		<% @user.bookmarks.each_with_index do |item, index| -%>
 		<%= render :partial => 'shared/objects/playlist_item',
-		  :locals => { :item => item, 
-		    :parent_index => '',
+		  :locals => { :item => item,
+      :resource_item => item.resource_item,
+      :actual_object => (item.resource_item_type == "ItemDefault" ? nil : item.resource_item.actual_object),
+	    :parent_index => '',
 			:index => index,
 			:recursive_level => 0,
-			:my_playlist => @user == current_user } %>
+      :last => (item == @user.bookmarks.last) } %>
 		<% end -%>
 	</ul>
 	<% end -%>

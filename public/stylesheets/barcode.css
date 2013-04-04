@@ -1,0 +1,197 @@
+/* Barcode */
+.barcode {
+  position: relative;
+  height: 14px;
+  overflow: hidden;
+  opacity: 0.0;
+}
+.barcode_wrapper {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  padding: 0px 10px 0px 11px;
+}
+.barcode a {
+  background-color: #999;
+  opacity: 0.7;
+  text-indent: -4000px;
+  display: block;
+  float: left;
+  height: 14px;
+  width: 0px;
+  margin-left: 1px;
+  width: 5px;
+}
+.barcode span.overflow {
+  position: absolute;
+  top: 0px;
+  height: 14px;
+  color: #FFF;
+  background: #000; /* TODO REPLACE WITH ICON */
+  z-index: 2;
+  overflow: hidden;
+  width: 10px;
+}
+.barcode span.overflow:hover {
+  cursor: pointer;
+}
+.barcode span.inactive {
+  background-color: #e3e3e3;
+  color: #000;
+}
+.barcode span.inactive:hover {
+  cursor: default;
+}
+.barcode span.left_overflow {
+  left: 0px;
+}
+.barcode span.right_overflow {
+  right: 0px;
+}
+.barcode a:hover {
+  opacity: 1.0;
+}
+
+/* User Specific */
+.barcode a.playlist_created {
+  width: 15px;
+}
+.barcode a.collage_created {
+  width: 9px;
+}
+.barcode a.base_created {
+  width: 3px;
+}
+.barcode a.user_case_collaged,
+.barcode a.user_media_collaged,
+.barcode a.user_text_block_collaged {
+  width: 9px;
+}
+.barcode a.user_playlist_bookmarked, 
+.barcode a.user_collage_bookmarked, 
+.barcode a.user_case_bookmarked, 
+.barcode a.user_media_bookmarked, 
+.barcode a.user_text_block_bookmarked {
+  width: 3px;
+}
+.barcode a.user_playlist_added {
+  width: 9px;
+}
+.barcode a.user_collage_added {
+  width: 15px;
+}
+.barcode a.user_case_added {
+  width: 3px;
+}
+.barcode a.user_media_added,
+.barcode a.user_text_block_added {
+  width: 6px;
+}
+.barcode a.user_collage_remix,
+.barcode a.user_playlist_remix {
+  width: 6px;
+}
+
+/* Non-User Specific */
+.barcode a.remix {
+  width: 15px;
+  background-color: #ef3c24;
+}
+.barcode a.add {
+  width: 9px;
+  background-color: #99ca3c;
+}
+.barcode a.playlist_bookmarked,
+.barcode a.collage_bookmarked,
+.barcode a.case_bookmarked,
+.barcode a.text_block_bookmarked,
+.barcode a.media_bookmarked {
+  width: 3px;
+}
+.barcode a.text_block_collaged,
+.barcode a.case_collaged {
+  width: 15px;
+}
+
+
+/* Tick Styling */
+.barcode a.remix {
+  background-color: #ef3c24;
+}
+.barcode a.bookmark {
+  padding: 0px;
+  background-color: #5590cc;
+}
+.barcode a.add {
+  background-color: #99ca3c;
+}
+
+/*
+.barcode a.base_created {
+  background-color: #003287;
+}
+.barcode a.collage_created,
+.barcode a.playlist_created {
+  background-color: #95b621;
+}
+.barcode a.user_collage_remix {
+  background-color: #0099ff;
+}
+.barcode a.user_playlist_remix {
+  background-color: #ff3300;
+}
+*/
+
+/* tipsy inner */
+.remix .tipsy-inner {
+  background-color: #ef3c24;
+}
+.bookmark .tipsy-inner {
+  background-color: #5590cc;
+}
+.add .tipsy-inner {
+  background-color: #99ca3c;
+}
+
+/*
+.base_created .tipsy-inner {
+  background-color: #003287;
+}
+.collage_created .tipsy-inner,
+.playlist_created .tipsy-inner {
+  background-color: #95b621;
+}
+.user_collage_remix .tipsy-inner {
+  background-color: #0099ff;
+}
+.user_playlist_remix .tipsy-inner {
+  background-color: #ff3300;
+}
+*/
+
+/* tipsy arrow */
+.remix .tipsy-arrow-s { 
+  border-top-color: #ef3c24;
+}
+.bookmark .tipsy-arrow-s {
+  border-top-color: #5590cc;
+}
+.add .tipsy-arrow-s {
+  border-top-color: #99ca3c;
+}
+
+/*
+.base_created .tipsy-arrow-s {
+  border-top-color: #003287;
+}
+.collage_created .tipsy-arrow-s,
+.playlist_created .tipsy-arrow-s {
+  border-top-color: #95b621;
+}
+.user_collage_remix .tipsy-arrow-s {
+  border-top-color: #0099ff;
+}
+.user_playlist_remix .tipsy-arrow-s {
+  border-top-color: #ff3300;
+}
+*/

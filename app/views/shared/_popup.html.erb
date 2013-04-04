@@ -4,7 +4,9 @@
 	<%= collection_select(:playlist, :id, current_user.playlists, :id, :name) %>
 	<ul>
 		<li><%= link_to "CREATE NEW PLAYLIST", new_playlist_path, :class => "new-playlist-and-item" %></li>
+    <% if false -%>
 		<li><a href="#" class="bookmark-popup bookmark-this bookmark-action">ADD BOOKMARK</a></li>
+    <% end -%>
 	</ul>
 	<a href="#" class="btn new-playlist-item">ADD FILE</a>
 </div>

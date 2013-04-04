@@ -50,10 +50,7 @@ class ItemBaseController < BaseController
       @object.description = actual_item.description
     end
     
-    respond_to do |format|
-      format.html { render :partial => "shared/forms/playlist_item" }
-      format.xml  { render :xml => @item_default }
-    end
+    render :partial => "shared/forms/playlist_item"
   end
 
   def create
@@ -88,11 +85,21 @@ class ItemBaseController < BaseController
       playlist_item = PlaylistItem.new(:playlist => @playlist)
       playlist_item.resource_item = @object
 
+      position_data = {}
       if playlist_item.save!
+        position_data[playlist_item.id.to_s] = params[:position].to_i
+
+        playlist_item.update_attribute(:position, params[:position].to_i)
+        @playlist.playlist_items.each_with_index do |pi, index|
+          if pi != playlist_item && (index + 1) >= params[:position].to_i
+            position_data[pi.id] = (pi.position + 1).to_s
+            pi.update_attribute(:position, pi.position + 1)
+          end
+        end
         playlist_item.accepts_role!(:owner, current_user)
       end
 
-	    render :json => { :type => 'playlists', :playlist_item_id => playlist_item.id, :id => @playlist.id, :error => false, :custom_block => 'new_playlist_item' }
+	    render :json => { :type => 'playlists', :playlist_item_id => playlist_item.id, :id => @playlist.id, :error => false, :position_data => position_data }
     else
 	    render :json => { :message => "We could not add that playlist item: #{@object.errors.full_messages.join('<br />')}", :error => true }
     end
@@ -111,7 +118,6 @@ class ItemBaseController < BaseController
 
     render :partial => "shared/forms/playlist_item"
   end
-
 
   def update
     if current_user
@@ -134,22 +140,17 @@ class ItemBaseController < BaseController
     end
 
     if @object.update_attributes(params[@param_symbol]) && @object.playlist_item.update_attributes(params[:playlist_item])
-	    render :json => { :type => 'playlists', :id => @playlist.id }
+	    render :json => { :type => 'playlists', :item => @object.to_json(:only => [:id, :name, :description]) }
     else
 	    render :json => { :error => @object.errors }
     end
   end
 
   def destroy
-    @object = @model_class.find(params[:id])
-    @object.destroy
+    @model_class.find(params[:id]).destroy
+    @playlist.reset_positions
 
-    respond_to do |format|
-      format.js { render :text => nil }
-      format.html { redirect_to(item_cases_url) }
-      format.xml  { head :ok }
-	  format.json { render :json => { :type => 'playlist_item', } }
-    end
+	  render :json => { :type => 'playlist_item', :position_data => @playlist.playlist_items.inject({}) { |h, i| h[i.id] = i.position.to_s; h } }
   end
 
   private

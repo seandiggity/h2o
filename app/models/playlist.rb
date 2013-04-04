@@ -1,13 +1,23 @@
-require 'tagging_extensions'
-require 'redcloth_extensions'
-require 'ancestry_extensions'
-
 class Playlist < ActiveRecord::Base
   extend RedclothExtensions::ClassMethods
   extend TaggingExtensions::ClassMethods
 
-  include PlaylistableExtensions
+  include StandardModelExtensions::InstanceMethods
+  include AncestryExtensions::InstanceMethods
   include AuthUtilities
+
+  include ActionController::UrlWriter
+    
+  RATINGS = {
+    :remix => 5,
+    :bookmark => 1,
+    :add => 3
+  }
+  RATINGS_DISPLAY = {
+    :remix => "Remixed",
+    :bookmark => "Bookmarked",
+    :add => "Added to another playlist"
+  }
 
   #no sql injection here.
   acts_as_list :scope => 'ancestry = #{self.connection.quote(self.ancestry)}'
@@ -34,16 +44,12 @@ class Playlist < ActiveRecord::Base
     text :name
     string :tag_list, :stored => true, :multiple => true
     string :author 
+    integer :karma
 
     boolean :public
     boolean :active
 
     time :created_at
-  end
-
-  def author
-    owner = self.accepted_roles.find_by_name('owner')
-    owner.nil? ? nil : owner.user.login.downcase
   end
 
   def display_name
@@ -52,26 +58,38 @@ class Playlist < ActiveRecord::Base
   end
   alias :to_s :display_name
 
-  def bookmark_name
-    self.name
-  end
-
   def parents
     ItemPlaylist.find_all_by_actual_object_id(self.id).collect { |p| p.playlist_item.playlist_id }.uniq
   end
 
-  def self.cache_options
-    options = []
-    ['true', 'false'].each do |ann|
-      [11, 14, 16].each do |size|
-        ['true', 'false'].each do |text|
-          ['serif', 'sans-serif'].each do |type|
-            options << "ann=#{ann}&size=#{size}&text=#{text}&type=#{type}"
-          end
+  def barcode
+    Rails.cache.fetch("playlist-barcode-#{self.id}") do
+      barcode_elements = []
+      self.children.each do |child|
+        barcode_elements << { :type => "remix",
+                              :date => child.created_at, 
+                              :title => "Remixed to Playlist #{child.name}",
+                              :link => playlist_path(child.id) }
+      end
+      ItemPlaylist.find_all_by_actual_object_id(self.id).each do |item_playlist|
+        next if item_playlist.playlist_item.nil?
+        next if item_playlist.playlist_item.playlist.nil?
+        playlist = item_playlist.playlist_item.playlist
+        if playlist.name == "Your Bookmarks"
+          playlist_owner = playlist.accepted_roles.find_by_name('owner')
+          barcode_elements << { :type => "bookmark", 
+                                :date => item_playlist.created_at, 
+                                :title => "Bookmarked by #{playlist_owner.user.display}",
+                                :link => user_path(playlist_owner.user) }
+        else
+          barcode_elements << { :type => "add", 
+                                :date => item_playlist.created_at, 
+                                :title => "Added to playlist #{playlist.name}",
+                                :link => playlist_path(playlist.id) }
         end
       end
+      barcode_elements.sort_by { |a| a[:date] }
     end
-    options
   end
 
   def relation_ids
@@ -108,5 +126,11 @@ class Playlist < ActiveRecord::Base
       arr << pi.resource_item.actual_object if pi.resource_item && pi.resource_item.actual_object; arr
     end
     actual_objects.include?(item)
+  end
+
+  def reset_positions
+    self.playlist_items.each_with_index do |pi, index|
+      pi.update_attribute(:position, self.counter_start + index)
+    end
   end
 end

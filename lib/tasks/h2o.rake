@@ -20,34 +20,31 @@ namespace :h2o do
     end
   end
 
-  desc 'Update user karma'
-  task(:update_user_karma => :environment) do
-    User.find_in_batches { |users| users.each { |u| u.update_karma } }
-  end
-
-  desc 'Generate playlist PDFs'
-  task(:gen_playlist_pdfs => :environment) do
-    permutations = Playlist.cache_options
-    Playlist.find(:all, :conditions => ['public is true'], :order => 'updated_at desc').each do |pl|
-      permutations.each do|pm|
-        url = "http://h2odev.law.harvard.edu/playlists/#{pl.id}/export?#{pm}"
-        clean_cgi = CGI.escape(pm)
-        output_file = "#{RAILS_ROOT}/tmp/cache/playlist_#{pl.id}.pdf?#{clean_cgi}"
-        if !FileTest.exists?(output_file)
-          puts "Generating PDF for: #{url}"
-          file = File.new(output_file, "w+")
-          system("#{RAILS_ROOT}/pdf/wkhtmltopdf -B 25.4 -L 25.4 -R 25.4 -T 25.4 --footer-html #{RAILS_ROOT}/pdf/playlist_footer.html \"#{url}\" #{file.path}")
+  desc 'Update item karma'
+  task(:update_karma => :environment) do
+    User.find_in_batches do |users| 
+      users.each do |u|
+       Rails.cache.delete("user-barcode-#{u.id}")
+       u.update_karma
+      end
+    end
+    # Cache does not need to be cleared for playlists
+    # and collages, because it is cleared in sweepers
+    [Playlist, Collage, TextBlock, Media, Case].each do |model|
+      model.find_in_batches do |items|
+        items.each do |i|
+          i.update_karma
         end
       end
     end
   end
- 
+
   def deep_clone(playlist, creator, indent)
     cloned_playlist = playlist.clone
     cloned_playlist.accepts_role!(:owner, creator)
     cloned_playlist.accepts_role!(:creator, creator)
     cloned_playlist.tag_list = playlist.tag_list
-
+ 
     playlist.playlist_items.each do |pi|
       cloned_playlist_item = pi.clone
       cloned_playlist_item.accepts_role!(:owner, creator)
@@ -94,7 +91,7 @@ namespace :h2o do
 
     return cloned_playlist
   end
-
+ 
   desc 'Deep Playlist Copy'
   task(:deep_playlist_copy => :environment) do
     p = Playlist.find(ENV['playlist_id'])

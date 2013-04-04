@@ -1,0 +1,115 @@
+/* Icons */
+.icon {
+  display: inline-block;
+  width:18px;
+  height:18px; 
+  background-image: url(/images/small_icons.png); 
+  text-indent: -4000px;
+}
+.icon-default { 
+  background: #000;
+}
+.icon-collage { 
+  background-position: -123px -8px;
+  width: 16px;
+  height: 16px;
+}
+.icon-collage.hover { 
+  background-position: -4px -39px;
+}
+.icon-question { 
+  background-position: -36px -92px;
+}
+.icon-playlist { 
+  background-position: -75px -71px;
+  width: 16px;
+  height: 14px;
+}
+.icon-playlist.hover { 
+  background-position: -99px -71px;
+}
+.icon-case { 
+  background-position: -79px -9px;
+  height: 14px;
+  width: 14px;
+}
+.icon-case.hover {
+  background-position: -101px -9px;
+}
+.icon-annotation {
+  background-position: -72px -92px; 
+
+}
+.icon-textblock { 
+  background-position: -101px -100px;
+  height: 17px;
+  width: 17px;
+}
+.icon-textblock.hover { 
+  background-position: -126px -100px;
+}
+.icon-media-video {
+  background-position: -191px -285px;
+  height: 13px;
+  width: 18px;
+}
+.icon-media-video.hover {
+  background-position: -217px -285px;
+}
+.icon-media-audio {
+  background-position: -176px -9px;
+  height: 15px;
+  width: 17px;
+}
+.icon-media-audio.hover {
+  background-position: -201px -9px;
+}
+.icon-media-pdf {
+  background-position: -175px -39px;
+  width: 13px;
+  height: 16px;
+}
+.icon-media-pdf.hover {
+  background-position: -196px -39px;
+}
+.icon-media-image {
+  background-position: -4px -70px;
+  width: 18px;
+  height: 16px;
+}
+.icon-media-image.hover {
+  background-position: -30px -70px;
+}
+
+/* Actions */
+.icon-delete {
+  background-position: -24px -284px;
+  width: 12px;
+  height: 15px;
+}
+.icon-edit {
+  background-position: -89px -41px;
+  width: 11px;
+  height: 13px;
+}
+.icon-remix {
+  background-position: -26px -99px;
+  width: 18px;
+  height: 18px;
+}
+.icon-add {
+  background-position: -3px -6px;
+  width: 19px;
+  height: 19px;
+}
+.icon-bookmark,
+.icon-favorite {
+  background-position: -108px -39px;
+  width: 18px;
+  height: 18px;
+}
+.icon-collage-this {
+  background-position: -4px -39px;
+  width: 16px;
+  height: 16px;
+}

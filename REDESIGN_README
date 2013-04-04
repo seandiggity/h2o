@@ -1,0 +1,17 @@
+# Turn on caching in development to test
+
+# Special Notes:
+## This work includes a lot of refactoring, but please keep this to a minimum if you have explicit tasks
+## Follow jQuery structure of extending jQuery with functions
+## Follow standard 2 space indentations (set nu et ts=2 sw=2 shiftround ignorecase smartcase)
+## All new images should go in public/images/
+
+# This deploy includes several related issues. See Redmine for related issues.
+
+# Deployment notes:
+## Migration needed
+## rake h2o:update_karma needs to be run to update karma value for all models
+## After above rake task is complete, Solr reindex on all models needed
+## Cache clearing needed
+## Restart needed
+## Change update_user_karma cron job to update_karma

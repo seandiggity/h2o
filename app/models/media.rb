@@ -1,8 +1,15 @@
 class Media < ActiveRecord::Base
   extend TaggingExtensions::ClassMethods
 
-  include PlaylistableExtensions
+  include StandardModelExtensions::InstanceMethods
   include AuthUtilities
+  
+  include ActionController::UrlWriter
+    
+  RATINGS = {
+    :bookmark => 1,
+    :add => 3
+  }
 
   acts_as_authorization_object
   
@@ -21,6 +28,7 @@ class Media < ActiveRecord::Base
     string :display_name, :stored => true
     text :content, :stored => true
     string :content
+    integer :karma
 
     boolean :active
     boolean :public
@@ -36,8 +44,27 @@ class Media < ActiveRecord::Base
     # TODO: add stored media type slug here
   end
 
-  def author
-    owner = self.accepted_roles.find_by_name('owner')
-    owner.nil? ? nil : owner.user.login.downcase
+  def barcode
+    Rails.cache.fetch("media-barcode-#{self.id}") do
+      barcode_elements = []
+      ItemMedia.find_all_by_actual_object_id(self.id).each do |item_playlist|
+        next if item_playlist.playlist_item.nil?
+        next if item_playlist.playlist_item.playlist.nil?
+        playlist = item_playlist.playlist_item.playlist
+        if playlist.name == "Your Bookmarks"
+          playlist_owner = playlist.accepted_roles.find_by_name('owner')
+          barcode_elements << { :type => "bookmark", 
+                                :date => item_playlist.created_at, 
+                                :title => "Bookmarked by #{playlist_owner.user.display}",
+                                :link => user_path(playlist_owner.user) }
+        else
+          barcode_elements << { :type => "add", 
+                                :date => item_playlist.created_at, 
+                                :title => "Added to playlist #{playlist.name}",
+                                :link => playlist_path(playlist.id) }
+        end
+      end
+      barcode_elements.sort_by { |a| a[:date] }
+    end
   end
 end

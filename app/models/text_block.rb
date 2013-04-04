@@ -2,14 +2,21 @@ class TextBlock < ActiveRecord::Base
   extend RedclothExtensions::ClassMethods
 
   include H2oModelExtensions
+  include StandardModelExtensions::InstanceMethods
   include AnnotatableExtensions
-  include PlaylistableExtensions
   include AuthUtilities
   include MetadataExtensions
+  
+  include ActionController::UrlWriter
 
   MIME_TYPES = {
     'text/plain' => 'Plain text',
     'text/html' => 'HTML formatted text'
+  }
+  RATINGS = {
+    :collaged => 5,
+    :bookmark => 1,
+    :add => 3
   }
 
   acts_as_authorization_object
@@ -21,11 +28,6 @@ class TextBlock < ActiveRecord::Base
 
   validates_inclusion_of :mime_type, :in => MIME_TYPES.keys
     
-  def self.autocomplete_for(context = :tags, query_term = nil)
-    return [] if query_term.blank?
-    self.find_by_sql(['select distinct(tags.name) from tags left join taggings on tags.id = taggings.tag_id where taggable_type = ? and context = ? and tags.name like ? order by tags.name',self.name,context.to_s,"#{query_term}%"]).collect{|t|t.name}
-  end
-
   def self.tag_list
     Tag.find_by_sql("SELECT ts.tag_id AS id, t.name FROM taggings ts
       JOIN tags t ON ts.tag_id = t.id
@@ -44,10 +46,6 @@ class TextBlock < ActiveRecord::Base
 
   def display_name
     name
-  end
-
-  def bookmark_name
-    self.name
   end
 
   #Export the content that gets annotated in a Collage - also, render the content for display.
@@ -71,6 +69,7 @@ class TextBlock < ActiveRecord::Base
     text :description
     boolean :active
     boolean :public
+    integer :karma
 
     string :author
     string :tag_list, :stored => true, :multiple => true
@@ -78,8 +77,33 @@ class TextBlock < ActiveRecord::Base
     string :metadatum, :stored => true, :multiple => true
   end
 
-  def author
-    owner = self.accepted_roles.find_by_name('owner')
-    owner.nil? ? nil : owner.user.login.downcase
+  def barcode
+    Rails.cache.fetch("textblock-barcode-#{self.id}") do
+      barcode_elements = []
+      self.collages.each do |collage|
+        barcode_elements << { :type => "collaged",
+                              :date => collage.created_at, 
+                              :title => "Collaged to #{collage.name}",
+                              :link => collage_path(collage.id) }
+      end
+      ItemTextBlock.find_all_by_actual_object_id(self.id).each do |item_playlist|
+        next if item_playlist.playlist_item.nil?
+        next if item_playlist.playlist_item.playlist.nil?
+        playlist = item_playlist.playlist_item.playlist
+        if playlist.name == "Your Bookmarks"
+          playlist_owner = playlist.accepted_roles.find_by_name('owner')
+          barcode_elements << { :type => "bookmark", 
+                                :date => item_playlist.created_at, 
+                                :title => "Bookmarked by #{playlist_owner.user.display}",
+                                :link => user_path(playlist_owner.user) }
+        else
+          barcode_elements << { :type => "add", 
+                                :date => item_playlist.created_at, 
+                                :title => "Added to playlist #{playlist.name}",
+                                :link => playlist_path(playlist.id) }
+        end
+      end
+      barcode_elements.sort_by { |a| a[:date] }
+    end
   end
 end

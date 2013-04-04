@@ -32,3 +32,10 @@
   text-transform: uppercase;
   font-weight: bold;
 }
+
+#results #bookmarks .playlist .wrapper {
+  border-bottom: none;
+}
+#results #bookmarks .playlist .wrapper .rr-closed {
+  display: none;
+}

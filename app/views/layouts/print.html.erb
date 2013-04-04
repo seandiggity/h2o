@@ -4,7 +4,7 @@
   <head> 
     <meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
     <meta http-equiv="Cache-Control" content="must-revalidate" />
-    <title><%= @page_title ? "Printed #{@page_title}" : "H2O Classroom Tools" %></title>
+    <title><%= raw @page_title ? "Printed #{raw @page_title}" : "H2O Classroom Tools" %></title>
 
     <%= stylesheet_link_tag 'ui', 'export', :media => "all" %>
     <%= stylesheet_link_tag 'print', :media => "print" %>
@@ -57,11 +57,19 @@
                 <option value="no">No</option>
               </select>
             </li>
-            <li>
+            <li id="highlight_options">
               <strong>PRINT HIGHLIGHTS</strong>
               <select id="printhighlights">
-                <option value="yes" selected="selected">Yes</option>
-                <option value="no">No</option>
+                <option value="original" selected="selected">Original</option>
+                <option value="all">All</option>
+                <option value="none">None</option>
+              </select>
+            </li>
+            <li id="heatmap_options">
+              <strong>PRINT HEATMAP</strong>
+              <select id="printheatmap">
+                <option value="yes">Yes</option>
+                <option value="no" selected="selected">No</option>
               </select>
             </li>
           <% end %>

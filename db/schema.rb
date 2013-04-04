@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130118154403) do
+ActiveRecord::Schema.define(:version => 20130220143047) do
 
   create_table "annotations", :force => true do |t|
     t.integer  "collage_id"
@@ -103,6 +103,7 @@ ActiveRecord::Schema.define(:version => 20130118154403) do
     t.boolean  "public",                                  :default => true
     t.boolean  "active",                                  :default => false
     t.integer  "case_request_id"
+    t.integer  "karma"
   end
 
   add_index "cases", ["active"], :name => "index_cases_on_active"
@@ -140,6 +141,7 @@ ActiveRecord::Schema.define(:version => 20130118154403) do
     t.boolean  "active",                               :default => true
     t.string   "readable_state",    :limit => 5242880
     t.integer  "words_shown"
+    t.integer  "karma"
   end
 
   add_index "collages", ["active"], :name => "index_collages_on_active"
@@ -478,6 +480,7 @@ ActiveRecord::Schema.define(:version => 20130118154403) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "description",   :limit => 5242880
+    t.integer  "karma"
   end
 
   create_table "metadata", :force => true do |t|
@@ -550,6 +553,14 @@ ActiveRecord::Schema.define(:version => 20130118154403) do
     t.string   "permission_type"
   end
 
+  create_table "playlist_clone_queues", :force => true do |t|
+    t.integer  "playlist_id"
+    t.integer  "user_id"
+    t.boolean  "running",     :default => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "playlist_items", :force => true do |t|
     t.integer  "playlist_id"
     t.integer  "resource_item_id"
@@ -584,6 +595,7 @@ ActiveRecord::Schema.define(:version => 20130118154403) do
     t.string   "ancestry"
     t.integer  "position"
     t.integer  "counter_start",                 :default => 1,    :null => false
+    t.integer  "karma"
   end
 
   add_index "playlists", ["active"], :name => "index_playlists_on_active"
@@ -761,6 +773,14 @@ ActiveRecord::Schema.define(:version => 20130118154403) do
   add_index "rotisserie_trackers", ["rotisserie_post_id"], :name => "index_rotisserie_trackers_on_rotisserie_post_id"
   add_index "rotisserie_trackers", ["user_id"], :name => "index_rotisserie_trackers_on_user_id"
 
+  create_table "session_assignments", :force => true do |t|
+    t.integer  "playlist_id"
+    t.integer  "session_number"
+    t.integer  "playlist_item_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "sessions", :force => true do |t|
     t.string   "session_id", :null => false
     t.text     "data"
@@ -803,6 +823,7 @@ ActiveRecord::Schema.define(:version => 20130118154403) do
     t.boolean  "public",                         :default => true
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "karma"
   end
 
   add_index "text_blocks", ["created_at"], :name => "index_text_blocks_on_created_at"
@@ -847,6 +868,10 @@ ActiveRecord::Schema.define(:version => 20130118154403) do
     t.boolean  "default_show_annotations"
     t.boolean  "tab_open_new_items"
     t.string   "default_font_size"
+    t.string   "title"
+    t.string   "affiliation"
+    t.string   "url"
+    t.text     "description"
   end
 
   add_index "users", ["email_address"], :name => "index_users_on_email_address"

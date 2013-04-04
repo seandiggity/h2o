@@ -1,10 +1,10 @@
 ActionController::Routing::Routes.draw do |map|
   map.resources :defects
-  map.resources :settings
   map.resources :metadata
 
   map.resources :text_blocks, :collection => {:embedded_pager => :get}, :member => {:export => :get}
   map.resources :journal_articles, :member => { :export => :get }
+  map.textblock_tag "text_blocks/tag/:tag", :controller => :text_blocks, :action => :index
   map.text_block_tag "text_blocks/tag/:tag", :controller => :text_blocks, :action => :index
   map.journal_article_tag "journal_articles/tag/:tag", :controller => :journal_articles, :action => :index
 
@@ -33,7 +33,7 @@ ActionController::Routing::Routes.draw do |map|
   map.case_tag "cases/tag/:tag", :controller => :cases, :action => :index
 
   map.resources :collages, :collection => {:embedded_pager => :get, :collage_lookup => :get },
-    :member => { :spawn_copy => :post,
+    :member => { :copy => [:get, :post],
               :save_readable_state => :post,
 	            :record_collage_print_state => :post, 
               :access_level => :get, 
@@ -45,7 +45,7 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resources :playlists,
     :collection => { :block => :get, :url_check => :post, :load_form => :post, :embedded_pager => :get, :playlist_lookup => :get },
-    :member => {:spawn_copy => :post, :position_update => :post,
+    :member => {:prepare_copy => :get, :position_update => :post,
 	  :delete => :get, :copy => [:get, :post], :metadata => :get,
 	  :export => :get, :access_level => :get, :check_export => :get}
   map.playlist_tag "playlists/tag/:tag", :controller => :playlists, :action => :index
@@ -92,6 +92,8 @@ ActionController::Routing::Routes.draw do |map|
 
   map.search_all "/all_materials", :controller => :base, :action => :search
   map.root :controller => "base"
+  map.partial_results "/partial_results", :controller => :base, :action => :partial_results
+  map.partial_results_show "/partial_results/:dummy/:id", :controller => :base, :action => :partial_results
 
   map.connect '/p/:id', :controller => :pages, :action => :show
 

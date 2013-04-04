@@ -1,6 +1,6 @@
 <li class="playlist listitem level<%= recursive_level %> listitem<%= item.resource_item.id %>" id="playlist_item_<%= item.id %>" data-itemid="<%= item.resource_item.id %>">
-  <h3>
-  <div class="icon-type icon-type-<%= item.resource_item_type.downcase %>"></div>
+  e-h3>
+  <div class="icon icon-<%= item.clean_type %>"></div>
 	<% if item.resource_item_type != 'ItemDefault' && !item.resource_item.actual_object.nil? -%>
 	<%= link_to item.resource_item.name, item.resource_item.actual_object %>
 	<% else -%>

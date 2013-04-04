@@ -8,8 +8,4 @@ class ItemDefault < ActiveRecord::Base
 
   def preview(size_indicator = "S")
   end
-
-  def bookmark_name
-    self.name
-  end
 end

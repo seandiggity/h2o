@@ -1,6 +1,16 @@
 body, tt { background: #FFF; font-family: sans-serif; font-size: 11pt; color: #000; border-bottom: 2px solid #FFF; }
 body * { line-height: 1.4em; }
 
+.singleitem {
+  float: none;
+  width: 100%;
+}
+.singleitem .details {
+  background: none;
+  padding: 0px;
+  margin: 0px;
+}
+
 /* Header */
 #playlist h1 { font-size: 17pt; }
 .collage-content > h1 { margin-top: 0px; padding: 0px 0px 4px 0px; font-size: 17pt; }
@@ -17,8 +27,6 @@ body * { line-height: 1.4em; }
 
 /* Collage Content */
 .unlayered-control,
-.collage-content .annotation-asterisk,
-.collage-content .annotation-ellipsis { display: none; }
 .collage-content { padding-left: 50px; font-size: 11pt; clear: both; }
 .collage-content p { margin-bottom: 20px; }
 .collage-content .annotation-content { color: #6B933D; font-style: italic; border: 1px solid #d4d4d4; padding: 2px 5px 2px 18px; margin: 3px;
@@ -32,8 +40,7 @@ background: url(/images/ui/asterisk.jpg) 2px 1px no-repeat; text-indent: 10px; w
 
 .playlists .collage-content article { position: relative; }
 
-#playlist { padding: 0px; width: 980px; overflow: hidden; }
-#playlist ul { list-style-type: none; }
+#playlist { padding: 0px; overflow: hidden; }
 #playlist .playlists .playlists { display: block; }
 #playlist .listitem { padding-bottom: 10px; }
 #playlist .listitem .notes { padding-bottom: 10px; }

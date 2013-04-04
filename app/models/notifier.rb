@@ -240,7 +240,6 @@ class Notifier < ActionMailer::Base
   end
   
   def logins(users)
-
     recipients users.map(&:email_address).uniq
     subject    "Logins"
     from       "noreply@berkmancenter.org"

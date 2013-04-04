@@ -1,68 +1,81 @@
-<li class="playlist listitem level<%= recursive_level %> listitem<%= item.resource_item.id %>" id="playlist_item_<%= item.id %>" data-itemid="<%= item.resource_item.id %>">
-	<div class="controls">
-		<ul>
-			<li class="number"><%= parent_index == '' ? "#{index}" : "#{parent_index}.#{index}" %></li>
-			<li class="link-add requires_logged_in">
-				<a class="<%= item.id %>" href="#" data-item_id="<%= item.resource_item_type != 'ItemDefault' && item.resource_item.actual_object ? item.resource_item.actual_object_id : item.resource_item_id %>" data-bookmarktype="<%= item.resource_item_type.underscore %>" data-type="<%= item.object_type %>">+</a>
-			</li>
-		</ul>
-	</div>
-	<div class="data">
-		<% if recursive_level < 3 && item.resource_item_type == 'ItemPlaylist' && item.resource_item.actual_object -%>
-		<%= link_to 'Show/Hide More', '#', :class => 'dd dd-closed', :id => "dd#{item.resource_item.id}" %>
-		<% end -%>
-		<% if ['ItemCollage', 'ItemCase', 'ItemPlaylist'].include?(item.resource_item_type) && !item.resource_item.actual_object.nil? -%>
-		<% type = item.resource_item.actual_object_type.downcase
-		   ao = item.resource_item.actual_object -%>
-		<% cache "#{type}-#{ao.id}-tags" do -%>
-		<div class="tags">
-			<% ao.tags.each do |tag| -%>	
-		  <a href="<%= send "#{type}_tag_path", CGI.escape(tag.name) %>"><%= tag.name %></a>
-		  <% end -%>
-		</div>
-		<% end -%>
-		<% end -%>
-		<hgroup class="<%= item.resource_item_type.gsub(/^Item/, '').downcase %><%= item.resource_item_type != 'ItemDefault' && item.resource_item.actual_object ? item.resource_item.actual_object_id : item.resource_item_id %>">
-		<h3>
-        <% if item.resource_item_type == 'ItemDefault' -%>
-        <%= link_to item.resource_item.name, item.resource_item.url, :target => '_blank' %>
-        <% elsif !item.resource_item.actual_object.nil? -%>
-				<%= link_to item.resource_item.name, item.resource_item.actual_object, :target => '_blank' %>
-        <% else -%>
-        <%= item.resource_item.name %>
-        <% end -%>
-        <% if item.resource_item_type == 'ItemMedia' && item.resource_item.actual_object -%>
-		    <span class="media-icon-type media-icon-type-<%= item.resource_item.actual_object.media_type.slug %>"></span>
-        <% else -%>
-		    <span class="icon-type icon-type-<%= item.resource_item_type.downcase %>"></span>
-        <% end -%>
-			</h3>
-			<% if recursive_level == 0 %>
-			<%= link_to "REMOVE", url_for(:controller => item.resource_item_type.tableize, :action => 'destroy', :id => item.resource_item), :class => "action delete-action delete-playlist-item requires_remove" %>
-			<%= link_to "EDIT", url_for(:controller => item.resource_item_type.tableize, :action => 'edit', :id => item.resource_item), :class => "action edit-action requires_edit" %>
-			<% end -%>
-		</hgroup>
-		<div <%= raw 'class="item_description"' if item.resource_item_type == 'ItemPlaylist' %>>
-			<%= PlaylistItem.format_content(item.resource_item.description) %>
-		</div>
+<li class="<%= "dd-item" if recursive_level == 0 %> playlist listitem level<%= recursive_level %> listitem<%= resource_item.id %> <%= 'last' if last %>" id="playlist_item_<%= item.id %>" data-id="<%= item.id %>" data-itemid="<%= resource_item.id %>">
+  <div class="wrapper">
+  <% if recursive_level < 3 && item.resource_item_type == 'ItemPlaylist' && actual_object -%>
+  <%= link_to 'Show/Hide More', '#', :class => 'rr rr-closed', :id => "rr#{resource_item.id}" %>
+  <% end -%>
+  <div class="inner-wrapper <%= "dd-handle" if recursive_level == 0 %>">
+    <span class="number"><%= parent_index == '' ? "#{index}" : "#{parent_index}.#{index}" %></span>
+    <% if item.resource_item_type == 'ItemMedia' && actual_object -%>
+    <span class="icon icon-media-<%= actual_object.media_type.slug %>"></span>
+    <% else -%>
+    <span class="icon icon-<%= item.clean_type %>"></span>
+    <% end -%>
+    <% if item.resource_item_type == 'ItemDefault' -%>
+    <%= link_to resource_item.name, resource_item.url, :target => '_blank', :class => "title" %>
+    <% elsif actual_object.present? -%>
+    <%= link_to item.resource_item.name, actual_object, :target => '_blank', :class => "title" %>
+    <% else -%>
+    <%= resource_item.name %>
+    <% end -%>
+    <% if recursive_level == 0 %>
+    <%= link_to raw('<span class="icon icon-delete"></span>'), url_for(:controller => item.resource_item_type.tableize, :action => 'destroy', :id => resource_item),
+      :class => "action delete-playlist-item requires_remove smaller" %>
+    <%= link_to raw('<span class="icon icon-edit"></span>'), url_for(:controller => item.resource_item_type.tableize, :action => 'edit', :id => resource_item), 
+      :class => "action edit-playlist-item requires_edit smaller" %>
+    <% end -%>
+    <div class="item_description smaller">
+      <%= PlaylistItem.format_content(resource_item.description) %>
+    </div>
     <% if item.notes.to_s != '' && item.public_notes -%>
-		<div class="notes">
-			<b>Additional Notes:</b><br /><%= PlaylistItem.format_content(item.notes) %>
+    <div class="notes">
+      <b>Additional Notes:</b><br /><%= PlaylistItem.format_content(item.notes) %>
+    </div>
+    <% end -%>
+    <% if actual_object.present? -%>
+		<div class="additional_details">
+		  <p>
+		    <%= actual_object.created_at.to_s(:simpledatetime) %> by
+		    <%= raw actual_object.owners.collect{|u| link_to(u.display, user_path(u)) }.join(',') if actual_object.owners %>
+		    <% cache "#{item.clean_type}-#{actual_object.id}-tags" do -%>
+		    <% if actual_object.tag_list.any? -%>
+		    | <%= raw actual_object.tag_list.collect { |tag| link_to(tag, self.send("#{item.clean_type}_tag_path", CGI.escape(tag))) }.join(', ') %>
+		    <% end -%>
+		    <% end -%>
+		  </p>
+		  <span class="requires_logged_in">
+      <% if actual_object.is_a?(Playlist) -%>
+		  <%= link_to raw('<span class="icon icon-remix"></span>'), prepare_copy_playlist_path(object), :class => "tooltip link-remix remix-action", :title => "Remix" %>
+      <% elsif actual_object.is_a?(Collage) -%>
+		  <%= link_to raw('<span class="icon icon-remix"></span>'), copy_collage_path(object), :class => "tooltip link-copy", :title => "Remix" %>
+      <% end -%>
+		  <%= link_to raw('<span class="icon icon-add"></span>'), '#', "data-item_id" => actual_object.id, "data-type" => item.clean_type, :class => 'link-add tooltip', :title => "Add to a Playlist" %>
+		  <%= link_to raw('<span class="icon icon-bookmark"></span>'), '#', :class => "tooltip link-bookmark bookmark-action", :title => "Bookmark #{actual_object.name}" %>
+		  </span>
+		  <%= render :partial => "shared/barcode", :locals => { :object => actual_object } %>
+      <% if actual_object.class.respond_to?(:format_content) && actual_object.respond_to?(:description) -%>
+		  <div class="actual_description">
+		  <%= actual_object.class.format_content(actual_object.description) %>
+		  </div>
+      <% end -%>
 		</div>
     <% end -%>
-	</div>
-	<div class="cl"></div>
-	<% if recursive_level < 4 && item.resource_item_type == 'ItemPlaylist' && item.resource_item.actual_object -%>
-	<section class="playlists">
-		<ul>
-			<% item.resource_item.actual_object.playlist_items.each_with_index do |nested_item, nested_index| -%>
-			  <%= render :partial => 'shared/objects/playlist_item',
-			    :locals => { :item => nested_item,
-				  :parent_index => parent_index == '' ? index : "#{parent_index}.#{index}",
-				  :index => nested_index + 1,
-				  :recursive_level => recursive_level + 1 } %>
-			<% end -%>
-		</ul>
-	</section>
-	<% end -%>
+    <div class="cl"></div>
+  </div>
+  </div>
+    <% if recursive_level < 4 && item.resource_item_type == 'ItemPlaylist' && actual_object -%>
+    <section class="playlists">
+      <ol>
+        <% actual_object.playlist_items.each_with_index do |nested_item, nested_index| -%>
+          <%= render :partial => 'shared/objects/playlist_item',
+            :locals => { :item => nested_item,
+            :resource_item => nested_item.resource_item,
+            :actual_object => nested_item.resource_item_type == 'ItemDefault' ? nil : nested_item.resource_item.actual_object,
+            :parent_index => parent_index == '' ? index : "#{parent_index}.#{index}",
+            :index => nested_index + 1,
+            :recursive_level => recursive_level + 1,
+            :last => (nested_item == actual_object.playlist_items.last) } %>
+        <% end -%>
+      </ol>
+    </section>
+    <% end -%>
  </li>

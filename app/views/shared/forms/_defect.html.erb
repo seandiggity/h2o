@@ -1,9 +1,9 @@
-<% ['case', 'text_block', 'collage'].each do |variable_name|
+<% ['case', 'text_block', 'collage', 'playlist'].each do |variable_name|
   @reportable = instance_variable_get("@#{variable_name}") 
   break if @reportable
 end %>
 <% if @reportable %>
-<% if @reportable.is_a?(Collage) ||
+<% if @reportable.is_a?(Collage) || @reportable.is_a?(Playlist)
    (@reportable.is_a?(TextBlock) && current_user) || 
    (@reportable.is_a?(Case) && current_user) %>
 <div class="slide-out-div <%= 'requires_logged_in' if @reportable.is_a?(Collage) %>">

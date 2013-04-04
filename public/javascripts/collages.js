@@ -14,10 +14,70 @@ var unlayered_tts;
 var update_unlayered_end = 0;
 
 jQuery.extend({
-  mustache: function(template, data, partial, stream) {
-    if(Mustache && template && data) {
-      return Mustache.to_html(template, data, partial, stream);
+  slideToParagraph: function() {
+    if(document.location.hash.match(/^#p[0-9]+/)) {
+      var p = document.location.hash.match(/[0-9]+/);
+      var paragraph = jQuery('#paragraph' + p);
+      var pos = paragraph.offset().top;
+      jQuery(window).scrollTop(pos);
     }
+  },
+  updateLayerCount: function() {
+    jQuery('#stats_layer_size').html(jQuery('#layers li:not(#unlayered_li)').size());
+  },
+  updateAnnotationCount: function() {
+    var count = 0;
+    jQuery.each(clean_annotations, function(i, el) {
+      count++;
+    });
+    jQuery('#stats_annotation_size').html(count);
+  },
+  initializeViewerToggleOverride: function() {
+    jQuery('#edit_toggle').unbind('click').click(function(e) {
+      e.preventDefault();
+      jQuery('#edit_item #status_message').remove();
+      var el = jQuery(this);
+      if(jQuery(this).hasClass('edit_mode')) {
+        el.removeClass('edit_mode');
+        if(jQuery('#collapse_toggle').hasClass('expanded')) {
+          jQuery('#edit_item').fadeOut(200, function() {
+            jQuery('.singleitem').animate({ width: "100%" }, 100);
+          });
+        } else {
+          jQuery('#edit_item').fadeOut(200, function() {
+            jQuery('#stats').fadeIn(200);
+          });
+        }
+        jQuery.toggleEditMode(false);
+        jQuery('#author_edits').removeClass('inactive');
+        jQuery('#show_heatmap, #hide_heatmap').removeClass('inactive');
+
+        /* Forcing an autosave to save in READ mode */
+        var data = jQuery.retrieveState();  
+        last_data = data;
+        jQuery.recordCollageState(JSON.stringify(data), false);
+      } else {
+        el.addClass('edit_mode');
+        if(jQuery('#collapse_toggle').hasClass('expanded')) {
+          jQuery('#collapse_toggle').removeClass('expanded');
+          jQuery('.singleitem').animate({ width: "70%" }, 100, 'swing', function() {
+            jQuery('#edit_item').fadeIn(200);
+          });
+        } else {
+          jQuery('#stats').fadeOut(200, function() {
+            jQuery('#edit_item').fadeIn(200);
+          });
+        }
+        jQuery.toggleEditMode(true);
+        if(jQuery('#hide_heatmap:visible').size()) {
+          jQuery.removeHeatmapHighlights();
+        }
+        jQuery('#author_edits').addClass('inactive');
+        jQuery('#show_heatmap').show();
+        jQuery('#hide_heatmap').hide();
+        jQuery('#show_heatmap, #hide_heatmap').addClass('inactive');
+      }
+    });
   },
   initializeFootnoteLinks: function() {
     jQuery.each(jQuery('article a.footnote'), function(i, el) {
@@ -90,7 +150,7 @@ jQuery.extend({
       var heatmap_tip = jQuery('<a>')
         .addClass('heatmap_tip')
         .attr('title', 'Layered in ' + el.data('collage_count') + ' Collage(s)')
-        .tipsy({ trigger: 'manual' });
+        .tipsy({ trigger: 'manual', gravity: 's' });
       el.prepend(heatmap_tip);
       heatmap_tip.tipsy("show");
     }).live('mouseout', function(e) {
@@ -115,7 +175,7 @@ jQuery.extend({
             jQuery.showGlobalSpinnerNode();
           },
           success: function(data){
-            jQuery('.tools-popup .highlighted').click();
+            jQuery('.popup .highlighted').click();
             heatmap = data.heatmap;
             jQuery.applyHeatmapHighlights();
             jQuery('#hide_heatmap').show();
@@ -127,7 +187,7 @@ jQuery.extend({
           }
         });
       } else {
-        jQuery('.tools-popup .highlighted').click();
+        jQuery('.popup .highlighted').click();
         jQuery.applyHeatmapHighlights();
         jQuery('#hide_heatmap').show();
         jQuery('#show_heatmap').hide();
@@ -187,29 +247,19 @@ jQuery.extend({
       val = 16;
     }
     if(val != null) {
-      jQuery('.font-size-popup select').val(val);
-      jQuery('#collage article').css('font-size', parseInt(val) + 1 + 'px');
-      jQuery('#description_less, #description_more, #description').css('font-size', (parseInt(val) + 2) + 'px');
-      jQuery('#collage .details h5').css('font-size', parseInt(val) + 1 + 'px');
+      jQuery.setFontSize(parseFloat(val));
     }
     jQuery('.font-size-popup select').selectbox({
       className: "jsb", replaceInvisible: true 
     }).change(function() {
       var element = jQuery(this);
       jQuery.cookie('font_size', element.val(), { path: "/" });
-      jQuery('#collage article').css('font-size', element.val() + 'px');
-      jQuery('#description_less, #description_more, #description').css('font-size', (parseInt(element.val()) + 1) + 'px');
-      jQuery('#collage .details h5').css('font-size', element.val() + 'px');
-    });
-    jQuery("#collage .description .buttons ul #fonts span").parent().click(function() { 
-      jQuery('.font-size-popup').css({ 'top': 25 }).toggle();
-      jQuery(this).toggleClass("btn-a-active");
-      return false;
+      jQuery.setFontSize(parseFloat(element.val()));
     });
   },
   initializeToolListeners: function () {
-    jQuery("#collage .description .buttons ul #tools span").parent().click(function() { 
-      jQuery('.tools-popup').css({ 'top': 25 }).toggle();
+    jQuery("#collage .buttons .btn-li > a").click(function() {
+      jQuery(this).siblings('.popup').toggle();
       jQuery(this).toggleClass("btn-a-active");
       return false;
     });
@@ -235,7 +285,7 @@ jQuery.extend({
       var el = jQuery(this);
       jQuery.showGlobalSpinnerNode();
       jQuery('.unlayered-ellipsis:visible,.annotation-ellipsis:visible').click();
-      jQuery('#layers a.hide_show strong').html('HIDE');
+      jQuery('#layers a.hide_show').html('HIDE');
       jQuery('#layers a.shown').removeClass('shown');
       jQuery.hideShowUnlayeredOptions();
       jQuery.hideGlobalSpinnerNode();
@@ -282,11 +332,11 @@ jQuery.extend({
 
       var el = jQuery(this);
       var layer_id = el.parent().data('id');
-      if(el.find('strong').html() == 'SHOW') {
-        el.find('strong').html('HIDE');
+      if(el.html() == 'SHOW') {
+        el.html('HIDE');
         jQuery('.annotation-ellipsis-' + layer_id).click();
       } else {
-        el.find('strong').html('SHOW');
+        el.html('SHOW');
         jQuery('.layered-control-start.layered-control-' + layer_id).click();
       }
       jQuery.hideGlobalSpinnerNode();
@@ -300,7 +350,7 @@ jQuery.extend({
         jQuery('#hide_heatmap').click();
       }
       if(el.hasClass('highlighted')) {
-        el.siblings('.hide_show').find('strong').html('HIDE');
+        el.siblings('.hide_show').html('HIDE');
         jQuery('article .' + id + ',.ann-annotation-' + id).css('display', 'inline-block');
         jQuery('article tt.' + id).css('display', 'inline');
         jQuery('.annotation-ellipsis-' + id).css('display', 'none');
@@ -324,7 +374,7 @@ jQuery.extend({
         });
         el.removeClass('highlighted').html('HIGHLIGHT');
       } else {
-        el.siblings('.hide_show').find('strong').html('HIDE');
+        el.siblings('.hide_show').html('HIDE');
         jQuery('article .' + id + ',.ann-annotation-' + id).css('display', 'inline-block');
         jQuery('article tt.' + id).css('display', 'inline');
         jQuery('.annotation-ellipsis-' + id).css('display', 'none');
@@ -350,32 +400,6 @@ jQuery.extend({
         el.addClass('highlighted').html('UNHIGHLIGHT');
       }
     });
-  
-    jQuery("#edit-show").click(function(e) {
-      e.preventDefault();
-      var el = jQuery(this);
-      if(jQuery('#collage article').hasClass('edit_mode')) {
-        el.html("EDIT"); 
-        jQuery.toggleEditMode(false);
-        jQuery('#author_edits').removeClass('inactive');
-        jQuery('#show_heatmap, #hide_heatmap').removeClass('inactive');
-
-        /* Forcing an autosave to save in READ mode */
-        var data = jQuery.retrieveState();  
-        last_data = data;
-        jQuery.recordCollageState(JSON.stringify(data), false);
-      } else {
-        el.html("READ");  
-        jQuery.toggleEditMode(true);
-        if(jQuery('#hide_heatmap:visible').size()) {
-          jQuery.removeHeatmapHighlights();
-        }
-        jQuery('#author_edits').addClass('inactive');
-        jQuery('#show_heatmap').show();
-        jQuery('#hide_heatmap').hide();
-        jQuery('#show_heatmap, #hide_heatmap').addClass('inactive');
-      }
-    });
   },
   initializePrintListeners: function() {
     jQuery('#print-container form').submit(function() {
@@ -385,11 +409,11 @@ jQuery.extend({
       jQuery.each(jQuery('.link-o.highlighted'), function(i, el) {
         data.highlights[jQuery(el).parent().data('id')] = jQuery(el).parent().data('hex');
       });
+
       //Note: is:visible not working here
       if(jQuery('a#hide_heatmap').css('display') == 'block' && !jQuery('a#hide_heatmap:first').is('.inactive')) {
         data.load_heatmap = true;
       }
-      console.log(data);
       data.annotations = {};
       jQuery.each(jQuery('.annotation-content:visible'), function(i, el) {
         data.annotations[jQuery(el).attr('id')] = true;
@@ -410,11 +434,15 @@ jQuery.extend({
       url: jQuery.rootPath() + 'collages/' + jQuery.getItemId() + '/save_readable_state',
       success: function(results){
         if(show_message) {
-          jQuery('#autosave').html('saved at ' + results.time).show().fadeOut(5000);
-          jQuery('#word_count').html('Number of visible words: ' + jQuery.addCommas(words_shown) + ' out of ' + jQuery.addCommas(jQuery('#collage article tt').size())); 
+          jQuery('#autosave').html('Updated at: ' + results.time).css('background', 'red');
+          jQuery.updateWordCount();
         }
       }
     });
+  },
+  updateWordCount: function() {
+    var layered = all_tts.size() - unlayered_tts.size();
+    jQuery('#word_stats').html(layered + ' layered, ' + unlayered_tts.size() + ' unlayered');
   },
   retrieveState: function() {
     var data = {};
@@ -424,13 +452,13 @@ jQuery.extend({
     jQuery('.annotation-ellipsis:visible').each(function(i, el) {
       data['#' + jQuery(el).attr('id')] = jQuery(el).css('display');  
     });
-    data.edit_mode = jQuery('#edit-show').html() == 'READ' ? true : false;
+    data.edit_mode = jQuery('#edit_toggle').hasClass('edit_mode');
     return data;
   },
   listenToRecordCollageState: function() {
     setInterval(function(i) {
       var data = jQuery.retrieveState();
-      if(jQuery('#edit-show').html() == 'READ' && (JSON.stringify(data) != JSON.stringify(last_data))) {
+      if(jQuery('#edit_toggle').hasClass('edit_mode') && (JSON.stringify(data) != JSON.stringify(last_data))) {
         last_data = data;
         jQuery.recordCollageState(JSON.stringify(data), true);
       }
@@ -455,7 +483,7 @@ jQuery.extend({
     });
     jQuery.observeWords();
     if(last_data.edit_mode && access_results.can_edit_annotations) {
-      jQuery('#edit-show').html("READ");  
+      jQuery('#edit_toggle').click();
       jQuery.toggleEditMode(true);
       jQuery('.default-hidden').css('color', '#000');
       jQuery('#hide_heatmap, #show_heatmap').addClass('inactive');
@@ -503,7 +531,6 @@ jQuery.extend({
         layer.hex = color_map[layer.id];
         var new_node = jQuery(jQuery.mustache(layer_tools_template, layer));
         new_node.insertBefore(jQuery('#unlayered_li'));
-        new_node.find('.tooltip').tipsy();
         layer_info['l' + layer.id] = {
           'hex' : color_map[layer.id],
           'name' : layer.name
@@ -517,7 +544,7 @@ jQuery.extend({
       var highlight_colors = new Array();
       jQuery.each(jQuery('#layers li'), function(i, el) {
         if(jQuery(el).find('a.highlighted').size() && current.hasClass(jQuery(el).data('id'))) {
-          highlight_colors.push(layer_color_map[jQuery(el).data('name')]);
+          highlight_colors.push(layer_color_map[jQuery(el).data('id')]);
         }
       });
       if(highlight_colors.length > 0) {
@@ -602,6 +629,7 @@ jQuery.extend({
         delete layer_info['l' + layer.id];
       }
     });
+    jQuery.updateLayerCount();
 
     //Remove annotation markup
     jQuery('.annotation-control-' + annotation.id + ',.layered-control-' + annotation.id).remove();
@@ -630,6 +658,8 @@ jQuery.extend({
 
     //Delete from data
     delete annotations["a" + annotation.id];
+    delete clean_annotations["a" + annotation.id];
+    jQuery.updateAnnotationCount();
 
     unlayered_tts = jQuery('#collage article tt:not(.a)');
   },
@@ -646,7 +676,6 @@ jQuery.extend({
         layer.hex = layer_color_map[layer.id];
         var new_node = jQuery(jQuery.mustache(layer_tools_template, layer));
         new_node.insertBefore(jQuery('#unlayered_li'));
-        new_node.find('.tooltip').tipsy();
         layer_info['l' + layer.id] = {
           'hex' : layer_color_map[layer.id],
           'name' : layer.name
@@ -672,6 +701,7 @@ jQuery.extend({
         });
       }
     });
+    jQuery.updateLayerCount();
 
     //Add markup
     var data = {
@@ -734,6 +764,7 @@ jQuery.extend({
     if(!page_load) {
       unlayered_tts = jQuery('#collage article tt:not(.a)');
     }
+    jQuery.updateAnnotationCount();
   },
   removeUnlayeredControls: function(els) {
     jQuery(els.filter('.border_annotation_start')).each(function(i, el) {
@@ -814,9 +845,17 @@ jQuery.extend({
     parents.filter(':not(:has(.layered-control,.control-divider,.unlayered-ellipsis:visible,tt:visible))').addClass('no_visible_children');
   },
   submitAnnotation: function(){
+    var values = new Array();
+    jQuery(".layer_check input").each(function(i, el) {
+      if(jQuery(el).attr('checked')) {
+        values.push(jQuery(el).data('value'));
+      }
+    });
+    jQuery('#annotation_layer_list').val(jQuery('#new_layers input').val() + ',' + values.join(','));
     var filtered = jQuery('#annotation_annotation').val().replace(/"/g, '&quot;');
     jQuery('#annotation_annotation').val(filtered);
-    jQuery('#annotation-form form').ajaxSubmit({
+
+    jQuery('form.annotation').ajaxSubmit({
       error: function(xhr){
         jQuery.hideGlobalSpinnerNode();
         jQuery('#new-annotation-error').show().append(xhr.responseText);
@@ -829,14 +868,17 @@ jQuery.extend({
       },
       success: function(response){
         jQuery.hideGlobalSpinnerNode();
-        jQuery('#annotation-form').dialog('close');
         var annotation = jQuery.parseJSON(response.annotation);
         var color_map = jQuery.parseJSON(response.color_map);
+        jQuery('#edit_item > div').remove();
         if(response.type == "update") {
           jQuery.editAnnotationMarkup(annotation.annotation, color_map);
+          jQuery('<div>').attr('id', 'status_message').html('ANNOTATION UPDATED').appendTo(jQuery('#edit_item'));
         } else {
           jQuery.markupAnnotation(annotation.annotation, color_map, false);
+          jQuery('<div>').attr('id', 'status_message').html('ANNOTATION CREATED').appendTo(jQuery('#edit_item'));
         }
+        jQuery('#edit_item .instructions').show();
       }
     });
   },
@@ -865,102 +907,13 @@ jQuery.extend({
           jQuery('div.ajax-error').show().append(xhr.responseText);
         },
         success: function(html){
-          // Set up the annotation node to be loaded into a dialog
           jQuery.hideGlobalSpinnerNode();
-          var node = jQuery(html);
-          jQuery('body').append(node);
-          var dialog = jQuery('#annotation-details-' + annotationId).dialog({
-            height: 500,
-            title: 'Annotation Details',
-            width: 600,
-            //position: [e.clientX,e.clientY - 330],
-            buttons: {
-              Close: function(){
-                jQuery(this).dialog('close');
-              },
-              Delete: function(){
-                if(confirm('Are you sure?')){
-                  jQuery.ajax({
-                    cache: false,
-                    type: 'POST',
-                    data: {
-                      '_method': 'delete'
-                    },
-                    url: jQuery.rootPath() + 'annotations/destroy/' + annotationId,
-                    beforeSend: function(){
-                      jQuery.showGlobalSpinnerNode();
-                    },
-                    error: function(xhr){
-                      jQuery.hideGlobalSpinnerNode();
-                      jQuery('div.ajax-error').show().append(xhr.responseText);
-                    },
-                    success: function(response){
-                      jQuery('#annotation-details-' + annotationId).dialog('close');
-                      jQuery.deleteAnnotationMarkup(clean_annotations["a" + annotationId]);
-                      jQuery.hideGlobalSpinnerNode();
-                    },
-                    complete: function(){
-                      jQuery('#please-wait').dialog('close');
-                    }
-                  });
-                }
-              },
-              Edit: function(){
-                annotation_position = jQuery(window).scrollTop();
-                jQuery(this).dialog('close');
-                jQuery.ajax({
-                  type: 'GET',
-                  cache: false,
-                  url: jQuery.rootPath() + 'annotations/edit/' + annotationId,
-                  beforeSend: function(){
-                    jQuery.showGlobalSpinnerNode();
-                    jQuery('#new-annotation-error').html('').hide();
-                  },
-                  error: function(xhr){
-                    jQuery.hideGlobalSpinnerNode();
-                    jQuery('#new-annotation-error').show().append(xhr.responseText);
-                  },
-                  success: function(html){
-                    jQuery.hideGlobalSpinnerNode();
-                    jQuery('#annotation-form').html(html);
-                    jQuery('#annotation-form').dialog({
-                      bgiframe: true,
-                      minWidth: 450,
-                      width: 450,
-                      modal: true,
-                      title: 'Edit Annotation',
-                      buttons: {
-                        'Save': function(){
-                          var values = new Array();
-                          jQuery(".layer_check input").each(function(i, el) {
-                            if(jQuery(el).attr('checked')) {
-                              values.push(jQuery(el).data('value'));
-                            }
-                          });
-                          jQuery.submitAnnotation();
-                        },
-                        Cancel: function(){
-                          jQuery('#new-annotation-error').html('').hide();
-                          jQuery(this).dialog('close');
-                        }
-                      }
-                    });
-                    var filtered = jQuery('#annotation_annotation').val().replace(/&quot;/g, '"');
-                    jQuery('#annotation_annotation').val(filtered);
-                    jQuery("#annotation_annotation").markItUp(h2oTextileSettings);
-                  }
-                });
-              }
-            }
-          });
+          jQuery('#edit_item > div').remove();
+          jQuery('<div>').attr('id', 'annotation_details').html(html).appendTo(jQuery('#edit_item'));
+          jQuery('#edit_item .instructions').hide();
 
-          jQuery('#annotation-tabs-' + annotationId).tabs();
-          if(!access_results.can_edit_annotations) {
-            jQuery('#annotation-details-' + annotationId).dialog('option','buttons',{
-              Close: function(){
-                jQuery(this).dialog('close');
-              }
-            });
+          if(access_results.can_edit_annotations) {
+            jQuery('#edit_item .tabs a').show();
           }
         }
       });
@@ -973,6 +926,7 @@ jQuery.extend({
     var data = { "unlayered_start_id" : 1, "unlayered_end_id" : 1 };
   },
   initializeHeaderAdjust: function() {
+    /*
     head_offset = jQuery('#fixed_header').offset();
     jQuery(window).scroll(function() {
       if(jQuery(window).scrollTop() < head_offset.top) {
@@ -983,6 +937,7 @@ jQuery.extend({
         jQuery('#collage article').css("padding-top", (jQuery('#fixed_header').height() + 30) + 'px');
       }
     });
+    */
   },
   initializeStatsListener: function() {
     jQuery('#collage-stats').click(function() {
@@ -1053,44 +1008,6 @@ jQuery.extend({
       jQuery.resetParentDisplay(jQuery('tt.a' + id));
     });
   },
-  initializeAnnotationOrCollage: function(){
-    jQuery('#annotation-form').dialog({
-      bgiframe: true,
-      autoOpen: false,
-      minWidth: 450,
-      width: 450,
-      modal: true,
-      title: '',
-      buttons: {
-        'Save': function(){
-          jQuery(this).dialog('close');
-          var abstract_type = jQuery('input[name=abstract_type]:checked').val(); 
-          var new_annotation_start = jQuery('input[name=annotation_start]').val();
-          var new_annotation_end = jQuery('input[name=annotation_end]').val();
-          var collageId = jQuery('input[name=collage_id]').val();
-
-          if (abstract_type == 'annotation'){
-            jQuery.openAnnotationDialog('annotations/new', {
-              collage_id: collageId,
-              annotation_start: new_annotation_start,
-              annotation_end: new_annotation_end
-            });
-          }
-          else{
-            jQuery.openCollageLinkDialog('collage_links/embedded_pager', {
-              collage_id: collageId,
-              link_start: new_annotation_start,
-              link_end: new_annotation_end
-            });
-          }
-        },
-        'Cancel': function(){
-          jQuery('#new-annotation-error').html('').hide();
-          jQuery(this).dialog('close');
-        }
-     }
-    }); 
-  },
   toggleEditMode: function(highlight) {
     if(highlight) {
       jQuery('#collage article').addClass('edit_mode');
@@ -1101,7 +1018,7 @@ jQuery.extend({
   observeWords: function(){
     jQuery('tt').click(function(e) {
       e.preventDefault();
-      if(jQuery('#edit-show').length && jQuery('#edit-show').html() == 'READ') {
+      if(jQuery('#edit_toggle').length && jQuery('#edit_toggle').hasClass('edit_mode')) {
         var el = jQuery(this);
         annotation_position = jQuery(window).scrollTop();
         if(new_annotation_start != '') {
@@ -1118,10 +1035,24 @@ jQuery.extend({
           var pos_end = jQuery('tt#' + new_annotation_end).data('id');
           var els = all_tts.slice(pos_start - 1, pos_end);
           var linking = false;
+          var text = '';
           jQuery.each(els, function(i, el) {
-            if(jQuery(el).parent().is('a')) {
+            var current = jQuery(el);
+            text += current.html();
+            if(current.parent().is('a')) {
               linking = true;
             }
+          });
+          var collageId = jQuery.getItemId();
+          text += '...';
+
+          jQuery('#edit_item > div').remove();
+          var header = '<div class="tabs"><a id="new_annotation" class="current" href="#">Annotation</a>';
+          jQuery.openAnnotationForm('annotations/new', {
+            collage_id: collageId,
+            annotation_start: new_annotation_start,
+            annotation_end: new_annotation_end,
+            text: text
           });
           if(linking) {
             jQuery('#abstract_type_annotation').click();
@@ -1130,54 +1061,23 @@ jQuery.extend({
           } else {
             jQuery('#collage_linking').hide(); 
             jQuery('#collage_non_linking').show();
+            header += '<a id="new_link" href="#">Link</a>';
+            jQuery.openCollageLinkForm('collage_links/embedded_pager', {
+              host_collage: collageId,
+              link_start: new_annotation_start,
+              link_end: new_annotation_end,
+              text: text
+            });
           }
+          header += '</div>';
+          jQuery(header).insertAfter('i.instructions');
 
-          var collageId = jQuery.getItemId();
-          jQuery('input[name=annotation_start]').val(new_annotation_start);
-          jQuery('input[name=annotation_end]').val(new_annotation_end);
-          jQuery('input[name=collage_id]').val(collageId);
-
-          jQuery("#annotation_or_collage_link").dialog({
-            bgiframe: true,
-            autoOpen: false,
-            minWidth: 450,
-            width: 450,
-            modal: true,
-            title: '',
-            buttons: {
-              'Ok': function(){
-                jQuery(this).dialog('close');
-                var abstract_type = jQuery('input[name=abstract_type]:checked').val();
-                var new_annotation_start = jQuery('input[name=annotation_start]').val();
-                var new_annotation_end = jQuery('input[name=annotation_end]').val();
-                var collageId = jQuery('input[name=collage_id]').val();
-  
-                if (abstract_type == 'annotation'){
-                  jQuery.openAnnotationDialog('annotations/new', {
-                    collage_id: collageId,
-                    annotation_start: new_annotation_start,
-                    annotation_end: new_annotation_end
-                  });
-                } else {
-                  jQuery.openCollageLinkDialog('collage_links/embedded_pager', {
-                    collage_id: collageId,
-                    link_start: new_annotation_start,
-                    link_end: new_annotation_end
-                  });
-                }
-              },
-              'Cancel': function(){
-                jQuery(this).dialog('close');
-              }
-            }
-          });
-          jQuery("#annotation_or_collage_link").dialog("open");
           jQuery("#tooltip").fadeOut();
           new_annotation_start = '';
           new_annotation_end = '';
         } else {
           var pos = el.position();
-          jQuery("#tooltip").css({ left: pos.left - 100 + el.width()/2, top: pos.top + 100 }).fadeIn();
+          jQuery("#tooltip").css({ left: pos.left - 100 + el.width()/2, top: pos.top + 30 }).fadeIn();
           new_annotation_start = el.attr('id');
         }
       }
@@ -1188,9 +1088,71 @@ jQuery.extend({
     }
   }, 
   initializeAnnotationEditListeners: function() {
+    jQuery('#edit_item .tabs a').live('click', function(e) {
+      e.preventDefault();
+      jQuery(this).siblings().removeClass('current');
+      jQuery(this).addClass('current');
+      jQuery('#edit_item div.tab_panel').hide();
+      jQuery('#edit_item div.' + jQuery(this).attr('id')).show();
+    });
+    jQuery('#annotation_submit').live('click', function(e) {
+      e.preventDefault();
+      jQuery.submitAnnotation();
+    });
+    jQuery('#delete_annotation').live('click', function(e) {
+      e.preventDefault();
+      var annotationId = jQuery(this).data('id');
+      if(confirm('Are you sure?')){
+        jQuery.ajax({
+          cache: false,
+          type: 'POST',
+          data: {
+            '_method': 'delete'
+          },
+          url: jQuery.rootPath() + 'annotations/destroy/' + annotationId,
+          beforeSend: function(){
+            jQuery.showGlobalSpinnerNode();
+          },
+          error: function(xhr){
+            jQuery.hideGlobalSpinnerNode();
+          },
+          success: function(response){
+            jQuery.deleteAnnotationMarkup(clean_annotations["a" + annotationId]);
+            jQuery('#annotation_details').hide();
+            jQuery('.instructions').show();
+            jQuery.hideGlobalSpinnerNode();
+          }
+        });
+      }
+    });
+    jQuery('#edit_annotation').live('click', function(e) {
+      e.preventDefault();
+      jQuery.ajax({
+        type: 'GET',
+        cache: false,
+        url: jQuery.rootPath() + 'annotations/edit/' + jQuery(this).data('id'),
+        beforeSend: function(){
+          jQuery.showGlobalSpinnerNode();
+          //jQuery('#new-annotation-error').html('').hide();
+        },
+        error: function(xhr){
+          jQuery.hideGlobalSpinnerNode();
+          //jQuery('#new-annotation-error').show().append(xhr.responseText);
+        },
+        success: function(html){
+          jQuery.hideGlobalSpinnerNode();
+          jQuery('<div>').attr('id', 'annotation_edit').html(html).appendTo(jQuery('#edit_item'));
+          jQuery('.instructions').hide();
+          var filtered = jQuery('#annotation_annotation').val().replace(/&quot;/g, '"');
+          jQuery('#annotation_annotation').val(filtered);
+          jQuery("#annotation_annotation").markItUp(h2oTextileSettings);
+        }
+      });
+    });
+
     jQuery('.annotation-asterisk, .control-divider').live('click', function(e) {
       e.preventDefault();
-      if(jQuery('#edit-show').length && jQuery('#edit-show').html() == 'READ') {
+      if(jQuery('#edit_toggle').length && jQuery('#edit_toggle').hasClass('edit_mode')) {
         jQuery.annotationButton(jQuery(this).data('id'));
       } else {
         jQuery.toggleAnnotation(jQuery(this).data('id'));
@@ -1198,7 +1160,8 @@ jQuery.extend({
       }
     });
   },
-  openAnnotationDialog: function(url_path, data){
+  openAnnotationForm: function(url_path, data){
+    jQuery('.instructions').hide();
     jQuery.ajax({
         type: 'GET',
         url: jQuery.rootPath() + url_path,
@@ -1210,34 +1173,8 @@ jQuery.extend({
         },
         success: function(html){
           jQuery.hideGlobalSpinnerNode();
-          jQuery('#annotation-form').html(html);
-          jQuery('#annotation-form').dialog({
-            width: 450,
-            buttons: {
-              'Ok': function(){
-                var values = new Array();
-                  jQuery(".layer_check input").each(function(i, el) {
-                    if(jQuery(el).attr('checked')) {
-                      values.push(jQuery(el).data('value'));
-                    }
-                  });
-                  jQuery('#annotation_layer_list').val(jQuery('#new_layers input').val() + ',' + values.join(','));
-                  jQuery.submitAnnotation();
-              },
-              'Cancel': function(){
-                jQuery('#new-annotation-error').html('').hide();
-                jQuery(this).dialog('close');
-              }
-            }
-          });
-          jQuery('#annotation-form').dialog('open');
-          jQuery("#annotation_annotation").markItUp(h2oTextileSettings);
-            jQuery('#annotation_layer_list').keypress(function(e){
-              if(e.keyCode == '13'){
-                e.preventDefault();
-                jQuery.submitAnnotation();
-              }
-            });
+          jQuery('#edit_item #status_message').remove();
+          jQuery('<div>').attr('id', 'annotation_edit').addClass('tab_panel new_annotation').html(html).appendTo(jQuery('#edit_item'));
         },
         error: function(xhr){
           jQuery.hideGlobalSpinnerNode();
@@ -1247,7 +1184,7 @@ jQuery.extend({
   }, //end anntotation dialog
 
   initPlaylistItemAddButton: function(){
-    jQuery('.add-Collage-button').button().click(function(e){
+    jQuery('.add-collage-button').live('click', function(e) {
       e.preventDefault();
       var link_start = jQuery('input[name=link_start]').val();
       var link_end = jQuery('input[name=link_end]').val();
@@ -1258,36 +1195,36 @@ jQuery.extend({
   },
 
   initKeywordSearch: function(){
-    jQuery('.Collage-button').button().click(function(e){
+    jQuery('.collage-button').live('click', function(e) {
       e.preventDefault();
       jQuery.ajax({
         method: 'GET',
-        url: jQuery.rootPath() + 'collages/embedded_pager',
+        url: jQuery.rootPath() + 'collage_links/embedded_pager',
         beforeSend: function(){
            jQuery.showGlobalSpinnerNode();
         },
         data: {
-            keywords: jQuery('#Collage-keyword-search').val()
+            keywords: jQuery('#collage-keyword-search').val(),
+            link_start: jQuery('#edit_item input[name=link_start]').val(),
+            link_end: jQuery('#edit_item input[name=link_end]').val(),
+            host_collage: jQuery('#edit_item input[name=host_collage]').val(),
+            text: jQuery('#edit_item input[name=text]').val()
         },
         dataType: 'html',
         success: function(html){
-           jQuery.hideGlobalSpinnerNode();
-          jQuery('.h2o-playlistable-Collage').html(html);
-          jQuery.initPlaylistItemAddButton();
-          jQuery.initKeywordSearch();
-          jQuery.initPlaylistItemPagination();
+          jQuery.hideGlobalSpinnerNode();
+          jQuery('#link_edit').html(html);
         },
         error: function(xhr){
           jQuery.hideGlobalSpinnerNode();
-          jQuery('#new-annotation-error').show().append(xhr.responseText);
+          //jQuery('#new-annotation-error').show().append(xhr.responseText);
         }
       });
     });
   },
   
   initPlaylistItemPagination: function(){
-    jQuery('.h2o-playlistable-Collage .pagination a').click(
-    function(e){
+    jQuery('#edit_item .pagination a').live('click', function(e) {
       e.preventDefault();
       jQuery.ajax({
         type: 'GET',
@@ -1296,15 +1233,12 @@ jQuery.extend({
            jQuery.showGlobalSpinnerNode();
         },
         data: {
-          keywords: jQuery('#Collage-keyword-search').val()
+          keywords: jQuery('#collage-keyword-search').val()
         },
         url: jQuery(this).attr('href'),
         success: function(html){
-           jQuery.hideGlobalSpinnerNode();
-          jQuery('.h2o-playlistable-Collage').html(html);
-          jQuery.initPlaylistItemAddButton();
-          jQuery.initKeywordSearch();
-          jQuery.initPlaylistItemPagination();
+          jQuery.hideGlobalSpinnerNode();
+          jQuery('#link_edit').html(html);
         }
       });
     });
@@ -1330,7 +1264,7 @@ jQuery.extend({
     });
   },
 
-  openCollageLinkDialog: function(url_path, data){
+  openCollageLinkForm: function(url_path, data){
     jQuery.ajax({
       type: 'GET',
       url: jQuery.rootPath() + url_path,
@@ -1342,19 +1276,8 @@ jQuery.extend({
       dataType: 'html',
       success: function(html){
         jQuery.hideGlobalSpinnerNode();
-        jQuery('#annotation-form').html(html);
-        jQuery('#annotation-form').dialog({
-        autoOpen: false,
-          width: 700,
-          minWidth: 700,
-          title: '',
-          bgiframe: true,
-          modal: true
-        });
-        jQuery.initPlaylistItemAddButton();
-        jQuery.initKeywordSearch();
-        jQuery.initPlaylistItemPagination();
-        jQuery('#annotation-form').dialog('open');
+        jQuery('#edit_item .instructions').hide();
+        jQuery('<div>').attr('id', 'link_edit').addClass('tab_panel new_link').html(html).css('display', 'none').appendTo(jQuery('#edit_item'));
       }
     });
   }
@@ -1363,13 +1286,8 @@ jQuery.extend({
 jQuery(document).ready(function(){
   if(jQuery('.singleitem').length > 0){
     jQuery.showGlobalSpinnerNode();
-    jQuery('.tooltip').tipsy();
     jQuery.initializeSelectors();
 
-    var height = jQuery('.description').height();
-    if(height != 30) {
-      jQuery('.toolbar,.buttons').css({ position: 'relative', top: height - 30 });
-    }
     jQuery('.toolbar, .buttons').css('visibility', 'visible');
     jQuery('#cancel-annotation').click(function(e){
       e.preventDefault();
@@ -1404,9 +1322,19 @@ jQuery(document).ready(function(){
     jQuery.initializeStatsListener();
     jQuery.initializeHeaderAdjust();
 
+    /* Collage Search */
+    jQuery.initPlaylistItemPagination();
+    jQuery.initKeywordSearch();
+    jQuery.initPlaylistItemAddButton();
+
     jQuery.initializeFootnoteLinks();
     jQuery.initializeFontChange();
     jQuery.hideGlobalSpinnerNode();
+    jQuery.initializeViewerToggleOverride();
+          
+    jQuery.updateWordCount();
+
+    jQuery.slideToParagraph();
   }
 });
 
@@ -1437,7 +1365,7 @@ var unlayered_end_template = '\
 var layer_tools_template = '\
 <li data-hex="{{hex}}" data-name="{{name}}" data-id="l{{id}}">\
 <strong>{{name}}</strong>\
-<a class="hide_show shown tooltip" href="#" original-title="Hide the {{name}} layer"><strong>HIDE</strong></a>\
+<a class="hide_show shown tooltip" href="#" original-title="Hide the {{name}} layer">HIDE</a>\
 <a class="tooltip link-o" href="#" original-title="Highlight the {{name}} Layer" style="background: #{{hex}};">HIGHLIGHT</a>\
 <div class="cl">&nbsp;</div>\
 </li>';

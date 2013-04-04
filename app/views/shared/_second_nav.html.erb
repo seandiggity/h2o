@@ -1,7 +1,59 @@
 <header>
+  <nav>
+  	<% if ["collages#show", "playlists#show"].include?("#{params[:controller]}##{params[:action]}") -%>
+  	<ul class="right requires_logged_in">
+  		<li class="user_account"></li>
+  		<li><%= link_to "Account Settings", edit_user_path(current_user) %></li>
+  		<li class="last"><%= link_to "sign out", log_out_path %></li>
+  	</ul>
+  	<%= link_to "sign in", crossroad_user_session_path, :id => 'header_login', :class => 'afterload' %>
+  	<% else -%>
+  	<% if current_user -%>
+  	<ul class="right" id="logged-in">
+  		<li><%= link_to "Dashboard", user_path(current_user) %></li>
+  		<li><%= link_to "Account Settings", edit_user_path(current_user) %></li>
+  		<li class="last"><%= link_to "sign out", log_out_path %></li>
+  	</ul>
+  	<% else -%>
+  	<%= link_to "sign in", crossroad_user_session_path, :id => 'header_login' %>
+  	<% end -%>
+  	<% end -%>
+  	<div class="cl"></div>
+  </nav>
 	<h1 id="logo"><%= link_to "H2O", "/" %></h1>
-	<h1 id="<%= nav_id %>"><%= link_to '', url %></h1>
-	<% if defined?(right_search) -%>
-	<%= render :partial => right_search %>
-	<% end -%>
+  <section id="search">
+  <% form_tag(url_for, :method => :get, :class => "search") do -%>
+  <table cellpadding="0" cellspacing="0">
+    <tr>
+      <td id="spinner" valign="middle">
+  		  <img src="/images/ui/ajax-loader.gif" alt="" />
+      </td>
+      <td valign="middle">
+        <%= text_field_tag "keywords", params[:keywords], :size => 50 %>
+      </td>
+      <td valign="middle">
+        <select id="search_all">
+          <option value="all_materials">all</option>
+          <% ["playlists", "collages", "cases", "text_blocks", "medias"].each do |type| -%>
+          <option value="<%= type %>" <%= raw 'selected="selected"' if params[:controller] == type %>><%= type == "medias" ? "media items" : type.gsub('_', ' ') %></option>
+          <% end -%>
+        </select>
+      </td>
+      <td valign="middle">
+        <a href="#" id="search_button">SEARCH</a>
+      </td>
+      <td id="create_nav" class="requires_logged_in" valign="middle">
+        <a href="#" id="create_all">CREATE</a>
+        <div class="popup" id="create_all_popup">
+          <%= link_to 'Start a Playlist', new_playlist_path, :class => 'new-action' %>
+          <%#= link_to 'Start a Collage', collages_path %>
+          <%= link_to 'Create a Case', new_case_path %>
+          <%#= link_to 'Request a Case', '#' %>
+          <%= link_to 'Create a Text Block', new_text_block_path %>
+          <%= link_to 'Upload a Media Item', new_media_path %>
+        </div>
+      </td>
+  </table>
+  <% end -%>
+  </section>
 </header>

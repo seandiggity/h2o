@@ -7,15 +7,9 @@
     <% [:collage_id, :annotation_start, :annotation_end].each do |col| %>
       <%= form.input col, :as => :hidden %>
     <% end %>
-    <%= form.input :annotation,
-      :as => :text,
-      :input_html => {:size => '60x10'},
-      :label => false,
-      :required => false
-    %>
-    <% if @annotation.layers.any? -%>
-    <h5 id="layer_appear">APPEARS IN LAYER:</h5>
-    <% end -%>
+    <h5>TEXT</h5>
+    <%= params[:text] %>
+    <h5 id="layer_appear">LAYER</h5>
     <% @annotation.collage.layers.each do |l| %>
     <li class="layer_check">
       <input type="checkbox" name="existing_layer_list[]" <%= raw checked="checked" if @annotation.layers.include?(l) %> value="<%= l.name %>" />
@@ -26,10 +20,14 @@
       <label>NEW LAYERS</label>
       <a href="#" id="add_new_layer">+ ADD</a>
     <li>
+    <%= form.input :annotation,
+      :as => :text,
+      :input_html => {:size => '60x10'},
+      :label => false,
+      :required => false
+    %>
   <% end %>
-  <% unless request.xhr? %>
-    <% form.buttons do %>
-      <%= form.commit_button 'Save' %>
-    <% end %>
+  <% form.buttons do %>
+    <%= form.commit_button 'Save' %>
   <% end %>
 <% end %>

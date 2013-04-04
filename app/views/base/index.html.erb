@@ -2,54 +2,26 @@
   :url => "/",
   :right_search => 'shared/search_all' } %>
 
-<div id="home_nav">
-	<div class="panel" id="collage">
-        <%= link_to '', collages_path, :class => "icon_nav" %>
-		<%= link_to 'Collages', collages_path %>
-		<p>A tool built with the goal of creating an entirely online law school casebook by allowing
-		a seed document to be annotated with various layers and notes.</p>
-    <% if false && current_user -%>
-		<%= link_to 'Start a Collage', new_collage_path, :class => "button new-action" %>
-    <% end -%>
-		<%= link_to 'Find/Create a Collage', collages_path, :class => "button" %>
-	</div>
-	<div class="panel" id="playlist">
-    <%= link_to '', playlists_path, {:id => "playlists", :class => "icon_nav"} %>
-		<%= link_to 'Playlists', playlists_path %>
-		<p>A platform for collections of online content that are easily shared and remixed, and are
-		ideal for use as an online course syllabus.</p>
-		<%= link_to 'Build a Playlist', new_playlist_path, :class => "button new-action" %>
-	</div>
-	<div class="panel last" id="highlighted_playlist">
-    <%= link_to '', playlists_path, {:id => "highlighted_playlists", :class => "icon_nav"} %>
-		<%= link_to 'Courses', playlists_path %>
-    <p style="text-align:center;">Harvard Law School Spring 2013 Courses.</p>
-    <% @highlighted_playlists.each do |v| -%>
-      <%= link_to v[:title], playlist_url(v[:playlist]), :class => "button" %><br />
-    <% end -%>
-	</div>
+<div id="home_index">
+	<div class="panel" id="description">
+    <h1>H2O is a suite of online classroom tools that allows professors to freely develop, remix, and share online textbooks.</h1>
+    <h2>
+      It was developed and provided by the Berkman Center for Internet &amp; Society in collaboration with the Harvard Law School Libary.
+      All content created in H2O falls under a Creative Commons Attribution-Noncommercial-Share Alike 3.0 License (per the <a href="/p/terms">
+      Terms of Service</a>).
+    </h2>
+    <div id="links">
+      <a href="#">Create</a>
+      <a id="demo" href="#">Demo Video</a>
+    </div>
+  </div>
+  <div class="panel featured_panel" id="featured_playlists">
+    <h3>Featured Playlists</h3>
+    <%= render :partial => "partial_results/playlists" %>
+  </div>
+  <div class="panel featured_panel" id="featured_users">
+    <h3>Featured Users</h3>
+    <%= render :partial => "partial_results/users" %>
+  </div>
 	<div class="cl"></div>
 </div>
-<table id="logo_support" cellpadding="0" cellspacing="0">
-  <tr>
-    <td valign="middle">
-      <a id="berkman" target="_blank" href="http://cyber.law.harvard.edu/"><img src="/images/ui/berkman.jpg" alt="Berkman" /></a>
-    </td>
-    <td valign="middle">
-      <a id="hlsl" target="_blank" href="http://www.law.harvard.edu/library/"><img src="/images/ui/hlsl.png" alt="HLSL" /></a>
-    </td>
-    <td valign="middle">
-      <span id="support_detail">Supported by</span>
-    </td>
-    <td valign="middle">
-      <a id="liblab" target="_blank" href="http://osc.hul.harvard.edu/liblab">Harvard Library Lab</a>
-    </td>
-    <td valign="middle">
-      <a id="hilt" target="_blank" href="http://hilt.harvard.edu/"><img src="/images/ui/hilt.png" alt="Hilt" /></a>
-    </td>
-    <td valign="middle">
-      <a id="fastcase" target="_blank" href="http://www.fastcase.com/"><img src="/images/ui/fastcase.gif" alt="Fastcase" /></a>
-    </td>
-  </tr>
-</table>
-<div class="cl"></div>

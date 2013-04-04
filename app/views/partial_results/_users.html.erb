@@ -1,0 +1,9 @@
+<% @highlighted_users.each do |u| -%>
+<div class="user item">
+  <%= link_to u.display, user_path(u), :class => "user" %>
+  <% if u.affiliation.present? -%>
+  <span class="affiliation"><%= u.affiliation %></span>
+  <% end -%>
+  <%= render :partial => "shared/barcode", :locals => { :object => u } %>
+</div>
+<% end -%>

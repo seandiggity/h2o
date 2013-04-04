@@ -1,6 +1,5 @@
 <%= render :partial => 'shared/second_nav', :locals => { :nav_id => 'medias-logo',
-	:url => medias_path,
-	:right_search => 'medias/nav_search' } %>
+	:url => medias_path } %>
 
 <div id="media" class="singleitem" data-itemid="<%= @media.id %>">
 	<hgroup class="description">
@@ -27,7 +26,7 @@
 		</div>
 		<% end -%>
 		<div class="cl"></div>
-		<% if current_user && (@is_media_admin || @my_medias.include?(@media)) %>
+		<% if current_user && (@is_admin[:media] || @my_belongings[:medias].include?(@media)) %>
 		<%= link_to "EDIT", edit_media_path(@media) %>
 		<% end -%>
 	</div>
@@ -35,3 +34,5 @@
 		<%= raw @media.content %>
 	</article>
 </div>
+
+<div class="cl"></div>

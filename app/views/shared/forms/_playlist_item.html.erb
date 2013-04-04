@@ -1,11 +1,6 @@
-<div id="playlist_item_form">
-<% if @base_model_class == Default -%>
-<h2 id="generic_title"><%= (@object.new_record?) ? "Add this to your playlist" : "Edit this playlist item" %></h2>
-<% else -%>
-<h2 id="generic_title"><%= (@object.new_record?) ? "Add this #{@base_model_class.to_s.singularize.downcase} to your playlist" : "Edit this playlist item" %></h2>
-<% end -%>
+<div id="playlist_item_form" class="<%= @object.new_record? ? 'new' : 'edit' %>" >
   <div id="error_block" class="error ui-corner-all" style="display: none;"></div>
-  <% semantic_form_for @object, :html => {:class => "case_form"} do |form| %>
+  <% semantic_form_for @object, :html => { :class => (@object.new_record? ? 'new' : 'edit') } do |form| %>
     <% form.inputs do %>
       <% if @base_model_class == Default -%>
       <li><%= form.input :url,  :as => :string, :input_html => {:class => "ui-widget-content ui-corner-all"} %></li>
@@ -16,11 +11,11 @@
       <% if @can_edit_desc -%>
       <li><%= form.input :description,
         :input_html => {:size => '40x5', :class => "ui-widget-content ui-corner-all"},
-        :required => false
-    %></li>
+        :required => false %>
+      </li>
       <% end -%>
       <% if !@object.new_record? && @can_edit_notes -%>
-      <li>
+      <li class="text">
         <label for="playlist_item_notes">Notes</label>
         <textarea name="playlist_item[notes]" cols="38" rows="5" class="ui-widget-content ui-corner-all"><%= @object.playlist_item.notes.to_s %></textarea>
       </li>
@@ -33,6 +28,9 @@
       <%= form.input(:url, :as => :hidden) %>
       <% end -%>
       <%= hidden_field_tag 'container_id', params[:container_id] %>
+      <%= hidden_field_tag 'position', params[:position] %>
     <% end -%>
+    <a href="#" id="playlist_item_submit">SUBMIT</a>
+    <a href="#" id="playlist_item_cancel">CANCEL</a>
   <% end -%>
 </div>

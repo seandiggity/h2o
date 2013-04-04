@@ -1,8 +1,26 @@
-<p id="word_count">Number of visible words: <%= number_with_delimiter(@collage.words_shown, ',') %> out of <%= number_with_delimiter(@collage.word_count - 1, ',') %></p>
+<p>
+  <label>Tags:</label>
+  <% @collage.tags.each do |tag| -%>
+  <%= link_to tag.name, collage_tag_path(CGI.escape(tag.name)) %>
+  <% end -%>
+</p>
 
-<p>Lineage</p>
+<p>
+  <label>Total Words:</label>
+  <span id="word_stats"></span>
+</p>
 
-<h5>Original <%= @collage.annotatable_type %></h5>
+<p>
+  <label>Annotations:</label>
+  <span id="stats_annotation_size"><%= @collage.annotations.size %></a>
+</p>
+
+<p>
+  <label>Layers:</label>
+  <span id="stats_layer_size"><%= @collage.layers.size %></span>
+</p>
+
+<p><label>Original <%= @collage.annotatable_type %></label></p>
 <% if @collage.annotatable_type == 'Case' %>
 <%= link_to "\"#{@collage.annotatable.short_name}\"", case_path(@collage.annotatable), :id => 'original_name' %>
 <% if @collage.annotatable.decision_date -%>
@@ -14,6 +32,8 @@
 <% else -%>
 <%= link_to @collage.annotatable.name, text_block_path(@collage.annotatable), :id => 'original_name' %>
 <% end -%>
+
+<p><label>Lineage</label></p>
 <ul class="lineage">
 <%= render :partial => 'collage_children',
 		:locals => { :collage => top_ancestor(Collage, @collage),

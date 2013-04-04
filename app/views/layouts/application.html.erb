@@ -4,9 +4,9 @@
   <head> 
     <meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
     <meta http-equiv="Cache-Control" content="must-revalidate" />
-    <title><%= @page_title || "H2O Classroom Tools" %></title>
+    <title><%= raw(@page_title) || "H2O Classroom Tools" %></title>
 
-    <%= stylesheet_link_tag 'ui', 'jquery.ui.custom', 'formtastic', :cache => 'all' %>
+    <%= stylesheet_link_tag 'jquery.ui.custom', 'ui', 'icons', 'barcode', 'formtastic', :cache => 'all' %>
     <% [(@stylesheets.blank?) ? nil : @stylesheets].compact.flatten.each do |ss| -%>
       <%= stylesheet_link_tag ss %>
     <% end -%>
@@ -30,7 +30,6 @@ var UTC_OFFSET = #{Time.zone.now.utc_offset * 1000};") %>
   </head>
   <body id="b<%= params[:controller] %>" class="b<%= "#{params[:controller]}_#{params[:action]}" %>">
   	<section id="shell">
-	<%= render :partial => 'shared/header' %>
 
 	<%= yield %>
 	<%= render :partial => 'shared/footer' %>
@@ -70,8 +69,8 @@ var UTC_OFFSET = #{Time.zone.now.utc_offset * 1000};") %>
 <%= javascript_include_tag 'jquery.min.js' %>
 <%= javascript_include_tag 'jquery-ui.min.js' %>
 <%= javascript_include_tag 'jquery.selectbox-0.6.1.pack', 'jquery.rating.pack', 'modernizr.custom.86311',
-  'ui', 'jquery.form', 'jquery.validate.min','jquery.tag.suggestion', 'jquery.easing.1.3',
-  'jquery.cookie', 'jquery.address.min','jquery.tabSlideOut.v1.3.js', 'jquery.rule.min', :cache => 'all' %>
+  'ui', 'jquery.form', 'jquery.cookie', 'jquery.address.min','jquery.tabSlideOut.v1.3.js',
+  'jquery.rule.min', 'jquery.tipsy', 'jquery.hoverIntent', 'mustache', :cache => 'all' %>
 
 <% [ @javascripts.blank? ? nil : @javascripts ].compact.flatten.each do |js| %>
   <%= javascript_include_tag js %>

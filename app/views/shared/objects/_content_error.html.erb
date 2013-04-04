@@ -6,8 +6,8 @@
       <% else -%>
       <%= content_error.reportable_type.titleize %>: <%= content_error.display_name %>
       <% end -%>
-      <% if current_user && (@is_content_error_admin || @my_content_errors.include?(content_error)) %>
-        <%= link_to 'DELETE', content_error, :class => "action delete-action" %>
+      <% if current_user && (@is_admin[:contenterror] || @my_belongings[:contenterrors].include?(content_error)) %>
+        <%= link_to 'DELETE', content_error, :class => "icon icon-delete tooltip" %>
       <% end %>
     </h4>
     <p>Reported by <%= link_to(content_error.reporter.display, user_path(content_error.reporter)) %></p>
