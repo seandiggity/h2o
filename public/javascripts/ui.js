@@ -38,10 +38,8 @@ jQuery.extend({
   initializeHomePageBehavior: function() {
     jQuery('#featured_playlists .item, #featured_users .item').hoverIntent(function() {
       jQuery(this).find('.additional_details').slideDown(500);
-      jQuery(this).find('.remix-action').fadeIn(200);
     }, function() {
       jQuery(this).find('.additional_details').slideUp(200);
-      jQuery(this).find('.remix-action').fadeOut(200);
     });
   },
   observeTabDisplay: function(region) {
@@ -305,6 +303,12 @@ jQuery.extend({
     if(jQuery('#playlist-stats-popup').is(':visible')) {
       jQuery('#playlist-stats').click();
     }
+  },
+  loadPopupCloseListener: function() {
+    jQuery('.close-popup').live('click', function(e) {
+      e.preventDefault();
+      jQuery.hideVisiblePopups();
+    });
   },
   loadEscapeListener: function() {
     jQuery(document).keyup(function(e) {
@@ -991,6 +995,7 @@ jQuery(function() {
   jQuery.observeResultsHover();
   jQuery.initializeTabBehavior();
   jQuery.loadEscapeListener();
+  jQuery.loadPopupCloseListener();
   jQuery.loadOuterClicks();
   jQuery.loadSlideOutTabBehavior();
   jQuery.initializeViewerToggle();

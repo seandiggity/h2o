@@ -1,7 +1,9 @@
 <li class="listitem listitem<%= textblock.id %>" data-itemid="<%= textblock.id %>">
   <span class="list-icon icon icon-textblock"></span>
 	<div class="details">
-    <h4><%= link_to textblock.name, text_block_path(textblock), :class => "title" %>
+    <h4>
+      <%= link_to textblock.name, text_block_path(textblock), :class => "title" %>
+      <%= link_to raw('<span class="icon icon-read"></span>READ'), textblock, :class => "action read-action" %>
       <% if current_user && textblock.deleteable? && (@is_admin[:textblock] || @my_belongings[:textblocks].include?(textblock)) %>
         <%= link_to 'DELETE', textblock, :class => "icon icon-delete tooltip", :title => "Delete" %>
       <% end %>
@@ -22,6 +24,10 @@
       <% end -%>
     </p>
 	</div>
+  <div class="right_details">
+  <div class="barcode_outer">
+    <%= render :partial => "shared/barcode", :locals => { :object => textblock } %>
+  </div>
 	<% if current_user -%>
 	<div class="controls">
     <%= link_to raw('<span class="icon icon-collage"></span>COLLAGE THIS'), new_collage_path(:annotatable_type => 'TextBlock', :annotatable_id => textblock), :class => "new-action link-collage" %>
@@ -32,8 +38,6 @@
       "data-type" => "text_block" %>
 	</div>
 	<% end -%>
-  <div class="barcode_outer">
-    <%= render :partial => "shared/barcode", :locals => { :object => textblock } %>
   </div>
 	<div class="cl"></div>
 </li>

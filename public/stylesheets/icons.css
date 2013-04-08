@@ -97,6 +97,12 @@
   width: 18px;
   height: 18px;
 }
+.icon-read {
+  border: 1px dashed #000;
+  background: none;
+  width: 10px;
+  height: 18px;
+}
 .icon-add {
   background-position: -3px -6px;
   width: 19px;

@@ -4,6 +4,7 @@
   <div class="details">
     <h4>
       <%= link_to collage.name, collage_path(collage), :class => "title" %>
+      <%= link_to raw('<span class="icon icon-read"></span>READ'), collage, :class => "action read-action" %>
       <% if current_user && (@is_admin[:collage] || @my_belongings[:collages].include?(collage)) %>
         <%= link_to 'DELETE', collage, :class => "icon icon-delete tooltip", :title => "Delete" %>
         <% end %>
@@ -21,7 +22,11 @@
       <% end -%>
     </p>
   </div>
-  
+
+  <div class="right_details">
+  <div class="barcode_outer">
+    <%= render :partial => "shared/barcode", :locals => { :object => collage } %>
+  </div>
   <% if current_user %>
   <div class="controls">
     <a href="<%= copy_collage_path(collage) %>" class="link-copy"><span class="icon icon-remix"></span>COPY COLLAGE</a>
@@ -32,8 +37,6 @@
       "data-type" => "collage" %>
   </div>
   <% end %>
-  <div class="barcode_outer">
-    <%= render :partial => "shared/barcode", :locals => { :object => collage } %>
   </div>
   <div class="cl"></div>
 </li>
