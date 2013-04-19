@@ -40,7 +40,7 @@ class User < ActiveRecord::Base
   end
 
   MANAGEMENT_ROLES = ["owner", "editor", "user"]
-
+  
   def to_s
     (login.match(/^anon_[a-f,\d]+/) ? 'anonymous' : login)
   end
@@ -252,4 +252,9 @@ class User < ActiveRecord::Base
   def large_font_size
     16
   end
+  
+  def save_version?
+    (self.changed - self.non_versioned_columns).any?
+  end
+  
 end

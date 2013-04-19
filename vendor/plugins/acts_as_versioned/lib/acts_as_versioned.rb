@@ -416,21 +416,23 @@ module ActiveRecord #:nodoc:
             self.class_eval(class_methods)
             
             define_method("update_#{association.options[:join_table]}_versions") do
-              self.send(association.name).each do |obj|              
-                sql = "SELECT * FROM #{association.options[:join_table]}_versions 
-                       WHERE #{association.primary_key_name} = #{self.id}
-                       AND   #{association.association_foreign_key} = #{obj.id}
-                       AND   #{association.primary_key_name.gsub("_id", '')}_version = #{self.version}
-                       AND   #{association.association_foreign_key.gsub("_id", '')}_version = #{obj.version};"
+              if self.save_version?
+                self.send(association.name).each do |obj|              
+                  sql = "SELECT * FROM #{association.options[:join_table]}_versions 
+                         WHERE #{association.primary_key_name} = #{self.id}
+                         AND   #{association.association_foreign_key} = #{obj.id}
+                         AND   #{association.primary_key_name.gsub("_id", '')}_version = #{self.version}
+                         AND   #{association.association_foreign_key.gsub("_id", '')}_version = #{obj.version};"
                        
-                result = self.connection.execute(sql)
-                row_count = result.respond_to?(:num_rows) ? result.num_rows : result.num_tuples
-                if row_count == 0 
-                  sql = "INSERT INTO #{association.options[:join_table]}_versions 
-                         (#{association.primary_key_name}, #{association.association_foreign_key}, #{association.primary_key_name.gsub("_id", '')}_version, #{association.association_foreign_key.gsub("_id", '')}_version) 
-                         VALUES 
-                         ( #{self.id},#{obj.id}, #{self.version}, #{obj.version});"
-                  self.connection.execute(sql)
+                  result = self.connection.execute(sql)
+                  row_count = result.respond_to?(:num_rows) ? result.num_rows : result.num_tuples
+                  if row_count == 0 
+                    sql = "INSERT INTO #{association.options[:join_table]}_versions 
+                           (#{association.primary_key_name}, #{association.association_foreign_key}, #{association.primary_key_name.gsub("_id", '')}_version, #{association.association_foreign_key.gsub("_id", '')}_version) 
+                           VALUES 
+                           ( #{self.id},#{obj.id}, #{self.version}, #{obj.version});"
+                    self.connection.execute(sql)
+                  end
                 end
               end
             end

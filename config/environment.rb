@@ -45,6 +45,7 @@ Rails::Initializer.run do |config|
   config.gem 'erubis', :version => '2.6.6'
   config.gem 'daemons', :version => '1.0.10'
   config.gem "delayed_job", :version => "2.0.4"
+  config.gem "ar-extensions", :version => "0.9.5" 
 
   config.active_record.colorize_logging = false
 

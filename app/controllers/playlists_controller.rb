@@ -275,7 +275,7 @@ class PlaylistsController < BaseController
     else    
       @collection = UserCollection.find(params[:user_collection_id])
       @playlist = Playlist.find(params[:id])
-      # @playlist.push!(:recipients => @collection.users)
+      @playlist.push!(:recipients => @collection.users)
       respond_to do |format|
         format.json { render :json => {:custom_block => 'push_playlist'} }
         format.js { render :text => nil }

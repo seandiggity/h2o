@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130327043000) do
+ActiveRecord::Schema.define(:version => 20130418012853) do
 
   create_table "annotation_versions", :force => true do |t|
     t.integer  "annotation_id"
@@ -46,6 +46,7 @@ ActiveRecord::Schema.define(:version => 20130327043000) do
     t.integer  "annotation_word_count"
     t.integer  "collage_version"
     t.integer  "version"
+    t.integer  "pushed_from_id"
   end
 
   add_index "annotations", ["active"], :name => "index_annotations_on_active"
@@ -217,6 +218,7 @@ ActiveRecord::Schema.define(:version => 20130327043000) do
     t.integer  "case_jurisdiction_version"
     t.integer  "case_request_version"
     t.integer  "version"
+    t.integer  "pushed_from_id"
   end
 
   add_index "cases", ["active"], :name => "index_cases_on_active"
@@ -296,6 +298,7 @@ ActiveRecord::Schema.define(:version => 20130327043000) do
     t.integer  "words_shown"
     t.integer  "annotatable_version"
     t.integer  "version"
+    t.integer  "pushed_from_id"
   end
 
   add_index "collages", ["active"], :name => "index_collages_on_active"
@@ -420,6 +423,7 @@ ActiveRecord::Schema.define(:version => 20130327043000) do
     t.datetime "updated_at"
     t.string   "actual_object_type"
     t.integer  "actual_object_id"
+    t.integer  "pushed_from_id"
   end
 
   add_index "item_annotations", ["active"], :name => "index_item_annotations_on_active"
@@ -439,6 +443,7 @@ ActiveRecord::Schema.define(:version => 20130327043000) do
     t.datetime "updated_at"
     t.string   "actual_object_type"
     t.integer  "actual_object_id"
+    t.integer  "pushed_from_id"
   end
 
   add_index "item_cases", ["active"], :name => "index_item_cases_on_active"
@@ -458,6 +463,7 @@ ActiveRecord::Schema.define(:version => 20130327043000) do
     t.datetime "updated_at"
     t.string   "actual_object_type"
     t.integer  "actual_object_id"
+    t.integer  "pushed_from_id"
   end
 
   add_index "item_collages", ["active"], :name => "index_item_collages_on_active"
@@ -468,13 +474,14 @@ ActiveRecord::Schema.define(:version => 20130327043000) do
 
   create_table "item_defaults", :force => true do |t|
     t.string   "title"
-    t.string   "name",        :limit => 1024
-    t.string   "url",         :limit => 1024
+    t.string   "name",           :limit => 1024
+    t.string   "url",            :limit => 1024
     t.text     "description"
-    t.boolean  "active",                      :default => true
+    t.boolean  "active",                         :default => true
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "public",                      :default => true
+    t.boolean  "public",                         :default => true
+    t.integer  "pushed_from_id"
   end
 
   add_index "item_defaults", ["active"], :name => "index_item_defaults_on_active"
@@ -509,6 +516,7 @@ ActiveRecord::Schema.define(:version => 20130327043000) do
     t.boolean  "public",                             :default => true
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "pushed_from_id"
   end
 
   add_index "item_medias", ["active"], :name => "index_item_medias_on_active"
@@ -526,6 +534,7 @@ ActiveRecord::Schema.define(:version => 20130327043000) do
     t.datetime "updated_at"
     t.string   "actual_object_type"
     t.integer  "actual_object_id"
+    t.integer  "pushed_from_id"
   end
 
   add_index "item_playlists", ["active"], :name => "index_item_playlists_on_active"
@@ -545,6 +554,7 @@ ActiveRecord::Schema.define(:version => 20130327043000) do
     t.datetime "updated_at"
     t.string   "actual_object_type"
     t.integer  "actual_object_id"
+    t.integer  "pushed_from_id"
   end
 
   add_index "item_question_instances", ["active"], :name => "index_item_question_instances_on_active"
@@ -564,6 +574,7 @@ ActiveRecord::Schema.define(:version => 20130327043000) do
     t.datetime "updated_at"
     t.string   "actual_object_type"
     t.integer  "actual_object_id"
+    t.integer  "pushed_from_id"
   end
 
   add_index "item_questions", ["active"], :name => "index_item_questions_on_active"
@@ -583,6 +594,7 @@ ActiveRecord::Schema.define(:version => 20130327043000) do
     t.datetime "updated_at"
     t.string   "actual_object_type"
     t.integer  "actual_object_id"
+    t.integer  "pushed_from_id"
   end
 
   add_index "item_rotisserie_discussions", ["active"], :name => "index_item_rotisserie_discussions_on_active"
@@ -602,6 +614,7 @@ ActiveRecord::Schema.define(:version => 20130327043000) do
     t.integer  "actual_object_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "pushed_from_id"
   end
 
   add_index "item_text_blocks", ["active"], :name => "index_item_text_blocks_on_active"
@@ -688,11 +701,12 @@ ActiveRecord::Schema.define(:version => 20130327043000) do
     t.string   "name"
     t.text     "content"
     t.integer  "media_type_id"
-    t.boolean  "public",                           :default => true
-    t.boolean  "active",                           :default => true
+    t.boolean  "public",                            :default => true
+    t.boolean  "active",                            :default => true
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "description",   :limit => 5242880
+    t.string   "description",    :limit => 5242880
+    t.integer  "pushed_from_id"
   end
 
   create_table "metadata", :force => true do |t|
@@ -807,6 +821,7 @@ ActiveRecord::Schema.define(:version => 20130327043000) do
     t.boolean  "public",                  :default => true
     t.text     "notes"
     t.boolean  "public_notes",            :default => true, :null => false
+    t.integer  "pushed_from_id"
   end
 
   add_index "playlist_items", ["active"], :name => "index_playlist_items_on_active"
@@ -818,16 +833,17 @@ ActiveRecord::Schema.define(:version => 20130327043000) do
   add_index "playlist_items", ["resource_item_type"], :name => "index_playlist_items_on_resource_item_type"
 
   create_table "playlists", :force => true do |t|
-    t.string   "title",                                           :null => false
-    t.string   "name",          :limit => 1024
+    t.string   "title",                                            :null => false
+    t.string   "name",           :limit => 1024
     t.text     "description"
-    t.boolean  "active",                        :default => true
+    t.boolean  "active",                         :default => true
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "public",                        :default => true
+    t.boolean  "public",                         :default => true
     t.string   "ancestry"
     t.integer  "position"
-    t.integer  "counter_start",                 :default => 1,    :null => false
+    t.integer  "counter_start",                  :default => 1,    :null => false
+    t.integer  "pushed_from_id"
   end
 
   add_index "playlists", ["active"], :name => "index_playlists_on_active"
@@ -863,6 +879,7 @@ ActiveRecord::Schema.define(:version => 20130327043000) do
     t.datetime "updated_at"
     t.boolean  "public",                                  :default => true
     t.boolean  "active",                                  :default => true
+    t.integer  "pushed_from_id"
   end
 
   add_index "question_instances", ["active"], :name => "index_question_instances_on_active"
@@ -893,6 +910,7 @@ ActiveRecord::Schema.define(:version => 20130327043000) do
     t.datetime "updated_at"
     t.boolean  "public",                                :default => true
     t.boolean  "active",                                :default => true
+    t.integer  "pushed_from_id"
   end
 
   add_index "questions", ["active"], :name => "index_questions_on_active"
@@ -981,6 +999,7 @@ ActiveRecord::Schema.define(:version => 20130327043000) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "public",                                :default => true
+    t.integer  "pushed_from_id"
   end
 
   add_index "rotisserie_discussions", ["active"], :name => "index_rotisserie_discussions_on_active"
@@ -1073,13 +1092,14 @@ ActiveRecord::Schema.define(:version => 20130327043000) do
   add_index "tags", ["name"], :name => "index_tags_on_name"
 
   create_table "text_blocks", :force => true do |t|
-    t.string   "name",                                                     :null => false
-    t.string   "description", :limit => 5242880,                           :null => false
-    t.string   "mime_type",   :limit => 50,      :default => "text/plain"
-    t.boolean  "active",                         :default => true
-    t.boolean  "public",                         :default => true
+    t.string   "name",                                                        :null => false
+    t.string   "description",    :limit => 5242880,                           :null => false
+    t.string   "mime_type",      :limit => 50,      :default => "text/plain"
+    t.boolean  "active",                            :default => true
+    t.boolean  "public",                            :default => true
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "pushed_from_id"
   end
 
   add_index "text_blocks", ["created_at"], :name => "index_text_blocks_on_created_at"
