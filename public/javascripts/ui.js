@@ -768,9 +768,11 @@ jQuery.extend({
       },
     });
   },
-  push_playlist: function(data) {   
-    
+  push_playlist: function(data) {  
+    jQuery.hideGlobalSpinnerNode();
     jQuery('#generic-node').dialog('close');
+    jQuery("#case_edit_notification").text("Playlist is being pushed.  May take several minutes to complete.")
+    window.scrollTo(0, 0);  
   }
   
 });
