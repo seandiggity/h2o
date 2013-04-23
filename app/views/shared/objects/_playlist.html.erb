@@ -1,9 +1,9 @@
-<li class="listitem listitem<%= playlist.id %>" data-itemid="<%= playlist.id %>">
-  <span class="list-icon icon icon-playlist"></span>
+<li class="listitem listitem<%= playlist.id %>" id="listitem_playlist<%= playlist.id %>" data-itemid="<%= playlist.id %>">
+  <a href="#" class="tooltip list-icon icon icon-playlist" title="Playlist"></a>
   <div class="details">
     <h4>
       <%= link_to raw(playlist.name), playlist %>
-      <%= link_to raw('<span class="icon icon-read"></span>READ'), playlist, :class => "action read-action" %>
+      <%= link_to raw('<span class="icon icon-read"></span><span class="link">READ</span>'), playlist, :class => "action read-action" %>
       <% if current_user && (@is_admin[:playlist] || @my_belongings[:playlists].include?(playlist)) %>
       <%= link_to "DELETE", playlist_path(playlist), :class => "icon icon-delete tooltip", :title => "Delete" %>
       <% end -%>

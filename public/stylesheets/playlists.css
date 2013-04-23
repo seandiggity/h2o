@@ -175,23 +175,6 @@
   padding-top: 10px;
 }
 
-/* Font Dropdown */
-#playlist .description .buttons ul #fonts { }
-.font-size-popup { 
-  position:absolute; 
-  left:0; 
-  z-index:100; 
-  background:#fff; 
-  padding: 10px;
-  display:none; 
-  top: 0px; 
-  left: 0px; 
-  background: #FFF;
-  width: 113px; 
-  border: 1px solid #6D87A2; 
-  top: 25px;
-}
-
 /*
 #url_review { -moz-border-radius: 4px; border: 1px solid #8B9EB3;
   background: url(/images/ui/repeat_bg.png) repeat scroll 0px -21px;
@@ -223,7 +206,7 @@
   padding-right: 120px;
 }
 #edit_item #add_item_term {
-  width: 150px;
+  width: 108px;
   border: none;
   font-size: 14px;
   padding: 5px;
@@ -304,6 +287,9 @@
   padding-left: 24px;
   color: #323232;
   font-weight: normal;
+}
+#edit_item #add_item_results .listing_barcode {
+  padding: 5px 0px 5px 24px;
 }
 #edit_item .pagination {
   text-align: center;
@@ -438,7 +424,7 @@ button.inactive { opacity: 0.5; }
   display: inline-block;
 }
 #print-container a {
-  background:url(/images/small_icons.png) -270px -70px;
+  background:url(/images/icons.png) -270px -70px;
   width: 15px;
   height: 14px;
   display: inline-block;

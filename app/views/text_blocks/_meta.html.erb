@@ -1,0 +1,11 @@
+<% cache "text_block-#{@text_block.id}-tags" do -%>
+<p>
+  <label>Tags:</label>
+  <% @text_block.tags.each do |tag| -%>
+  <%= link_to tag.name, text_block_tag_path(CGI.escape(tag.name)) %>
+  <% end -%>
+</p>
+<% end -%>
+<% cache "text_block-#{@text_block.id}-detail" do -%>
+<%= render :partial => "shared/objects/metadatum", :object => @text_block.metadatum %>
+<% end -%>

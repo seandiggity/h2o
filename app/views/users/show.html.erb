@@ -1,22 +1,83 @@
-<%= render :partial => 'shared/second_nav', :locals => { :nav_id => 'homepage-logo',
-  :url => "/",
-  :right_search => 'shared/search_all' } %>
-  
 <% if flash[:notice] %>
 <p id="case_edit_notification"><%= flash[:notice] %></p>
 <% end %>
 
-<section class="breadcrumbs">
-	<aside class="filter">
-		<p>
-		Results for: <%= @user.login %>
-    (<% @types.each do |type| -%><%= pluralize @results[type].total_entries, type.to_s.singularize.humanize %><%= ', ' if type != @types.last %><% end -%>)
-		</p>
-	</aside>
-  <%= render :partial => 'shared/user_pagination' %>
-	<div class="cl"></div>
-</section>
+<% if false -%>
+<a href="#" class="fixed_link" id="activities_toggle"><span class="icon icon-activities"></span></a>
+<% end -%>
+<a href="#" class="fixed_link" id="bookshelf_toggle"><span class="icon icon-bookshelf"></span></a>
+<a href="#" class="fixed_link" id="profile_toggle"><span class="icon icon-profile"></span></a>
+<a href="#" class="fixed_link" id="settings_toggle"><span class="icon icon-settings"></span></a>
 
+<div id="dashboard">
+  <% if false -%>
+  <div id="activities_panel" class="panel">
+    <div class="header">
+      <h3>My Activities</h3>
+      <span class="icon icon-activities"></span>
+    </div>
+  </div>
+  <% end -%>
+  <div id="bookshelf_panel" class="panel">
+    <div class="header">
+      <h3>My Bookshelf</h3>
+      <span class="icon icon-bookshelf"></span>
+    </div>
+    <ul id="user_bookshelf_items" class="user_list">
+      <% @bookshelf.results.each do |hit| -%>
+      <li>
+        <a href="#" class="tooltip icon icon-<%= hit.class.to_s.downcase %>" title="<%= hit.class %>"></a>
+        <%= link_to hit.display_name, self.send("#{hit.class.to_s.tableize.singularize}_path", hit.id), :class => "item" %></a>
+        <%= render :partial => "shared/barcode", :locals => { :object => hit } %>
+        Panel: Add to.., print, edit, remix, view, trash
+      </li>
+      <% end -%>
+    </ul>
+  </div>
+  <div id="profile_panel" class="panel">
+    <div class="header">
+      <h3>Profile</h3>
+      <span class="icon icon-profile"></span>
+    </div>
+    <%= render :partial => "shared/author_stats", :locals => { :user => @user } %>
+  </div>
+  <div id="settings_panel" class="panel">
+    <div class="header">
+      <h3>Settings</h3>
+      <span class="icon icon-settings"></span>
+    </div>
+    <div class="stats_panel">
+      <p>
+        <label>Default font size:</label>
+        <span><%= @user.default_font_size %></span>
+      </p>
+      <p>
+        <label>Default font:</label>
+        <span><%#= @user.di %></span>
+      </p>
+      <p>
+        <label>Timezone:</label>
+        <span><%= @user.tz_name %></span>
+      </p>
+      <p>
+        <label>Username:</label>
+        <span><%= @user.login %></span>
+      </p>
+      <p>
+        <label>Email Address:</label>
+        <span><%= @user.email_address %></span>
+      </p>
+      <p>
+        <label>Password</label>
+        <span>********</span>
+      </p>
+    </div>
+
+  </div>
+  <div class="clear"></div>
+</div>
+
+<% if false -%>
 <section id="results">
 	<hgroup id="default_hgroup">
 		<ul class="tabs">
@@ -95,3 +156,4 @@
 <section class="breadcrumbs">
   <%#= render :partial => 'shared/user_pagination' %>
 </section>
+<% end -%>

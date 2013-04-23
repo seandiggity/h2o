@@ -1,58 +1,40 @@
-<%= render :partial => 'shared/second_nav', :locals => { :nav_id => 'cases-logo',
-  :url => cases_path } %>
+<a href="#" class="fixed_link left-tooltip" id="collapse_toggle" title="Toggle Right Panel">Collapse/Expand</a>
+<a href="<%= export_case_path(@case) %>" class="fixed_link left-tooltip" id="fixed_print" title="Print <%= @case.name %>">Print</a>
+
+<aside id="singleitem_barcode" class="right_panel">
+<%= render :partial => "shared/barcode", :locals => { :object => @case } %>
+</aside>
+
+<aside id="singleitem_toolbar">
+  <% if current_user -%>
+  <%= link_to raw('<span class="icon icon-collage"></span>'), new_collage_path(:annotatable_type => 'Case', :annotatable_id => @case), :class => 'collage-this new-action' %>
+  <%= link_to raw('<span class="icon icon-add"></span>'), '#', "data-item_id" => @case.id, "data-type" => "case", :class => 'link-add tooltip requires_logged_in', :title => "Add to a Playlist" %>
+  <%= link_to raw('<span class="icon icon-bookmark"></span>'), '#', :class => "bookmark-action tooltip requires_logged_in", :title => "Bookmark #{@case.name}", "data-type" => "case", "data-itemid" => @case.id %>
+  <% end -%>
+</aside>
 
 <div id="case" class="singleitem" data-itemid="<%= @case.id %>">
-  <hgroup class="description">
-    <h2><%= @case.display_name %></h2>
-    <aside class="toolbar">
-      <ul>
-        <% if current_user -%>
-          <li><%= link_to "Collage This", new_collage_path(:annotatable_type => 'Case', :annotatable_id => @case), :class => 'collage-this new-action' %></li>
-          <li><%= link_to "Bookmark This Case", '#', :class => 'link-bookmark bookmark-action' %></li>
-        <% end -%>
-        <li id="print-container">
-          <a href="<%= export_case_path(@case) %>" class="link-print" target="_blank">
-          <span>Print</span>
-          </a>
-        </li>
-      </ul>
-    </aside>
-    <div class="cl"></div>
-  </hgroup>
-  <div class="details">
-    <% if current_user &&  (@is_admin[:case] || @my_belongings[:cases].include?(@case)) %>
-    <%= link_to "EDIT", edit_case_path(@case) %>
-    <% end -%>
+  <div id="main_details">
+    <h1><%= @case.display_name %></h1>
+  </div>
+  <div id="description">
+    <%= link_to raw('<span class="icon icon-edit"></span>EDIT CASE INFORMATION<span class="icon icon-arrow"></span>'), edit_case_path(@case), :class => "edit-action" %>
   </div>
   <article>
-      <%= raw @case.content %>
+    <%= raw @case.content %>
   </article>
 </div>
 
 <div id="stats" class="right_panel">
+  <a href="#" class="right_panel_close"></a>
+  <h3>Author Stats</h3>
+  <%= render :partial => "shared/author_stats", :locals => { :user => @case.owners.first } %>
   <h3>Case Stats</h3>
-  <% cache "case-#{@case.id}-tags" do -%>
-  <div class="tags">
-    <% @case.tags.each do |tag| -%>
-    <%= link_to tag.name, case_tag_path(CGI.escape(tag.name)) %>
-    <% end -%>
+  <div class="stats_panel">
+  <%= render :partial => "meta" %>
   </div>
-  <% end -%>
-  <% cache "case-#{@case.id}-detail" do -%>
-  <p>Decision date: <%= @case.decision_date %></p>
-  <% unless @case.author.blank? %>
-  <p>Author: <%= @case.author %></p>
-  <% end -%>
-  <% unless @case.case_citations.blank? %>
-  <p>Citations: <%= @case.case_citations.collect{|cc| cc.display_name}.join(', ') %></p> 
-  <% end %>
-  <% unless @case.case_docket_numbers.blank? %>
-  <p>Docket Numbers: <%= @case.case_docket_numbers.collect{|cc| cc.display_name}.join(', ') %></p> 
-  <% end %>
-  <% unless @case.case_jurisdiction.blank? %>
-  <p>Jurisdiction: <%= @case.case_jurisdiction.display_name %></p> 
-  <% end %>
-  <% end -%>
 </div>
 
 <div class="cl"></div>
+
+<%= render :partial => "shared/popup", :locals => { :type => "case" } %>

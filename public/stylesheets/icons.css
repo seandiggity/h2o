@@ -3,114 +3,114 @@
   display: inline-block;
   width:18px;
   height:18px; 
-  background-image: url(/images/small_icons.png); 
+  background-image: url(/images/icons.png); 
   text-indent: -4000px;
 }
-.icon-default { 
-  background: #000;
+.icon-default {
+  background-position: -189px -42px;
 }
 .icon-collage { 
-  background-position: -123px -8px;
+  background-position: -130px -15px;
   width: 16px;
   height: 16px;
 }
 .icon-collage.hover { 
-  background-position: -4px -39px;
+  background-position: -11px -46px;
 }
 .icon-question { 
   background-position: -36px -92px;
 }
 .icon-playlist { 
-  background-position: -75px -71px;
+  background-position: -82px -78px;
   width: 16px;
   height: 14px;
 }
 .icon-playlist.hover { 
-  background-position: -99px -71px;
+  background-position: -106px -78px;
 }
 .icon-case { 
-  background-position: -79px -9px;
+  background-position: -86px -16px;
   height: 14px;
   width: 14px;
 }
 .icon-case.hover {
-  background-position: -101px -9px;
+  background-position: -108px -16px;
 }
 .icon-annotation {
   background-position: -72px -92px; 
 
 }
 .icon-textblock { 
-  background-position: -101px -100px;
+  background-position: -108px -107px;
   height: 17px;
   width: 17px;
 }
 .icon-textblock.hover { 
-  background-position: -126px -100px;
+  background-position: -133px -107px;
 }
 .icon-media-video {
-  background-position: -191px -285px;
-  height: 13px;
+  background-position: -189px -291px;
+  height: 17px;
   width: 18px;
 }
 .icon-media-video.hover {
-  background-position: -217px -285px;
+  background-position: -189px -291px;
 }
 .icon-media-audio {
-  background-position: -176px -9px;
+  background-position: -36px -16px;
   height: 15px;
   width: 17px;
 }
 .icon-media-audio.hover {
-  background-position: -201px -9px;
+  background-position: -61px -16px;
 }
 .icon-media-pdf {
-  background-position: -175px -39px;
+  background-position: -35px -46px;
   width: 13px;
   height: 16px;
 }
 .icon-media-pdf.hover {
-  background-position: -196px -39px;
+  background-position: -56px -46px;
 }
 .icon-media-image {
-  background-position: -4px -70px;
+  background-position: -11px -77px;
   width: 18px;
   height: 16px;
 }
 .icon-media-image.hover {
-  background-position: -30px -70px;
+  background-position: -37px -77px;
 }
 
 /* Actions */
 .icon-delete {
-  background-position: -24px -284px;
+  background-position: -31px -386px;
   width: 12px;
   height: 15px;
 }
 .icon-edit {
-  background-position: -89px -41px;
+  background-position: -96px -48px;
   width: 11px;
   height: 13px;
 }
 .icon-remix {
-  background-position: -26px -99px;
+  background-position: -33px -106px;
   width: 18px;
   height: 18px;
 }
 .icon-read {
   border: 1px dashed #000;
   background: none;
-  width: 10px;
-  height: 18px;
+  width: 18px;
+  height: 13px;
 }
 .icon-add {
-  background-position: -3px -6px;
+  background-position: -9px -13px;
   width: 19px;
   height: 19px;
 }
 .icon-bookmark,
 .icon-favorite {
-  background-position: -108px -39px;
+  background-position: -114px -46px;
   width: 18px;
   height: 18px;
 }
@@ -118,4 +118,28 @@
   background-position: -4px -39px;
   width: 16px;
   height: 16px;
+}
+
+.icon-bookshelf {
+  width: 29px;
+  height: 33px;
+  background-position: -454px -105px;
+}
+.icon-profile {
+  width: 23px;
+  height: 28px;
+  background-position: -269px -150px;
+}
+.icon-settings {
+  width: 30px;
+  height: 33px;
+  background-position: -387px -151px;
+}
+.icon-arrow {
+  background-position: -227px -6px;
+}
+.icon-heatmap {
+  background-position: -277px -51px;
+  width: 30px;
+  height: 30px;
 }

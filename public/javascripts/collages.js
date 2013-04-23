@@ -50,7 +50,7 @@ jQuery.extend({
         }
         jQuery.toggleEditMode(false);
         jQuery('#author_edits').removeClass('inactive');
-        jQuery('#show_heatmap, #hide_heatmap').removeClass('inactive');
+        jQuery('#heatmap_toggle').removeClass('inactive');
 
         /* Forcing an autosave to save in READ mode */
         var data = jQuery.retrieveState();  
@@ -73,9 +73,7 @@ jQuery.extend({
           jQuery.removeHeatmapHighlights();
         }
         jQuery('#author_edits').addClass('inactive');
-        jQuery('#show_heatmap').show();
-        jQuery('#hide_heatmap').hide();
-        jQuery('#show_heatmap, #hide_heatmap').addClass('inactive');
+        jQuery('#heatmap_toggle').removeClass('disabled').addClass('inactive');
       }
     });
   },
@@ -159,12 +157,8 @@ jQuery.extend({
       el.find('a.heatmap_tip').tipsy("hide");
       el.find('a.heatmap_tip').remove();
     });
-    jQuery('#hide_heatmap').hide();
-    jQuery('#show_heatmap').click(function(e) {
+    jQuery('#heatmap_toggle:not(.inactive,.disabled)').click(function(e) {
       e.preventDefault();
-      if(jQuery(this).hasClass('inactive')) {
-        return false;
-      }
       if(heatmap === undefined) {
         jQuery.ajax({
           type: 'GET',
@@ -178,8 +172,7 @@ jQuery.extend({
             jQuery('.popup .highlighted').click();
             heatmap = data.heatmap;
             jQuery.applyHeatmapHighlights();
-            jQuery('#hide_heatmap').show();
-            jQuery('#show_heatmap').hide();
+            jQuery('#heatmap_toggle').addClass('disabled');
             jQuery.hideGlobalSpinnerNode();
           },
           error: function() {
@@ -189,8 +182,7 @@ jQuery.extend({
       } else {
         jQuery('.popup .highlighted').click();
         jQuery.applyHeatmapHighlights();
-        jQuery('#hide_heatmap').show();
-        jQuery('#show_heatmap').hide();
+        jQuery('#heatmap_toggle').addClass('disabled');
         jQuery.hideGlobalSpinnerNode();
       }
     });
@@ -200,8 +192,7 @@ jQuery.extend({
         return false;
       }
       jQuery.removeHeatmapHighlights();
-      jQuery('#show_heatmap').show();
-      jQuery('#hide_heatmap').hide();
+      jQuery('#heatmap_toggle').removeClass('disabled');
     });
   },
   hideShowAnnotationOptions: function() {
@@ -241,24 +232,8 @@ jQuery.extend({
     }
     return x1 + x2;
   },
-  initializeFontChange: function() {
-    var val = jQuery.cookie('font_size');
-    if (val == null){
-      val = 16;
-    }
-    if(val != null) {
-      jQuery.setFontSize(parseFloat(val));
-    }
-    jQuery('.font-size-popup select').selectbox({
-      className: "jsb", replaceInvisible: true 
-    }).change(function() {
-      var element = jQuery(this);
-      jQuery.cookie('font_size', element.val(), { path: "/" });
-      jQuery.setFontSize(parseFloat(element.val()));
-    });
-  },
   initializeToolListeners: function () {
-    jQuery("#collage .buttons .btn-li > a").click(function() {
+    jQuery("#collage #buttons .btn-li > a").click(function() {
       jQuery(this).siblings('.popup').toggle();
       jQuery(this).toggleClass("btn-a-active");
       return false;
@@ -402,7 +377,11 @@ jQuery.extend({
     });
   },
   initializePrintListeners: function() {
-    jQuery('#print-container form').submit(function() {
+    jQuery('#fixed_print').click(function(e) {
+      e.preventDefault();
+      jQuery('#collage_print').submit();
+    });
+    jQuery('form#collage_print').submit(function() {
       var data = jQuery.retrieveState();
   
       data.highlights = {};
@@ -434,7 +413,7 @@ jQuery.extend({
       url: jQuery.rootPath() + 'collages/' + jQuery.getItemId() + '/save_readable_state',
       success: function(results){
         if(show_message) {
-          jQuery('#autosave').html('Updated at: ' + results.time).css('background', 'red');
+          jQuery('#autosave').html('Updated at: ' + results.time);
           jQuery.updateWordCount();
         }
       }
@@ -486,9 +465,9 @@ jQuery.extend({
       jQuery('#edit_toggle').click();
       jQuery.toggleEditMode(true);
       jQuery('.default-hidden').css('color', '#000');
-      jQuery('#hide_heatmap, #show_heatmap').addClass('inactive');
+      jQuery('#heatmap_toggle').addClass('inactive');
     } else {
-      jQuery('#show_heatmap, #hide_heatmap').removeClass('inactive');
+      jQuery('#heatmap_toggle').removeClass('inactive');
       jQuery.toggleEditMode(false);
     }
     if(jQuery.cookie('scroll_pos')) {
@@ -1288,7 +1267,7 @@ jQuery(document).ready(function(){
     jQuery.showGlobalSpinnerNode();
     jQuery.initializeSelectors();
 
-    jQuery('.toolbar, .buttons').css('visibility', 'visible');
+    jQuery('.toolbar, #buttons').css('visibility', 'visible');
     jQuery('#cancel-annotation').click(function(e){
       e.preventDefault();
       jQuery("#tooltip").hide();
@@ -1328,7 +1307,6 @@ jQuery(document).ready(function(){
     jQuery.initPlaylistItemAddButton();
 
     jQuery.initializeFootnoteLinks();
-    jQuery.initializeFontChange();
     jQuery.hideGlobalSpinnerNode();
     jQuery.initializeViewerToggleOverride();
           

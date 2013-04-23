@@ -1,6 +1,3 @@
-<%= render :partial => 'shared/second_nav', :locals => { :nav_id => 'collage-logo',
-  :url => collages_path } %>
-
 <div id="tooltip" class="tipsy tipsy-s">
 <div class="tipsy-arrow tipsy-arrow-s"></div> <div class="tipsy-inner">
 Your annotation will start here. Please click another word to set the end point.
@@ -8,45 +5,30 @@ Your annotation will start here. Please click another word to set the end point.
 </div>
 </div>
 
-<a href="#" class="fixed_link" id="collapse_toggle">Collapse/Expand</a>
-<a href="#" class="fixed_link requires_edit" id="edit_toggle">Edit/View</a>
+<a href="#" class="fixed_link left-tooltip" id="collapse_toggle" title="Toggle Right Panel">Collapse/Expand</a>
+<a href="#" class="fixed_link requires_edit left-tooltip" id="edit_toggle" title="Toggle Edit Mode">Edit/View</a>
+<a href="#" class="fixed_link left-tooltip" id="fixed_print" title="Print <%= @collage.name %>">Print</a>
+<form action="<%= export_unique_collage_path(@collage) %>" target="_blank" method="POST" id="collage_print">
+<input type="hidden" id="state" name="state" value="" />
+</form>
+<a href="#" class="fixed_link left-tooltip btn-a" id="fixed_font" title="Change the size of the text">Font Settings</a>
 
-<div id="collage_barcode" class="right_panel">
+<div id="singleitem_barcode" class="right_panel">
 <%= render :partial => "shared/barcode", :locals => { :object => @collage } %>
 </div>
 
-<div id="collage" class="singleitem" data-itemid="<%= @collage.id %>">
-  <aside class="toolbar">
-    <ul>
-      <li>
-        <a href="#" id="show_heatmap" title="Show Heatmap" class="link-heatmap tooltip<%= ' inactive' if @collage.annotations.inject(0) { |s, a| s + a.annotation_word_count } == 0 %>"></a>
-        <a href="#" id="hide_heatmap" title="Hide Heatmap" class="link-heatmap tooltip<%= ' inactive' if @collage.annotations.inject(0) { |s, a| s + a.annotation_word_count } == 0 %>"></a>
-        <div class="cl">&nbsp;</div>
-      </li>
-      <li class="requires_logged_in">
-        <a href="<%= copy_collage_path(@collage) %>" class="tooltip link-copy" id="copy-collage" title="Make a Copy of <%= @collage.name %>"></a>
-      </li>
-      <li class="requires_logged_in">
-        <%= link_to "", '#', "data-item_id" => @collage.id, "data-type" => "collage", :class => 'link-add tooltip', :title => "Add to a Playlist" %>
-      </li>
-      <li class="requires_logged_in">
-        <%= link_to "", bookmark_item_path("item_collage"), :class => "link-bookmark bookmark-action tooltip", :title => "Bookmark #{@collage.name}", :id=> 'bookmark-collage' %>
-      </li>
-    </ul>
-  </aside>
-  <h1><span><%= @collage.name %></span></h1>
-  <h3>
-    <span>by </span>
-    <%= raw @collage.owners.collect { |u| link_to(u.display, user_path(u)) }.join(', ') %>
-  </h3>
-  <h5>
-    <span id="autosave">Updated at: <%= @collage.updated_at.to_s(:simpledatetime) %></span>
-    <span>Created at: <%= @collage.created_at.to_s(:simpledatetime) %></span>
-  </h5>
-  <div class="cl"></div>
+<aside id="singleitem_toolbar">
+  <a href="#" id="heatmap_toggle" title="Show Heatmap" class="link-heatmap tooltip<%= ' inactive' if @collage.annotations.inject(0) { |s, a| s + a.annotation_word_count } == 0 %>"><span class="icon icon-heatmap"></a>
+  <a href="<%= copy_collage_path(@collage) %>" class="tooltip link-copy requires_logged_in" id="copy-collage" title="Make a Copy of <%= @collage.name %>">
+    <span class="icon icon-remix"></span>
+  </a>
+  <%= link_to raw('<span class="icon icon-add"></span>'), '#', "data-item_id" => @collage.id, "data-type" => "collage", :class => 'link-add tooltip requires_logged_in', :title => "Add to a Playlist" %>
+  <%= link_to raw('<span class="icon icon-bookmark"></span>'), '#', :class => "bookmark-action tooltip requires_logged_in", :title => "Bookmark #{@collage.name}", "data-type" => "collage", "data-itemid" => @collage.id %>
+</aside>
 
-  <div class="details">
-    <aside class="buttons">
+<div id="collage" class="singleitem" data-itemid="<%= @collage.id %>">
+  <div id="main_details">
+    <aside id="buttons">
       <ul>
         <li class="btn-li afterload">
           <a href="#" class="btn-a" id="text-tools">
@@ -88,30 +70,21 @@ Your annotation will start here. Please click another word to set the end point.
             </ul>
           </div>
         </li>
-        <li id="print-container" class="tooltip"  title="Print <%= @collage.name %>">
-          <form action="<%= export_unique_collage_path(@collage) %>" target="_blank" method="POST">
-            <input type="hidden" id="state" name="state" value="" />
-            <input type="image" src="/images/ui/print.png" />
-          </form>
-        </li>
-        <li class="tooltip btn-li afterload" title="Change the size of the text" id="change-font">
-          <a href="#" class="btn-a" id="fonts">Aa</a>
-          <div class="popup font-size-popup">
-            <select id="font-size">
-              <option value="1.0">small</option>
-              <option value="1.3">medium</option>
-              <option value="1.6">large</option>
-              <option value="1.9">extra-large</option>
-            </select>
-          </div>
-        </li>
       </ul>
     </aside>
-    <div id="description">
-      <%= Collage.format_content(@collage.description) %>
-      <%= link_to "EDIT NAME, DESCRIPTION, TAGS", edit_collage_path(@collage), :class => "edit-action requires_edit collage_edit smaller" %>
-    </div>
-    <div class="clear"></div>
+    <h1><span><%= @collage.name %></span></h1>
+    <h3>
+      <span>by </span>
+      <%= raw @collage.owners.collect { |u| link_to(u.display, user_path(u)) }.join(', ') %>
+    </h3>
+    <h5>
+      <span id="autosave">Updated at: <%= @collage.updated_at.to_s(:simpledatetime) %></span>
+      <span>Created at: <%= @collage.created_at.to_s(:simpledatetime) %></span>
+    </h5>
+  </div>
+  <div id="description">
+    <%= Collage.format_content(@collage.description) %>
+    <%= link_to raw('<span class="icon icon-edit"></span>EDIT COLLAGE INFORMATION<span class="icon icon-arrow"></span>'), edit_collage_path(@collage), :class => "edit-action requires_edit collage_edit smaller" %>
   </div>
 
   <div class="ajax-error" id="ajax-error-<%= @collage.id %>" style="display: none;"></div>
@@ -123,16 +96,19 @@ Your annotation will start here. Please click another word to set the end point.
 </div>
 
 <div id="stats" class="right_panel">
-  <%= render :partial => "shared/author_stats", :locals => { :object => @collage } %>
+  <a href="#" class="right_panel_close"></a>
+  <h3>Author Stats</h3>
+  <%= render :partial => "shared/author_stats", :locals => { :user => @collage.owners.first } %>
   <h3>Collage Stats</h3>
   <div class="stats_panel">
-    <%= render :partial => 'collage_meta' %>
+    <%= render :partial => 'meta' %>
   </div>
   <% if false -%>
   <h3>Related Collages</h3>
   <% end -%>
 </div>
 <div id="edit_item" class="requires_edit right_panel">
+  <a href="#" class="right_panel_close"></a>
   <h3 class="instructions">Edit Collage Elements</h3>
   <i class="instructions">To create a new annotation or collage link, select a starting and end point. To edit an existing annotation, click on the colored bar or asterisk.</i>
 </div>

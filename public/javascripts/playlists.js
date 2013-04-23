@@ -147,27 +147,6 @@ jQuery.extend({
       return false;
     });
   },
-  observeFontChange: function() {
-    var val = jQuery.cookie('font_size');
-    if(val != null) {
-      jQuery('.font-size-popup select').val(val);
-      jQuery.setFontSize(val);
-    }
-    jQuery("#playlist .buttons ul #fonts span").parent().click(function() { 
-      jQuery('.font-size-popup').css({ 'top': 25 }).toggle();
-      jQuery(this).toggleClass("btn-a-active");
-      if(jQuery(this).hasClass("btn-a-active")) {
-        jQuery('.font-size-popup .jsb-moreButton').click();
-      }
-      return false;
-    });
-    jQuery('.font-size-popup select').selectbox({
-      className: "jsb", replaceInvisible: true 
-    }).change(function() {
-      var element = jQuery(this);
-      jQuery.setFontSize(element.val());
-    });
-  },
   cancelItemAdd: function() {
     if(dropped_item) {
 	    remove_item = dropped_item;
@@ -370,6 +349,7 @@ jQuery.extend({
           jQuery('#add_item_results').html(html);
           jQuery.toggleHeaderPagination();
           jQuery('div#nestable2').nestable({ group: 1, maxDepth: 1 });
+          jQuery.initializeBarcodes();
         }
       });
     });
@@ -402,7 +382,6 @@ jQuery(document).ready(function(){
   jQuery('.toolbar, .buttons').css('visibility', 'visible');
   jQuery.loadEditability();
   jQuery.observeStats();
-  jQuery.observeFontChange();
   jQuery.initializeNoteFunctionality();
 
   /* New Item Search */

@@ -25,15 +25,36 @@ jQuery.extend({
       return Mustache.to_html(template, data, partial, stream);
     }
   },
+  observeFontChange: function() {
+    jQuery('#fixed_font').click(function(e) {
+      if(jQuery(this).hasClass('active')) {
+        jQuery('#font-size-popup').hide();
+        jQuery(this).removeClass('active');
+      } else {
+        jQuery(this).addClass('active');
+        jQuery('#font-size-popup').show();
+      }
+    });
+    jQuery('#fontsize a:not(.active)').click(function(e) {
+      jQuery('#fontsize a.active').removeClass('active');
+      jQuery(this).addClass('active');
+      jQuery.setFontSize(jQuery(this).data('value')); 
+    });
+    //var val = jQuery.cookie('font_size');
+    //jQuery.cookie('font_size', element.val(), { path: "/" });
+  },
   observeResultsHover: function() {
-    jQuery('#results_set .listitem').hover(function() {
+    jQuery('#results_set .listitem').hoverIntent(function() {
+      jQuery(this).addClass('hover');
       jQuery(this).find('.icon').addClass('hover');
     }, function() {
+      jQuery(this).removeClass('hover');
       jQuery(this).find('.icon').removeClass('hover');
     });
   },
   initializeTooltips: function() {
     jQuery('.tooltip').tipsy({ gravity: 's', live: true });
+    jQuery('.left-tooltip').tipsy({ gravity: 'e', live: true });
   },
   initializeHomePageBehavior: function() {
     jQuery('#featured_playlists .item, #featured_users .item').hoverIntent(function() {
@@ -49,16 +70,21 @@ jQuery.extend({
       if(jQuery('.singleitem').size()) {
         element.parentsUntil('.listitem').last().parent().addClass('adding-item');
       }
+      jQuery('.with_popup').removeClass('with_popup');
       if(popup_item_id != 0 && current_id == popup_item_id) {
         jQuery('.add-popup').hide();
         popup_item_id = 0;
       } else {
         popup_item_id = current_id;
         popup_item_type = element.data('type');
-        var position = element.offset();
-        var results_posn = jQuery('.add-popup').parent().offset();
-        var left = position.left - results_posn.left;
-        jQuery('.add-popup').hide().css({ top: position.top + 24, left: left }).fadeIn(100);
+        if(jQuery('.singleitem').size()) {
+          jQuery('.add-popup').hide().css({ top: 110, left: '71%' }).fadeIn(100);
+        } else {
+          var listitem_element = jQuery('#listitem_' + popup_item_type + popup_item_id);
+          listitem_element.addClass('with_popup');
+          var position = listitem_element.offset();
+          jQuery('.add-popup').hide().css({ top: position.top - 47 }).fadeIn(100);
+        }
       }
 
       return false;
@@ -79,6 +105,11 @@ jQuery.extend({
       e.preventDefault();
       jQuery('#create_all_popup').hide();
       jQuery(this).removeClass('active');
+    });
+    jQuery('#create_all_popup a').hover(function(e) {
+      jQuery(this).find('span').addClass('hover');
+    }, function(e) {
+      jQuery(this).find('span').removeClass('hover');
     });
   },
   initializeHomepagePagination: function() {
@@ -240,6 +271,10 @@ jQuery.extend({
         }
       }
     });
+    jQuery('.right_panel_close').click(function(e) {
+      e.preventDefault();
+      jQuery('#collapse_toggle').click(); 
+    });
   },
   loadSlideOutTabBehavior: function() {
     jQuery('.slide-out-div').tabSlideOut({
@@ -250,7 +285,7 @@ jQuery.extend({
       tabLocation: 'right',                      //side of screen where tab lives, top, right, bottom, or left
       speed: 500,                               //speed of animation
       action: 'click',                          //options: 'click' or 'hover', action to trigger animation
-      topPos: '300px',                          //position from the top/ use if tabLocation is left or right
+      topPos: '332px',                          //position from the top/ use if tabLocation is left or right
       leftPos: '20px',                          //position from left/ use if tabLocation is bottom or top
       fixedPosition: true                      //options: true makes it stick(fixed position) on scroll
       //TODO: on open hide errors
@@ -294,6 +329,7 @@ jQuery.extend({
       jQuery('li.btn .active').click();
     }
     if(jQuery('.add-popup').is(':visible')) {
+      jQuery('.with_popup').removeClass('with_popup');
       jQuery('.add-popup').hide();
       popup_item_id = 0;
     }
@@ -307,6 +343,7 @@ jQuery.extend({
   loadPopupCloseListener: function() {
     jQuery('.close-popup').live('click', function(e) {
       e.preventDefault();
+      jQuery('.with_popup').removeClass('with_popup');
       jQuery.hideVisiblePopups();
     });
   },
@@ -355,7 +392,7 @@ jQuery.extend({
         access_results = results;
         if(results.logged_in) {
           var data = jQuery.parseJSON(results.logged_in);
-          jQuery('.requires_logged_in .user_account').append(jQuery('<a>').html(data.user.login).attr('href', "/users/" + data.user.id));
+          jQuery('.requires_logged_in .user_account').append(jQuery('<a>').html(data.user.login + ' Dashboard').attr('href', "/users/" + data.user.id));
           jQuery('#defect_user_id').val(data.user.id);
           jQuery('.requires_logged_in').animate({ opacity: 1.0 });
           jQuery('#header_login').remove();
@@ -375,9 +412,9 @@ jQuery.extend({
             jQuery('.requires_edit').remove();
           }
           if(results.can_edit_description) {
-            jQuery('.collage_edit').animate({ opacity: 1.0 });
+            jQuery('.edit-action').animate({ opacity: 1.0 });
           } else {
-            jQuery('.collage_edit').remove();
+            jQuery('.edit-action').remove();
           }
         } else if(jQuery.classType() == 'playlists') {  //Playlists only
           if(results.can_edit || results.can_edit_notes || results.can_edit_desc) {
@@ -708,15 +745,24 @@ jQuery.extend({
   Generic bookmark item, more details here.
   */
   observeBookmarkControls: function(region) {
-    jQuery(region + ' .bookmark-action').live('click', function(e){
+    if(jQuery('.singleitem').size()) {
+      var key = 'listitem_' + jQuery.classType().replace(/s$/, '') + jQuery('.singleitem').data('itemid');
+      if(user_bookmarks[key]) {
+        jQuery('.bookmark-action').addClass('inactive').html('<span class="icon icon-favorite"></span>').attr('title', 'Bookmarked');
+        jQuery('.bookmark-action .icon').css('opacity', 0.3);
+      }
+    } else {
+      jQuery.each(user_bookmarks, function(i, j) {
+        jQuery('#' + i + ' .bookmark-action').addClass('inactive').html('<span class="icon icon-favorite"></span>BOOKMARKED');
+      });
+    }
+
+    jQuery(region + ' .bookmark-action:not(.inactive)').live('click', function(e){
       var item_url = jQuery.rootPathWithFQDN() + 'bookmark_item/';
       var el = jQuery(this);
-      if(el.hasClass('bookmark-popup')) {
-        item_url += popup_item_type + '/' + popup_item_id;
-      } else if (el.hasClass('link-bookmark')) {
-        item_url += el.data('type') + '/' + el.data('itemid');
-      } else {        
-        item_url += jQuery.classType() + '/' + jQuery('.singleitem').data('itemid');  
+      item_url += el.data('type') + '/' + el.data('itemid');
+      if (el.hasClass('link-bookmark')) {
+        jQuery('#listitem_' + el.data('type') + el.data('itemid')).addClass('with_popup');
       }
       e.preventDefault();
       jQuery.ajax({
@@ -732,39 +778,17 @@ jQuery.extend({
           jQuery.hideGlobalSpinnerNode();
 
           var snode;
-          if(data.already_bookmarked) {
-            alert('already bookmarked!');
-            //snode = jQuery('<span class="bookmarked">').html('ALREADY BOOKMARKED!').append(
-            //jQuery('<a>').attr('href', jQuery.rootPathWithFQDN() + 'users/' + data.user_id + '#vbookmarks').html('VIEW BOOKMARKS'));
-          } else {
-            alert('bookmarked!');
-            //snode = jQuery('<span class="bookmarked">').html('BOOKMARKED!').append(
-            //jQuery('<a>').attr('href', jQuery.rootPathWithFQDN() + 'users/' + data.user_id + '#vbookmarks').html('VIEW BOOKMARKS'));
-          }
-
-          //TODO: Should we rerender barcode when an item is bookmarked?
-
- /*
-          if(el.hasClass('bookmark-popup') || el.hasClass('bookmark-link')) {
-            if(jQuery.classType() == 'users' && jQuery('#bookmark_tab').hasClass('active')) {
-              snode.html('ALREADY BOOKMARKED!');
-               jQuery('hgroup.' + popup_item_type + popup_item_id + ' .bookmarked').remove();
-               snode.insertBefore(jQuery('hgroup.' + popup_item_type + popup_item_id + ' .cl'));
-            } else if(jQuery.classType() == 'playlists' && jQuery('.singleitem').size() && popup_item_type != 'default') {
-               jQuery('hgroup.' + popup_item_type + popup_item_id + ' .bookmarked').remove();
-               snode.insertBefore(jQuery('hgroup.' + popup_item_type + popup_item_id + ' .cl'));
-            } else if (el.hasClass('bookmark-link')){
-               jQuery('.listitem' + el.data('itemid') + ' h4 .bookmarked').remove();
-               jQuery('.listitem' + el.data('itemid') + ' h4').append(snode);
+          if(!data.already_bookmarked) {
+            if (el.hasClass('link-bookmark')) {
+              el.addClass('inactive').html('<span class="icon icon-favorite"></span>BOOKMARKED');
+              setTimeout(function() {
+                jQuery('#listitem_' + el.data('type') + el.data('itemid')).removeClass('with_popup');
+              }, 500);
             } else {
-               jQuery('.listitem' + popup_item_id + ' h4 .bookmarked').remove();
-               jQuery('.listitem' + popup_item_id + ' h4').append(snode);
+              el.addClass('inactive').html('<span class="icon icon-favorite"></span>').attr('title', 'Bookmarked');
+              el.find('.icon').css('opacity', 0.3);
             }
-          } else {
-            jQuery('.singleitem > .description > h2 .bookmarked,#fixed_header > .description > h2 .bookmarked').remove();
-            jQuery('.singleitem > .description > h2,#fixed_header > .description h2').append(snode);
           }
-          */
         },
         error: function(xhr, textStatus, errorThrown) {
           jQuery.hideGlobalSpinnerNode();
@@ -838,7 +862,7 @@ jQuery.extend({
 
   /* Generic HTML form elements */
   observeGenericControls: function(region){
-    jQuery(region + ' .remix-action,' + region + ' .icon-edit,' + region + ' .new-action').live('click', function(e){
+    jQuery(region + ' .remix-action,' + region + ' .edit-action,' + region + ' .new-action').live('click', function(e){
       var actionUrl = jQuery(this).attr('href');
       e.preventDefault();
       jQuery.ajax({
@@ -999,11 +1023,12 @@ jQuery(function() {
   jQuery.loadOuterClicks();
   jQuery.loadSlideOutTabBehavior();
   jQuery.initializeViewerToggle();
-  jQuery.initializeEditPanelAdjust();
+  //jQuery.initializeEditPanelAdjust();
   jQuery.initializeHomepagePagination();
   jQuery.initializeTooltips();
   jQuery.initializeCreatePopup();
   jQuery.initializeHomePageBehavior();
+  jQuery.observeFontChange();
 
   if(document.location.hash.match('ajax_region=') || document.location.hash.match('page=')) {
     jQuery.listResults(jQuery.address.value());

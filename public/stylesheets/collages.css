@@ -50,6 +50,13 @@
   display: none;
 }
 
+#collage .bookmark-action {
+  color: #5590CC;
+  text-decoration:none;
+}
+#collage .bookmark-action.inactive {
+  opacity: 0.3;
+}
 .highlight { 
   background: #E0F5BD;
 }
@@ -58,12 +65,9 @@
   width: 200px; 
   opacity: 0.8;
 }
-#bcollages .tipsy-arrow-s {
-  border-top-color: #C4EB80; 
-}
 
 /* Collage popup */
-.popup {
+.singleitem .popup {
   position:absolute;
   left:0; 
   z-index:1;
@@ -75,36 +79,36 @@
   width: 150px;
   color: #FFF;
 }
-.popup ul {
+.singleitem .popup ul {
   padding-top: 0px;
   line-height: 17px;
 }
-.popup ul li {
+.singleitem .popup ul li {
   padding-bottom: 5px;
   text-transform: uppercase;
 }
-.popup ul li a { 
+.singleitem .popup ul li a { 
   text-decoration: none; 
   display: block;
   font-weight: normal; 
   font-size: 9px; 
   color: #FFF;
 }
-.popup ul li a.inactive {
+.singleitem .popup ul li a.inactive {
   opacity: 0.5;
 }
-.popup ul li a.link-o {
+.singleitem .popup ul li a.link-o {
   background:#ffcc00;
 }
-.popup #layers strong {
+.singleitem .popup #layers strong {
   font-style: italic;
   padding: 5px 10px 5px 0px;
 }
-.popup ul#layers li a {
+.singleitem .popup ul#layers li a {
   display: inline-block;
   padding: 5px;
 }
-.popup ul#layers li#unlayered_li a {
+.singleitem .popup ul#layers li#unlayered_li a {
   padding: 10px 0px 0px 0px;
 }
 #print-container {
@@ -162,7 +166,6 @@
 
 /* Hiding while page is loading */
 .singleitem .details .edit-action,
-#collage .description .toolbar ul li.requires_logged_in,
 .requires_logged_in,
 .requires_edit,
 .afterload {
@@ -251,13 +254,6 @@ form.formtastic fieldset > ol > li.text textarea.markItUpEditor { width: 100%; }
   line-height: 18px;
 }
 
-/* Barcode */
-#collage_barcode {
-  display: block;
-  opacity: 1.0;
-  background: none;
-  padding: 20px 0px;
-}
 
 /* Tabs */
 .tabs a {

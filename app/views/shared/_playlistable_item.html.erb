@@ -3,20 +3,23 @@
   <a href="#" id="right_page">R</a>
   <a href="#" id="left_page">L</a>
   <div id="h3_wrapper">
-  <h3><%= pluralize @objects.total_entries, "Result" %> <span>(Drag and drop items)</span></h3>
+  <h3><%= pluralize @objects.total, "Result" %> <span>(Drag and drop items)</span></h3>
   </div>
 </div>
 <div id="nestable2">
   <ol class="dd-list">
-    <% @objects.each_with_index do |hit, i| -%>
-    <li class="listing dd-item" data-index="<%= i %>" data-type="<%= hit[2] %>" data-id="<%= hit[0] %>" data-drop="new_item" id="listing_<%= hit[2] %>_<%= hit[0] %>">
+    <% @objects.results.each_with_index do |hit, i| -%>
+    <li class="listing dd-item" data-index="<%= i %>" data-type="<%= hit.class.to_s.downcase %>" data-id="<%= hit.id %>" data-drop="new_item" id="listing_<%= hit.class.to_s.downcase %>_<%= hit.id %>">
       <div class="dd-handle">
-      <span class="icon icon-<%= hit[3] %>"></span>
-      <h4><%= hit[1] %></h4>
+      <a class="tooltip icon icon-<%= hit.class == Media ? "media-#{hit.media_type.slug}" : hit.class.to_s.downcase %>" title="<%= hit.class == Media ? hit.media_type.label : hit.class %>"></a>
+      <h4><%= hit.display_name %></h4>
+      <div class="listing_barcode">
+        <%= render :partial => "shared/barcode", :locals => { :object => hit } %>
+      </div>
       </div>
     </li>
     <% end %>
   </ol>
 </div>
-<%= will_paginate @objects, :previous_label => 'Prev', :next_label => 'Next' %>
+<%= will_paginate @objects.hits, :previous_label => 'Prev', :next_label => 'Next' %>
 <% end %>

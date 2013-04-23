@@ -5,15 +5,13 @@ class BaseController < ApplicationController
     params[:page] ||= 1
 
     if params[:keywords].present?
-      obj = model.nil? ? Sunspot.new_search(Playlist, Collage, Case, Media, TextBlock) : Sunspot.new_search(model)
-      obj.build do
+      @objects = model.nil? ? Sunspot.new_search(Playlist, Collage, Case, Media, TextBlock) : Sunspot.new_search(model)
+      @objects.build do
         keywords params[:keywords]
         paginate :page => params[:page], :per_page => 10 || nil
         order_by :score, :desc
       end
-      obj.execute!
-      t = obj.hits.inject([]) { |arr, h| arr.push([h.stored(:id), h.stored(:display_name), h.class_name.downcase, h.class_name == Media ? h.result.media_type.slug : h.class_name.downcase]); arr }
-      @objects = WillPaginate::Collection.create(params[:page], 10, obj.total) { |pager| pager.replace(t) } 
+      @objects.execute!
     else
       cache_key = model.present? ? "#{model.to_s.tableize}-embedded-search-#{params[:page]}--display_name-asc" :
         "embedded-search-#{params[:page]}--display_name-asc"
@@ -25,10 +23,8 @@ class BaseController < ApplicationController
           order_by :display_name, :asc
         end
         obj.execute!
-        t = obj.hits.inject([]) { |arr, h| arr.push([h.stored(:id), h.stored(:display_name), h.class_name.downcase, h.class_name == "Media" ? "media-#{h.result.media_type.slug}" : h.class_name.downcase]); arr }
-        { :results => t, :count => obj.total }
+        obj
       end
-      @objects = WillPaginate::Collection.create(params[:page], 10, @objects[:count]) { |pager| pager.replace(@objects[:results]) }
     end
 
     render :partial => 'shared/playlistable_item'
@@ -114,6 +110,8 @@ class BaseController < ApplicationController
       set_belongings model
     end
 
+    #@formatted_bookmarks = 
+
     respond_to do |format|
       format.html do
         if request.xhr?
@@ -130,6 +128,7 @@ class BaseController < ApplicationController
       model = params[:controller] == "medias" ? Media : params[:controller].singularize.classify.constantize
       item = model.find(params[:id])
       if item.present?
+        @single_resource = item
         instance_variable_set "@#{model.to_s.tableize.singularize}", item
         @page_title = item.name
       end

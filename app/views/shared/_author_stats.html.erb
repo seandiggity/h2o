@@ -1,14 +1,31 @@
-<h3>Author Stats</h3>
 <div class="stats_panel">
-  <%= render :partial => "shared/barcode", :locals => { :object => object.owners.first } %>
+  <%= render :partial => "shared/barcode", :locals => { :object => user } %>
   <p>
     <label>Name:</label>
-    <span><%= object.owners.first.display %></span>
+    <span><%= user.display %></span>
   </p>
-  <% if object.owners.first.description.present? -%>
+  <% if user.title.present? -%>
+  <p>
+    <label>Title:</label>
+    <span><%= user.title %></span>
+  </p>
+  <% end -%>
+  <% if user.affiliation.present? -%>
+  <p>
+    <label>Affiliation:</label>
+    <span><%= user.affiliation %></span>
+  </p>
+  <% end -%>
+  <% if user.url.present? -%>
+  <p>
+    <label>Website:</label>
+    <span><%= user.url %></span>
+  </p>
+  <% end -%>
+  <% if user.description.present? -%>
   <p>
     <label>Description:</label>
-    <span><%= object.owners.first.description %></span>
+    <span><%= user.description %></span>
   </p>
   <% end -%>
 </div>

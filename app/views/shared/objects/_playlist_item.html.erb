@@ -20,7 +20,7 @@
     <% if recursive_level == 0 %>
     <%= link_to raw('<span class="icon icon-delete"></span>'), url_for(:controller => item.resource_item_type.tableize, :action => 'destroy', :id => resource_item),
       :class => "action delete-playlist-item requires_remove smaller" %>
-    <%= link_to raw('<span class="icon icon-edit"></span>'), url_for(:controller => item.resource_item_type.tableize, :action => 'edit', :id => resource_item), 
+    <%= link_to raw('<span class="icon edit-action icon-edit"></span>'), url_for(:controller => item.resource_item_type.tableize, :action => 'edit', :id => resource_item), 
       :class => "action edit-playlist-item requires_edit smaller" %>
     <% end -%>
     <div class="item_description smaller">
@@ -42,6 +42,7 @@
 		    <% end -%>
 		    <% end -%>
 		  </p>
+      <% if recursive_level == 0 -%>
 		  <span class="requires_logged_in">
       <% if actual_object.is_a?(Playlist) -%>
 		  <%= link_to raw('<span class="icon icon-remix"></span>'), prepare_copy_playlist_path(object), :class => "tooltip link-remix remix-action", :title => "Remix" %>
@@ -52,6 +53,7 @@
 		  <%= link_to raw('<span class="icon icon-bookmark"></span>'), '#', :class => "tooltip link-bookmark bookmark-action", :title => "Bookmark #{actual_object.name}" %>
 		  </span>
 		  <%= render :partial => "shared/barcode", :locals => { :object => actual_object } %>
+      <% end -%>
       <% if actual_object.class.respond_to?(:format_content) && actual_object.respond_to?(:description) -%>
 		  <div class="actual_description">
 		  <%= actual_object.class.format_content(actual_object.description) %>

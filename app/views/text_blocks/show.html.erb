@@ -1,28 +1,24 @@
-<%= render :partial => 'shared/second_nav', :locals => { :nav_id => 'text_blocks-logo',
-  :url => text_blocks_path } %>
+<a href="#" class="fixed_link left-tooltip" id="collapse_toggle" title="Toggle Right Panel">Collapse/Expand</a>
+<a href="<%= export_text_block_path(@text_block) %>" class="fixed_link left-tooltip" id="fixed_print" title="Print <%= @text_block.name %>">Print</a>
+
+<aside id="singleitem_barcode" class="right_panel">
+<%= render :partial => "shared/barcode", :locals => { :object => @text_block } %>
+</aside>
+
+<aside id="singleitem_toolbar">
+  <% if current_user -%>
+  <%= link_to raw('<span class="icon icon-collage"></span>'), new_collage_path(:annotatable_type => 'TextBlock', :annotatable_id => @text_block), :class => 'collage-this new-action' %>
+  <%= link_to raw('<span class="icon icon-add"></span>'), '#', "data-item_id" => @text_block.id, "data-type" => "text_block", :class => 'link-add tooltip requires_logged_in', :title => "Add to a Playlist" %>
+  <%= link_to raw('<span class="icon icon-bookmark"></span>'), '#', :class => "bookmark-action tooltip requires_logged_in", :title => "Bookmark #{@text_block.name}", "data-type" => "text_block", "data-itemid" => @text_block.id %>
+  <% end -%>
+</aside>
 
 <div id="text_block" class="singleitem" data-itemid="<%= @text_block.id %>">
-  <hgroup class="description">
-    <h2><%= @text_block.display_name %></h2>
-    <aside class="toolbar">
-      <ul>
-        <% if current_user -%>
-        <li><%= link_to "Collage This", new_collage_path(:annotatable_type => 'TextBlock', :annotatable_id => @text_block), :class => 'collage-this new-action' %></li>
-        <li><%= link_to "Bookmark This Text Block", '#', :class => 'link-bookmark bookmark-action' %></li>
-        <% end -%>
-        <li id="print-container">
-          <a href="<%= export_text_block_path(@text_block) %>" class="link-print" target="_blank">
-          <span>Print</span>
-          </a>
-        </li>
-      </ul>
-    </aside>
-    <div class="cl"></div>
-  </hgroup>
-  <div class="details">
-    <% if current_user && (@text_block.admin? || @text_block.owner?) %>
-    <%= link_to "EDIT", edit_text_block_path(@text_block) %>
-    <% end -%>
+  <div id="main_details">
+    <h1><%= @text_block.display_name %></h1>
+  </div>
+  <div id="description">
+    <%= link_to raw('<span class="icon icon-edit"></span>EDIT TEXT BLOCK INFORMATION<span class="icon icon-arrow"></span>'), edit_text_block_path(@text_block), :class => "edit-action" %>
   </div>
   <article>
     <%= raw @text_block.content %>
@@ -30,17 +26,15 @@
 </div>
 
 <div id="stats" class="right_panel">
-  <% cache "text_block-#{@text_block.id}-tags" do -%>
-  <div class="tags">
-    <% @text_block.tags.each do |tag| -%>
-    <%= link_to tag.name, text_block_tag_path(CGI.escape(tag.name)) %>
-    <% end -%>
+  <a href="#" class="right_panel_close"></a>
+  <h3>Author Stats</h3>
+  <%= render :partial => "shared/author_stats", :locals => { :user => @text_block.owners.first } %>
+  <h3>Text Block Stats</h3>
+  <div class="stats_panel">
+    <%= render :partial => "meta" %>
   </div>
-  <% end -%>
-  <div class="cl"></div>
-  <% cache "text_block-#{@text_block.id}-detail" do -%>
-    <%= render :partial => 'shared/objects/metadatum', :object => @text_block.metadatum %>
-  <% end -%>
 </div>
 
 <div class="cl"></div>
+
+<%= render :partial => "shared/popup", :locals => { :type => "text_block" } %>

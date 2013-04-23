@@ -10,7 +10,7 @@
     <h4>
       <%= pending_case.short_name %>
       <%= link_to "DELETE", case_path(pending_case), :class => "icon icon-delete tooltip" %>
-      <%= link_to "EDIT", edit_case_path(pending_case), :class => "icon icon-edit tooltip" %>
+      <%= link_to "EDIT", edit_case_path(pending_case), :class => "icon edit-action icon-edit tooltip" %>
       <% if current_user.is_case_admin -%>
       <%= link_to "APPROVE", approve_case_path(pending_case), :class => "action approve-action" %>
       <% end -%>

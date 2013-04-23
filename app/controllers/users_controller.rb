@@ -74,11 +74,18 @@ class UsersController < ApplicationController
     #This is added for an optimization, to avoid lookup roles / authors of each item
     params[:sort] = 'name' if params[:sort] == 'display_name'
 
-    [Playlist, Collage, Case, Media, TextBlock].each do |model|
-      set_belongings model
+Rails.logger.warn "stephie: #{@user.inspect}"
+    @bookshelf = Sunspot.new_search(Playlist, Collage, Case, Media, TextBlock)
+    @bookshelf.build do
+      paginate :page => params[:page], :per_page => 25 
+      with :author, "stephskardal" #@user.login
+      with :public, true
+      with :active, true
+      order_by :display_name, :desc
     end
-    @types = [:playlists, :collages, :cases, :medias, :textblocks]
+    @bookshelf.execute!
 
+=begin
     if current_user && @user == current_user
       @page_title = "Dashboard | H2O Classroom Tools"
       if @user.is_case_admin
@@ -108,6 +115,7 @@ class UsersController < ApplicationController
       end
     end
 
+=end
     if current_user && current_user == @user
       add_javascripts 'user_dashboard'
       add_stylesheets ['user_dashboard', 'playlists']

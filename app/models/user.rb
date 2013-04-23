@@ -41,7 +41,9 @@ class User < ActiveRecord::Base
   RATINGS = {
     :playlist_created => 5,
     :collage_created => 3,
-    :base_created => 1,
+    :media_created => 1,
+    :text_block_created => 1,
+    :case_created => 1,
     :user_case_collaged => 3,
     :user_media_collaged => 3,
     :user_text_block_collaged => 3,
@@ -60,7 +62,9 @@ class User < ActiveRecord::Base
   }
   RATINGS_DISPLAY = { :playlist_created => "Playlist Created",
     :collage_created => "Collage Created",
-    :base_created => "Base Created",
+    :media_created => "Media Created",
+    :text_block_created => "Text Block Created",
+    :case_created => "Case Created",
     :user_case_collaged => "Case Collaged",
     :user_media_collaged => "Media Collaged",
     :user_text_block_collaged => "Text Block Collaged",
@@ -165,6 +169,10 @@ class User < ActiveRecord::Base
     end
   end
 
+  def bookmarks_map
+    self.bookmarks.inject({}) { |h, i| h["listitem_#{i.resource_item_type.tableize.singularize.gsub('item_', '')}#{i.resource_item.actual_object_id}"] = 1; h }
+  end
+
   def bookmarks_type(klass, item_klass)
     Rails.cache.fetch("user-bookmark-#{klass.to_s.downcase}-#{self.id}") do
       items = self.bookmark_id ? klass.find_by_sql("SELECT * FROM #{klass.to_s.tableize}
@@ -259,7 +267,7 @@ class User < ActiveRecord::Base
   
       ["collages", "playlists", "medias", "text_blocks", "cases"].each do |type|
         single_type = type.singularize
-        created_type = ["playlists", "collages"].include?(type) ? "#{single_type}_created" : "base_created"
+        created_type = "#{single_type}_created"
         item_klass = "Item#{type.singularize.camelize}".constantize
         type_title = "#{single_type.capitalize}"
   
