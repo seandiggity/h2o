@@ -345,8 +345,8 @@ ActiveRecord::Schema.define(:version => 20130418012853) do
     t.string   "hex"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "tag_version"
     t.integer  "colllage_version"
+    t.integer  "tag_version"
     t.integer  "version"
   end
 
@@ -359,8 +359,8 @@ ActiveRecord::Schema.define(:version => 20130418012853) do
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "reportable_version"
     t.integer  "reporter_version"
+    t.integer  "reportable_version"
   end
 
   add_index "defect_versions", ["defect_id"], :name => "index_defect_versions_on_defect_id"
@@ -372,8 +372,8 @@ ActiveRecord::Schema.define(:version => 20130418012853) do
     t.integer  "user_id",            :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "reportable_version"
     t.integer  "reporter_version"
+    t.integer  "reportable_version"
     t.integer  "version"
   end
 
