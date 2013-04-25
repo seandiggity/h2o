@@ -101,6 +101,16 @@ class User < ActiveRecord::Base
       return "#{login} (#{karma.to_i})"
     end
   end
+  def simple_display
+    if login.match(/^anon_[a-f,\d]+/)
+      return 'anonymous'
+    elsif attribution.present?
+      return attribution
+    else
+      return login
+    end
+  end
+
 
   def cases
     #This is an alternate query, TBD if it's really faster, but now this is cached with Rails low level caching

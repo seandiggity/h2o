@@ -44,7 +44,7 @@ jQuery.extend({
     //jQuery.cookie('font_size', element.val(), { path: "/" });
   },
   observeResultsHover: function() {
-    jQuery('#results_set .listitem').hoverIntent(function() {
+    jQuery('#results .listitem').hoverIntent(function() {
       jQuery(this).addClass('hover');
       jQuery(this).find('.icon').addClass('hover');
     }, function() {
@@ -56,15 +56,15 @@ jQuery.extend({
     jQuery('.tooltip').tipsy({ gravity: 's', live: true });
     jQuery('.left-tooltip').tipsy({ gravity: 'e', live: true });
   },
-  initializeHomePageBehavior: function() {
+  observeHomePageToggle: function() {
     jQuery('#featured_playlists .item, #featured_users .item').hoverIntent(function() {
       jQuery(this).find('.additional_details').slideDown(500);
     }, function() {
       jQuery(this).find('.additional_details').slideUp(200);
     });
   },
-  observeTabDisplay: function(region) {
-    jQuery(region + ' .link-add a, ' + region + ' a.link-add').live('click', function() {
+  observeTabDisplay: function() {
+    jQuery(' .link-add a, a.link-add').live('click', function() {
       var element = jQuery(this);
       var current_id = element.data('item_id');
       if(jQuery('.singleitem').size()) {
@@ -95,7 +95,7 @@ jQuery.extend({
       e.preventDefault();
     });
   },
-  initializeCreatePopup: function() {
+  observeCreatePopup: function() {
     jQuery('#create_all:not(.active)').live('click', function(e) {
       e.preventDefault();
       jQuery('#create_all_popup').show();
@@ -112,7 +112,7 @@ jQuery.extend({
       jQuery(this).find('span').removeClass('hover');
     });
   },
-  initializeHomepagePagination: function() {
+  observeLoadMorePagination: function() {
     jQuery('.load_more_pagination a').live('click', function(e) {
       e.preventDefault();
       var current = jQuery(this);
@@ -210,7 +210,7 @@ jQuery.extend({
     jQuery('.singleitem *:not(.no_adjust,.smaller,:has(*)),.right_panel *:not(.no_adjust,:has(*))').css({ 'font-size' : (value*100) + '%', 'line-height' : (value*100) + '%' });
     jQuery('.singleitem *.smaller').css('font-size', (value*100 - 20) + '%');
   },
-  initializeViewerToggle: function() {
+  observeViewerToggle: function() {
     jQuery('#collapse_toggle').click(function(e) {
       e.preventDefault();
       var el = jQuery(this);
@@ -234,39 +234,6 @@ jQuery.extend({
         } else {
           jQuery('#stats').fadeOut(200, function() {
             jQuery('.singleitem').animate({ width: "100%" }, 100);
-          });
-        }
-      }
-    });
-    jQuery('#edit_toggle').click(function(e) {
-      e.preventDefault();
-      jQuery('#edit_item #status_message').remove();
-      var el = jQuery(this);
-      if(jQuery(this).hasClass('edit_mode')) {
-        el.removeClass('edit_mode');
-        jQuery('#playlist .dd').removeClass('playlists-edit-mode');
-        jQuery('#playlist .dd .icon').removeClass('hover');
-        if(jQuery('#collapse_toggle').hasClass('expanded')) {
-          jQuery('#edit_item').fadeOut(200, function() {
-            jQuery('.singleitem').animate({ width: "100%" }, 100);
-          });
-        } else {
-          jQuery('#edit_item').fadeOut(200, function() {
-            jQuery('#stats').fadeIn(200);
-          });
-        }
-      } else {
-        el.addClass('edit_mode');
-        jQuery('#playlist .dd').addClass('playlists-edit-mode');
-        jQuery('#playlist .dd .icon').addClass('hover');
-        if(jQuery('#collapse_toggle').hasClass('expanded')) {
-          jQuery('#collapse_toggle').removeClass('expanded');
-          jQuery('.singleitem').animate({ width: "70%" }, 100, 'swing', function() {
-            jQuery('#edit_item').fadeIn(200);
-          });
-        } else {
-          jQuery('#stats').fadeOut(200, function() {
-            jQuery('#edit_item').fadeIn(200);
           });
         }
       }
@@ -451,12 +418,11 @@ jQuery.extend({
             var node = jQuery('<option>').val(el.playlist.id).text(el.playlist.name);
             jQuery('.add-popup select').append(node);
           });
-          jQuery.observeDragAndDrop();
         }
       }
     });
   },
-  initializeTabBehavior: function() {
+  observeTabBehavior: function() {
     jQuery('.tabs a').click(function(e) {
       var region = jQuery(this).data('region');
       jQuery('.add-popup').hide();
@@ -557,16 +523,11 @@ jQuery.extend({
       success: function(html){
         jQuery.address.value(href);
         jQuery.hideGlobalSpinnerNode();
-        if(jQuery('#busers').length) {
-          //TODO TODO
-          //jQuery('#TODO').html(html);
-          //var class_region = region.replace(/^#/, '.');
-          //jQuery(class_region + '_pagination').html(jQuery(region + ' #new_pagination').html()); 
-        } else {
-          jQuery('#results_set').html(html);
-          jQuery('.pagination').html(jQuery('#new_pagination').html());
-          jQuery.initializeBarcodes();
-        }
+        jQuery('#results_set').html(html);
+        jQuery('.pagination').html(jQuery('#new_pagination').html());
+        jQuery('#new_pagination').remove();
+        jQuery.initializeBarcodes();
+        jQuery.observeResultsHover();
       }
     });
   },
@@ -579,7 +540,7 @@ jQuery.extend({
       if(document.location.search != '') {
         url += document.location.search + "&sort=" + sort;
       } else {
-        url += "&sort=" + sort;
+        url += "?sort=" + sort;
       }
       jQuery.listResults(url);
     });
@@ -745,7 +706,7 @@ jQuery.extend({
   /*
   Generic bookmark item, more details here.
   */
-  observeBookmarkControls: function(region) {
+  observeBookmarkControls: function() {
     if(jQuery('.singleitem').size()) {
       var key = 'listitem_' + jQuery.classType().replace(/s$/, '') + jQuery('.singleitem').data('itemid');
       if(user_bookmarks[key]) {
@@ -758,7 +719,7 @@ jQuery.extend({
       });
     }
 
-    jQuery(region + ' .bookmark-action:not(.inactive)').live('click', function(e){
+    jQuery('.bookmark-action:not(.inactive)').live('click', function(e){
       var item_url = jQuery.rootPathWithFQDN() + 'bookmark_item/';
       var el = jQuery(this);
       item_url += el.data('type') + '/' + el.data('itemid');
@@ -947,23 +908,22 @@ jQuery(function() {
   jQuery.initializeBarcodes();
   jQuery.observeDestroyControls('');
   jQuery.observeGenericControls('');
-  jQuery.observeBookmarkControls('');
+  jQuery.observeBookmarkControls();
   jQuery.observePagination(); 
   jQuery.observeSort();
-  jQuery.observeTabDisplay('');
+  jQuery.observeTabDisplay();
   jQuery.observeLoginPanel();
   jQuery.observeResultsHover();
-  jQuery.initializeTabBehavior();
+  jQuery.observeTabBehavior();
   jQuery.loadEscapeListener();
   jQuery.loadPopupCloseListener();
   jQuery.loadOuterClicks();
   jQuery.loadSlideOutTabBehavior();
-  jQuery.initializeViewerToggle();
-  //jQuery.initializeEditPanelAdjust();
-  jQuery.initializeHomepagePagination();
+  jQuery.observeViewerToggle();
+  jQuery.observeLoadMorePagination();
   jQuery.initializeTooltips();
-  jQuery.initializeCreatePopup();
-  jQuery.initializeHomePageBehavior();
+  jQuery.observeCreatePopup();
+  jQuery.observeHomePageToggle();
   jQuery.observeFontChange();
   jQuery.observeMetadataForm();
   jQuery.observeMetadataDisplay();

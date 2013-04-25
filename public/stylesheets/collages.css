@@ -250,10 +250,6 @@ form.formtastic fieldset > ol > li.text textarea.markItUpEditor { width: 100%; }
 #link_edit {
   background: #d5d5d5; 
 }
-#annotation_edit .instruction,
-#link_edit .instruction {
-  padding: 10px;
-}
 #annotation_edit .dynamic,
 #link_edit .dynamic {
   background: #FFF;
@@ -322,22 +318,6 @@ form.formtastic fieldset > ol > li.layer_check input {
   display: inline-block;
   padding: 5px 10px;
   border: none;
-}
-
-/* Tabs */
-.tabs {
-}
-.tabs a {
-  display: block;
-  width: 100%;
-  text-decoration: none;
-  padding: 5px 0px;
-  text-indent: 10px;
-  font-weight: bold;
-  background: #FFF;
-}
-.tabs a.current {
-  background: #d5d5d5;
 }
 
 /* Annotation Edit */

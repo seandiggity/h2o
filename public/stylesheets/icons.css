@@ -173,3 +173,11 @@
   position: relative;
   top: 1px;
 }
+.icon-edit-large {
+  background-position: -387px -112px;
+  height: 19px;
+  width: 17px;
+}
+.icon-approve {
+  background-position: -58px -107px;
+}

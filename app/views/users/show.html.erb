@@ -4,33 +4,27 @@
 
 <% if false -%>
 <a href="#" class="fixed_link" id="activities_toggle"><span class="icon icon-activities"></span></a>
-<% end -%>
 <a href="#" class="fixed_link" id="bookshelf_toggle"><span class="icon icon-bookshelf"></span></a>
 <a href="#" class="fixed_link" id="profile_toggle"><span class="icon icon-profile"></span></a>
 <a href="#" class="fixed_link" id="settings_toggle"><span class="icon icon-settings"></span></a>
+<% end -%>
 
-<div id="dashboard">
-  <% if false -%>
-  <div id="activities_panel" class="panel">
-    <div class="header">
-      <h3>My Activities</h3>
-      <span class="icon icon-activities"></span>
-    </div>
-  </div>
-  <% end -%>
+<div id="results">
   <div id="bookshelf_panel" class="panel">
     <div class="header">
-      <h3>My Bookshelf</h3>
+      <h3><%= @user == current_user ? "My" : "#{@user.simple_display}'s" %> Bookshelf</h3>
       <span class="icon icon-bookshelf"></span>
+      <aside class="sort">
+        <%= render :partial => 'shared/sort', :locals => { :list => @sort_lists[:all] } %>
+      </aside>
+      <aside class="pagination">
+        <%= will_paginate @bookshelf.hits, :container => false, :previous_label => '&laquo;', :next_label => '&raquo;' %>
+      </aside>
     </div>
-    <ul id="user_bookshelf_items" class="user_list">
+    <ul id="results_set">
       <% @bookshelf.results.each do |hit| -%>
-      <li>
-        <a href="#" class="tooltip icon icon-<%= hit.class.to_s.downcase %>" title="<%= hit.class %>"></a>
-        <%= link_to hit.display_name, self.send("#{hit.class.to_s.tableize.singularize}_path", hit.id), :class => "item" %></a>
-        <%= render :partial => "shared/barcode", :locals => { :object => hit } %>
-        Panel: Add to.., print, edit, remix, view, trash
-      </li>
+      <%= render :partial => "shared/objects/#{hit.class == Case ? 'case_obj' : hit.class.to_s.downcase}",
+                 :locals => { (hit.class == Case ? :case_obj : hit.class.to_s.downcase.to_sym) => hit } %>
       <% end -%>
     </ul>
   </div>
@@ -38,13 +32,18 @@
     <div class="header">
       <h3>Profile</h3>
       <span class="icon icon-profile"></span>
+      <% if @user == current_user -%>
+      <%= link_to 'Edit', edit_user_path(@user), :class => "icon icon-edit-large" %>
+      <% end -%>
     </div>
     <%= render :partial => "shared/author_stats", :locals => { :user => @user } %>
   </div>
+  <% if @user == current_user -%>
   <div id="settings_panel" class="panel">
     <div class="header">
       <h3>Settings</h3>
       <span class="icon icon-settings"></span>
+      <%= link_to 'Edit', edit_user_path(@user), :class => "icon icon-edit-large" %>
     </div>
     <div class="stats_panel">
       <p>
@@ -68,92 +67,68 @@
         <span><%= @user.email_address %></span>
       </p>
       <p>
-        <label>Password</label>
+        <label>Password:</label>
         <span>********</span>
       </p>
     </div>
-
   </div>
+	<div id="collections_panel" class="panel">
+	  <div class="header">
+	    <h3>User Collections</h3>
+	  </div>
+	  <ul id="user_collections">
+	    <li class="listitem">
+	      <div class="controls">
+	        <ul>
+	          <li class="link-add">
+	            <a href="<%= new_user_collection_path %>" class="new-action">Add</a>
+	          </li>
+	        </ul>
+	      </div>
+	      <div class="details">
+	        <h4><a href="<%= new_user_collection_path %>" class="new-action">Create a New User Collection</a></h4>
+	      </div>
+	      <div class="cl"></div>
+	    </li>
+	    <%= render :partial => "shared/objects/user_collection", :collection => @user.collections %>
+	  </ul>
+	</div>
+  <% end -%>
+
   <div class="clear"></div>
+
+	<% if @user == current_user && @user.bookmarks.any? -%>
+	<div id="bookmarks_panel" class="panel special_panel">
+	  <div class="header">
+	    <h3>Bookmarks</h3>
+	  </div>
+		<ul id="bookmarks" class="playlists">
+			<% @user.bookmarks.each do |bookmark| -%>
+      <% item = bookmark.resource_item.actual_object %>
+      <%= render :partial => "shared/objects/#{item.class == Case ? 'case_obj' : item.class.to_s.downcase}",
+                 :locals => { (item.class == Case ? :case_obj : item.class.to_s.downcase.to_sym) => item } %>
+			<% end -%>
+		</ul>
+	</div>
+	<% end -%>
+
+	<% @types.each do |type| -%>
+  <% if @results[type].any? -%>
+	<div class="panel special_panel">
+	  <div class="header">
+	    <h3><%= type.to_s.humanize %></h3>
+	  </div>
+    <% if false -%>
+		<div id="all_<%= type.to_s %>_sort" data-type="<%= type.to_s %>">
+			<%= render :partial => 'shared/sort', :locals => { :list => @sort_lists[type] } %>
+		</div>
+    <% end -%>
+		<ul id="all_<%= type.to_s %>">
+	    <%= render :partial => "shared/objects/#{type == :cases ? 'case_obj' : type.to_s.singularize}", :collection => @results[type] %>
+		</ul>
+	</div>
+	<% end -%>
+	<% end -%>
 </div>
 
-<% if false -%>
-<section id="results">
-	<hgroup id="default_hgroup">
-		<ul class="tabs">
-      <% @types.each do |type| -%>
-      <li><a href="#" data-region="all_<%= type.to_s %>"><%= type.to_s.humanize.upcase %></a></li>
-      <% end -%>
-	    <% if @user.bookmarks.any? -%>
-			<li><a href="#" data-region="bookmarks" id="bookmark_tab">BOOKMARKS</a></li>
-			<% end -%>
-      <% if current_user == @user -%>
-			<li><a href="#" data-region="user_collections">COLLECTIONS</a></li>
-			<li><a href="#" data-region="user_info">USER INFO</a></li>
-      <% end -%>
-		</ul>
-		<aside class="sort">
-      <% @types.each do |type| -%>
-			<div id="all_<%= type.to_s %>_sort" style="display:none;" data-type="<%= type.to_s %>">
-				<%= render :partial => 'shared/sort', :locals => { :list => @sort_lists[type] } %>
-			</div>
-      <% end -%>
-		</aside>
-		<div class="cl"></div>
-	</hgroup>
-	<article class="songs">
-  <% @types.each do |type| -%>
-	<ul id="all_<%= type.to_s %>">
-    <%= render :partial => "shared/objects/#{type == :cases ? 'case_obj' : type.to_s.singularize}", :collection => @results[type] %>
-	</ul>
-	<% end -%>
-	<% if @user.bookmarks.any? -%>
-	<ul id="bookmarks" class="playlists">
-		<% @user.bookmarks.each_with_index do |item, index| -%>
-		<%= render :partial => 'shared/objects/playlist_item',
-		  :locals => { :item => item,
-      :resource_item => item.resource_item,
-      :actual_object => (item.resource_item_type == "ItemDefault" ? nil : item.resource_item.actual_object),
-	    :parent_index => '',
-			:index => index,
-			:recursive_level => 0,
-      :last => (item == @user.bookmarks.last) } %>
-		<% end -%>
-	</ul>
-	<% end -%>
-  <% if current_user == @user -%>
-  <ul id="user_collections">
-    <li class="listitem">
-      <div class="controls">
-        <ul>
-          <li class="link-add">
-            <a href="<%= new_user_collection_path %>" class="new-action">Add</a>
-          </li>
-        </ul>
-      </div>
-      <div class="details">
-        <h4><a href="<%= new_user_collection_path %>" class="new-action">Create a New User Collection</a></h4>
-      </div>
-      <div class="cl"></div>
-    </li>
-    <%= render :partial => "shared/objects/user_collection", :collection => @current_user.collections %>
-  </ul>
-	<ul id="user_info">
-      <li><b>Login:</b> <%= @user.login %></li>
-      <li><b>Attribution:</b> <%= @user.attribution %></li>
-      <li><b>Login count:</b> <%= @user.login_count %></li>
-      <li><b>Last request at:</b> <%= @user.last_request_at %></li>
-      <li><b>Last login at:</b> <%= @user.last_login_at %></li>
-      <li><b>Current login at:</b> <%= @user.current_login_at %></li>
-      <li><b>Last login ip:</b> <%= @user.last_login_ip %></li>
-      <li><b>Current login ip:</b> <%= @user.current_login_ip %></li>
-      <li><%= link_to 'Edit', edit_user_path(@user) %></li>
-	</ul>
-	<% end -%>
-	</article>
-</section>
-
-<section class="breadcrumbs">
-  <%#= render :partial => 'shared/user_pagination' %>
-</section>
-<% end -%>
+<%= render :partial => "shared/popup", :locals => { :type => "collage" } %>

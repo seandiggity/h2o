@@ -1,5 +1,5 @@
 <% @highlighted_playlists.each do |v| -%>
-<div class="playlist item">
+<div class="playlist item"><div class="item_wrapper">
   <%= link_to "#{v[:title]} (#{v[:playlist].karma})", playlist_url(v[:playlist]), :class => "item_link" %>
   <%= link_to v[:user].attribution || v[:user].login, user_path(v[:user]), :class => "author" %>
   <% if v[:user].affiliation.present? -%>
@@ -17,5 +17,5 @@
     <% end -%>
     <%= link_to raw('<span class="icon icon-read"></span>Read'), playlist_url(v[:playlist]) %>
   </div>
-</div>
+</div></div>
 <% end -%>

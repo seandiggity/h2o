@@ -2,8 +2,46 @@ var dragged_element;
 var dropped_item;
 var remove_item;
 var dropped_original_position;
+var items_dd_handles;
 
 jQuery.extend({
+  observeViewerToggleEdit: function() {
+    jQuery('#edit_toggle').click(function(e) {
+      e.preventDefault();
+      jQuery('#edit_item #status_message').remove();
+      var el = jQuery(this);
+      if(jQuery(this).hasClass('edit_mode')) {
+        el.removeClass('edit_mode');
+        jQuery('#playlist .dd').removeClass('playlists-edit-mode');
+        jQuery('#playlist .dd .icon').removeClass('hover');
+        if(jQuery('#collapse_toggle').hasClass('expanded')) {
+          jQuery('#edit_item').fadeOut(200, function() {
+            jQuery('.singleitem').animate({ width: "100%" }, 100);
+          });
+        } else {
+          jQuery('#edit_item').fadeOut(200, function() {
+            jQuery('#stats').fadeIn(200);
+          });
+        }
+        jQuery.unObserveDragAndDrop();
+      } else {
+        el.addClass('edit_mode');
+        jQuery('#playlist .dd').addClass('playlists-edit-mode');
+        jQuery('#playlist .dd .icon').addClass('hover');
+        if(jQuery('#collapse_toggle').hasClass('expanded')) {
+          jQuery('#collapse_toggle').removeClass('expanded');
+          jQuery('.singleitem').animate({ width: "70%" }, 100, 'swing', function() {
+            jQuery('#edit_item').fadeIn(200);
+          });
+        } else {
+          jQuery('#stats').fadeOut(200, function() {
+            jQuery('#edit_item').fadeIn(200);
+          });
+        }
+        jQuery.observeDragAndDrop();
+      }
+    });
+  },
   observeAdditionalDetailsExpansion: function() {
     jQuery('.listitem .wrapper').hoverIntent(function() {
       if(!jQuery(this).parent().hasClass('adding-item')) {
@@ -115,7 +153,7 @@ jQuery.extend({
       }
     });
   },
-  initializeNoteFunctionality: function() {
+  observeNoteFunctionality: function() {
     jQuery('.public-notes,.private-notes').click(function(e) {
       jQuery.showGlobalSpinnerNode();
       var type = jQuery(this).data('type');
@@ -223,8 +261,14 @@ jQuery.extend({
       jQuery.cancelItemAdd();
     });
   },
+  unObserveDragAndDrop: function() {
+    if(access_results.can_position_update) {
+      jQuery('.dd-handle').removeClass('dd-handle').addClass('dd-handle-inactive');
+    }
+  },
   observeDragAndDrop: function() {
     if(access_results.can_position_update) {
+      jQuery('.dd-handle-inactive').removeClass('dd-handle-inactive').addClass('dd-handle');
       jQuery('div.playlists').nestable({ group: 1 });
       jQuery('div.playlists').on('custom_change', function() {
         if(dropped_item !== undefined) {
@@ -369,7 +413,7 @@ jQuery(document).ready(function(){
   jQuery('.toolbar, .buttons').css('visibility', 'visible');
   jQuery.loadEditability();
   jQuery.observeStats();
-  jQuery.initializeNoteFunctionality();
+  jQuery.observeNoteFunctionality();
 
   /* New Item Search */
   jQuery('#add_item_select').selectbox({
@@ -385,6 +429,7 @@ jQuery(document).ready(function(){
   jQuery.observePlaylistManipulation();
   jQuery.observePlaylistExpansion();
   jQuery.observeAdditionalDetailsExpansion();
+  jQuery.observeViewerToggleEdit();
 });
 
 var delete_playlist_item_template = '\

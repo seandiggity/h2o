@@ -53,17 +53,9 @@ class UsersController < ApplicationController
   end
 
   def show
-    params[:sort] ||= 'display_name'
-    params[:order] ||= 'asc'
-
+    set_sort_params
     set_sort_lists
-
-    if params["controller"] == "users" && params["action"] == "show"
-      @sort_lists.each do |k, v|
-        v.delete("score")
-      end
-    end
-
+    params[:page] ||= 1
 
     if params[:id] == 'create_anon'
       @user = @current_user
@@ -71,66 +63,62 @@ class UsersController < ApplicationController
       @user = User.find_by_id(params[:id])
     end
 
-    #This is added for an optimization, to avoid lookup roles / authors of each item
-    params[:sort] = 'name' if params[:sort] == 'display_name'
-
-Rails.logger.warn "stephie: #{@user.inspect}"
     @bookshelf = Sunspot.new_search(Playlist, Collage, Case, Media, TextBlock)
     @bookshelf.build do
-      paginate :page => params[:page], :per_page => 25 
+      paginate :page => params[:page], :per_page => 10 
       with :author, "stephskardal" #@user.login
       with :public, true
       with :active, true
-      order_by :display_name, :desc
+
+      order_by params[:sort].to_sym, params[:order].to_sym
     end
     @bookshelf.execute!
 
-=begin
-    if current_user && @user == current_user
-      @page_title = "Dashboard | H2O Classroom Tools"
-      if @user.is_case_admin
-        @types += [:case_requests, :pending_cases]
-        @my_belongings[:case_requests] = current_user.case_requests
-      else
-        @types << :pending_cases
-      end
-      if @user.is_admin
-        @types += [:content_errors]
-      end
+    [Playlist, Collage, Case, Media, TextBlock].each do |model|
+      set_belongings model
+    end
+
+    if request.xhr?
+      @results = @bookshelf
+
+      render :partial => 'base/search_ajax'
     else
-      @page_title = "User #{@user.display} | H2O Classroom Tools"
-    end
-
-    @results = {}
-
-    @types.each do |type|
-      if (request.xhr? && params[:ajax_region] == type.to_s) || !request.xhr?
-        p = @user.send(type).sort_by { |p| p.send(params[:sort]).to_s.downcase }
-        if(params[:order] == 'desc') 
-          p = p.reverse
-        end
-        @results[type] = p.paginate(:page => params[:page], :per_page => 10)
-
-        @collection = @results[type] if request.xhr?
-      end
-    end
-
-=end
-    if current_user && current_user == @user
-      add_javascripts 'user_dashboard'
-      add_stylesheets ['user_dashboard', 'playlists']
-    end
-    add_javascripts 'users'
-
-    respond_to do |format|
-      format.html do
-        if request.xhr?
-          @view = params[:ajax_region] == 'cases' ? 'case_obj' : params[:ajax_region].singularize
-          render :partial => 'shared/generic_block'
-        else
-          render 'show'
+      set_sort_lists
+      if params["controller"] == "users" && params["action"] == "show"
+        @sort_lists.each do |k, v|
+          v.delete("score")
         end
       end
+
+	    @types = []
+	    if current_user && @user == current_user
+	      add_javascripts 'user_dashboard'
+
+	      @page_title = "Dashboard | H2O Classroom Tools"
+	      if @user.is_case_admin
+	        @types += [:case_requests, :pending_cases]
+	        @my_belongings[:case_requests] = current_user.case_requests
+	      else
+	        @types << :pending_cases
+	      end
+	      if @user.is_admin
+	        @types += [:content_errors]
+	      end
+	    else
+	      @page_title = "User #{@user.simple_display} | H2O Classroom Tools"
+	    end
+
+	    add_stylesheets 'user_dashboard'
+
+	    @results = {}
+	    @types.each do |type|
+	      p = @user.send(type).sort_by { |p| p.send(params[:sort]).to_s.downcase }
+	      if(params[:order] == 'desc') 
+	        p = p.reverse
+	      end
+	      @results[type] = p.paginate(:page => params[:page], :per_page => 10)
+	    end
+      render 'show'
     end
   end
 

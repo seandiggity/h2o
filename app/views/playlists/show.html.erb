@@ -43,27 +43,32 @@
 
 <div id="edit_item" class="requires_edit right_panel">
   <a href="#" class="right_panel_close"></a>
-  <h3>Find Items</h3>
-  <div id="search_wrapper_outer">
-    <a id="add_item_search" class="no_adjust" href="#">SEARCH</a>
-    <div id="select_wrapper">
-    <select id="add_item_select">
-      <option value="base">all</option>
-      <option value="cases">case</option>
-      <option value="collages">collage</option>
-      <option value="medias">media</option>
-      <option value="playlists">playlist</option>
-      <option value="text_blocks">text_block</option>
-    </select>
-    </div>
-    <div id="search_wrapper">
-    <input id="add_item_term" class="no_adjust" />
-    </div>
-    <p class="instruction">
-      Drag and drop items to move within the playlist.
-      Or search to find new items, then drag and drop items from this list onto your playlist.
-      Note, you may only drop items into this playlist. To edit nested playlists, click on the playlist title and edit on that playlist page.
-    </p>
+  <table class="tabs" width="100%" cellpadding="0" cellspacing="0"><tr>
+    <td width="50%"><a id="find_items" class="current" href="#">Find Items</a></td>
+    <td></td>
+  </tr></table>
+  <div id="find_items" class="tab_panel new_item">
+	  <p class="instruction">
+	    Drag and drop items to move within the playlist.
+	    Or search to find new items, then drag and drop items from this list onto your playlist.
+	    Note, you may only drop items into this playlist. To edit nested playlists, click on the playlist title and edit on that playlist page.
+	  </p>
+	  <div id="search_wrapper_outer">
+	    <a id="add_item_search" class="no_adjust" href="#">SEARCH</a>
+	    <div id="select_wrapper">
+	    <select id="add_item_select">
+	      <option value="base">all</option>
+	      <option value="cases">case</option>
+	      <option value="collages">collage</option>
+	      <option value="medias">media</option>
+	      <option value="playlists">playlist</option>
+	      <option value="text_blocks">text_block</option>
+	    </select>
+	    </div>
+	    <div id="search_wrapper">
+	    <input id="add_item_term" class="no_adjust" />
+	    </div>
+	  </div>
   </div>
   <%#= link_to 'ADD ITEM +', new_playlist_item_path, :class => 'btn-a new-playlist-item-control' %>
   <div id="add_item_results"></div>

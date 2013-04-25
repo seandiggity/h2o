@@ -32,8 +32,8 @@ jQuery.extend({
     });
     jQuery('#stats_annotation_size').html(count);
   },
-  initializeViewerToggleOverride: function() {
-    jQuery('#edit_toggle').unbind('click').click(function(e) {
+  observeViewerToggleEdit: function() {
+    jQuery('#edit_toggle').click(function(e) {
       e.preventDefault();
       jQuery('#edit_item #status_message').remove();
       var el = jQuery(this);
@@ -77,7 +77,7 @@ jQuery.extend({
       }
     });
   },
-  initializeFootnoteLinks: function() {
+  observeFootnoteLinks: function() {
     jQuery.each(jQuery('article a.footnote'), function(i, el) {
       jQuery(el).attr('href', unescape(jQuery(el).attr('href')));
       jQuery(el).attr('name', unescape(jQuery(el).attr('name')));
@@ -106,7 +106,7 @@ jQuery.extend({
     }
     return hexes;
   },
-  initializeLayerColorMapping: function() {
+  observeLayerColorMapping: function() {
     jQuery('.hexes a').live('click', function() {
       if(jQuery(this).hasClass('inactive')) {
         return false;
@@ -141,7 +141,7 @@ jQuery.extend({
       jQuery('tt#' + i).css('background-color', hex).addClass('heatmapped').data('collage_count', e);
     });
   },
-  initializeHeatmap: function() {
+  observeHeatmap: function() {
     jQuery('tt.heatmapped').live('mouseover', function(e) {
       var el = jQuery(this);
       el.css('position', 'relative');
@@ -232,7 +232,7 @@ jQuery.extend({
     }
     return x1 + x2;
   },
-  initializeToolListeners: function () {
+  observeToolListeners: function () {
     jQuery("#collage #buttons .btn-li > a").click(function() {
       jQuery(this).siblings('.popup').toggle();
       jQuery(this).toggleClass("btn-a-active");
@@ -376,7 +376,7 @@ jQuery.extend({
       }
     });
   },
-  initializePrintListeners: function() {
+  observePrintListeners: function() {
     jQuery('#fixed_print').click(function(e) {
       e.preventDefault();
       jQuery('#collage_print').submit();
@@ -898,11 +898,11 @@ jQuery.extend({
       jQuery('#annotation-details-' + annotationId).dialog('open');
     }
   },
-  initializeSelectors: function() {
+  observeSelectors: function() {
     all_tts = jQuery('#collage article tt');
     var data = { "unlayered_start_id" : 1, "unlayered_end_id" : 1 };
   },
-  initializeHeaderAdjust: function() {
+  observeHeaderAdjust: function() {
     /*
     head_offset = jQuery('#fixed_header').offset();
     jQuery(window).scroll(function() {
@@ -916,7 +916,7 @@ jQuery.extend({
     });
     */
   },
-  initializeStatsListener: function() {
+  observeStatsListener: function() {
     jQuery('#collage-stats').click(function() {
       jQuery(this).toggleClass("active");
       if(jQuery('#collage-stats-popup').height() < 400) {
@@ -928,7 +928,7 @@ jQuery.extend({
       return false;
     });
   },
-  initializeAnnotationListeners: function(){
+  observeAnnotationListeners: function(){
     jQuery('.unlayered-ellipsis').live('click', function(e) {
       e.preventDefault();
       var id = jQuery(this).data('id');
@@ -1060,7 +1060,7 @@ jQuery.extend({
       jQuery('.annotation-content').css('display', 'none');
     }
   }, 
-  initializeAnnotationEditListeners: function() {
+  observeAnnotationEditListeners: function() {
     jQuery('#edit_item .tabs a:not(.current)').live('click', function(e) {
       e.preventDefault();
       var tabs_table = jQuery(this).parentsUntil('table').parent().first();
@@ -1258,7 +1258,7 @@ jQuery.extend({
 jQuery(document).ready(function(){
   if(jQuery('.singleitem').length > 0){
     jQuery.showGlobalSpinnerNode();
-    jQuery.initializeSelectors();
+    jQuery.observeSelectors();
 
     jQuery('.toolbar, #buttons').css('visibility', 'visible');
     jQuery('#cancel-annotation').click(function(e){
@@ -1283,25 +1283,25 @@ jQuery(document).ready(function(){
       jQuery.markupCollageLink(clean_collage_links[i]);
     });
 
-    jQuery.initializeAnnotationListeners();
+    jQuery.observeAnnotationListeners();
     jQuery.loadEditability();
-    jQuery.initializeToolListeners();
-    jQuery.initializePrintListeners();
-    jQuery.initializeLayerColorMapping();
-    jQuery.initializeHeatmap();
-    jQuery.initializeAnnotationEditListeners();
+    jQuery.observeToolListeners();
+    jQuery.observePrintListeners();
+    jQuery.observeLayerColorMapping();
+    jQuery.observeHeatmap();
+    jQuery.observeAnnotationEditListeners();
   
-    jQuery.initializeStatsListener();
-    jQuery.initializeHeaderAdjust();
+    jQuery.observeStatsListener();
+    jQuery.observeHeaderAdjust();
 
     /* Collage Search */
     jQuery.initPlaylistItemPagination();
     jQuery.initKeywordSearch();
     jQuery.initPlaylistItemAddButton();
 
-    jQuery.initializeFootnoteLinks();
+    jQuery.observeFootnoteLinks();
     jQuery.hideGlobalSpinnerNode();
-    jQuery.initializeViewerToggleOverride();
+    jQuery.observeViewerToggleEdit();
           
     jQuery.updateWordCount();
 

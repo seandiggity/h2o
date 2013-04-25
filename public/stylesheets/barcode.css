@@ -319,3 +319,16 @@
 .collaged .tipsy-inner {
   background-color: #669999;
 }
+.emtpy_barcode {
+  display: none;
+}
+#singleitem_barcode .empty_barcode {
+  display: block;
+  text-align: right;
+}
+#singleitem_barcode .empty_barcode a {
+  display: inline-block;
+  width: 305px;
+  height: 14px;
+  background-color: #ccc;
+}

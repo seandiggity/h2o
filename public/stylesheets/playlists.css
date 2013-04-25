@@ -190,15 +190,11 @@
 #edit_item {
   background: none;
 }
-#edit_item h3 {
-  background: #c3c3c3;
-  padding: 10px;
-  color: #FFF;
-  margin: 0px;
+#find_items {
+  background: #d5d5d5;
 }
 #edit_item #search_wrapper_outer {
-  background: #c3c3c3;
-  padding: 5px;
+  padding: 0px 10px 10px 10px;
   height: 28px;
 }
 #edit_item #search_wrapper {
@@ -206,10 +202,10 @@
   padding-right: 120px;
 }
 #edit_item #add_item_term {
-  width: 108px;
+  width: 95px;
   border: none;
   font-size: 14px;
-  padding: 5px;
+  padding: 6px;
   height: 18px;
 }
 #edit_item #add_item_search {
@@ -217,7 +213,7 @@
   float: right;
   display: block;
   background: #036290;
-  line-height: 28px;
+  line-height: 30px;
   padding: 0px 12px;
   font-weight: bold;
   text-decoration: none;
@@ -230,39 +226,16 @@
   clear: both;
   background: #FFF;
 }
-#edit_item #add_item_results #header {
+#edit_item #add_item_results h3 {
   color: #FFF;
+  background: #333;
+  padding: 10px;
 }
-#edit_item #add_item_results #h3_wrapper {
-  padding-right: 90px;
-}
-#edit_item #add_item_results #header h3 {
-  background: #000;
-  font-size: 11px;
-  display: inline-block;
-  width: 100%;
-}
-#edit_item #add_item_results #header h3 span {
+#edit_item #add_item_results h3 span {
   font-size: 9px;
   font-style: italic;
-}
-#edit_item #add_item_results #header #left_page,
-#edit_item #add_item_results #header #right_page {
-  float: right;
-  display:block;
-  background: #036290;
-  width: 20px;
-  height: 14px;
-  padding: 10px 5px;
-}
-#edit_item #add_item_results #header #right_page {
-  margin-left: 5px;
-}
-#edit_item #add_item_results #header a.inactive {
-  opacity: 0.4;
-}
-#edit_item #add_item_results #header a.inactive:hover {
-  cursor: default;
+  font-weight: normal;
+  padding-left: 10px;
 }
 #edit_item #add_item_results li.listing {
   border-top:1px solid #e0e1e1; 
@@ -293,28 +266,27 @@
 }
 #edit_item .pagination {
   text-align: center;
-  background: #036290;
   padding: 10px;
 }
 #edit_item .pagination span,
 #edit_item .pagination a {
-  background: none;
-  color: #FFF;
-  float: none;
+  display: none;
+}
+#edit_item #top_pagination .pagination .prev_page,
+#edit_item #bottom_pagination .pagination .next_page {
   display: inline-block;
-  margin-right: 5px;
-  padding-right: 0px;
-  text-decoration: none;
+  background: none;
+  text-indent: 0px;
+  float: none;
+  font-weight: bold;
 }
-#edit_item .pagination .prev_page {
-  background: url(/images/ui/app_icons.png) no-repeat -7px -110px;
+#edit_item .pagination span.disabled {
+  opacity: 0.5;
 }
-#edit_item .pagination .next_page {
-  background: url(/images/ui/app_icons.png) no-repeat 0px -110px;
+#edit_item #nestable2 {
+  clear: both;
 }
-#edit_item .pagination .current {
-  color: #999;
-}
+
 #author_playlists a {
   display: block;
   text-decoration: none;
@@ -492,4 +464,11 @@ button.inactive { opacity: 0.5; }
 }
 .playlists-edit-mode .listitem .number {
   opacity: 1.0;
+}
+#description a.public-notes,
+#description a.private-notes {
+  color: #036290;
+  font-weight: bold;
+  text-decoration: none;
+  font-size: 10px;
 }

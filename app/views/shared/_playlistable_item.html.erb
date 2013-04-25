@@ -1,11 +1,6 @@
 <% if @objects -%>
-<div id="header">
-  <a href="#" id="right_page">R</a>
-  <a href="#" id="left_page">L</a>
-  <div id="h3_wrapper">
-  <h3><%= pluralize @objects.total, "Result" %> <span>(Drag and drop items)</span></h3>
-  </div>
-</div>
+<h3><%= pluralize @objects.total, "Result" %> <span>(Drag and drop items)</span></h3>
+<div id="top_pagination"><%= will_paginate @objects.hits, :previous_label => 'Prev', :next_label => 'Next' %></div>
 <div id="nestable2">
   <ol class="dd-list">
     <% @objects.results.each_with_index do |hit, i| -%>
@@ -21,5 +16,5 @@
     <% end %>
   </ol>
 </div>
-<%= will_paginate @objects.hits, :previous_label => 'Prev', :next_label => 'Next' %>
+<div id="bottom_pagination"><%= will_paginate @objects.hits, :previous_label => 'Prev', :next_label => 'Next' %></div>
 <% end %>
