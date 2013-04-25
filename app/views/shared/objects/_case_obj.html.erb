@@ -8,7 +8,7 @@
       <%= link_to "DELETE", case_path(case_obj), :class => "icon icon-delete tooltip", :title => "Delete" %>
       <% end %>
       <% if current_user && (@is_admin[:case] || @my_belongings[:cases].include?(case_obj)) %>
-      <%= link_to "EDIT", edit_case_path(case_obj), :class => "icon edit-action icon-edit tooltip", :title => "Edit" %>
+      <%= link_to "EDIT", edit_case_path(case_obj), :class => "icon edit-external icon-edit tooltip", :title => "Edit" %>
       <% end %>
     </h4>
     <% cache "case-#{case_obj.id}-index" do -%>

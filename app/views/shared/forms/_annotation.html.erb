@@ -7,27 +7,29 @@
     <% [:collage_id, :annotation_start, :annotation_end].each do |col| %>
       <%= form.input col, :as => :hidden %>
     <% end %>
-    <h5>TEXT</h5>
-    <%= params[:text] %>
-    <h5 id="layer_appear">LAYER</h5>
+    <% if @annotation.new_record? -%>
+    <li id="text_layer">
+      <h5>TEXT</h5>
+      <%= params[:text] %>
+    </li>
+    <% end -%>
+    <li id="new_layers">
+      <a href="#" id="add_new_layer">+ ADD NEW LAYER</a>
+    </li>
+    <li id="layer_header"><h5 id="layer_appear">LAYER COLOR</h5></li>
     <% @annotation.collage.layers.each do |l| %>
     <li class="layer_check">
       <input type="checkbox" name="existing_layer_list[]" <%= raw checked="checked" if @annotation.layers.include?(l) %> value="<%= l.name %>" />
       <label data-value="<%= @color_map[l.name] ? @color_map[l.name] : cycle('ffcc00', '99ccff', '99cc33', 'ff9999', 'b2c1d0', 'ff9933', 'cc99cc') %>" style="background-color:#<%= @color_map[l.name] ? @color_map[l.name] : cycle('ffcc00', '99ccff', '99cc33', 'ff9999', 'b2c1d0', 'ff9933', 'cc99cc') %>"><%= l.name %></label>
     </li>
     <% end %>
-    <li id="new_layers">
-      <label>NEW LAYERS</label>
-      <a href="#" id="add_new_layer">+ ADD</a>
-    <li>
     <%= form.input :annotation,
       :as => :text,
       :input_html => {:size => '60x10'},
-      :label => false,
       :required => false
     %>
   <% end %>
   <% form.buttons do %>
-    <%= form.commit_button 'Save' %>
+    <%= form.commit_button 'SAVE' %>
   <% end %>
 <% end %>

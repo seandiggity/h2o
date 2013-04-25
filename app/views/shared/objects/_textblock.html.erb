@@ -8,7 +8,7 @@
         <%= link_to 'DELETE', textblock, :class => "icon icon-delete tooltip", :title => "Delete" %>
       <% end %>
       <% if current_user && (@is_admin[:textblock] || @my_belongings[:textblocks].include?(textblock)) %>
-        <%= link_to 'EDIT', edit_text_block_path(textblock), :class => "icon edit-action icon-edit tooltip", :title => "Edit" %>
+        <%= link_to 'EDIT', edit_text_block_path(textblock), :class => "icon edit-external icon-edit tooltip", :title => "Edit" %>
       <% end %>
     </h4>
     <p>

@@ -18,6 +18,12 @@ class Collage < ActiveRecord::Base
     :bookmark => 1,
     :add => 3
   }
+  RATINGS_DISPLAY = {
+    :remix => "Remixed",
+    :bookmark => "Bookmarked",
+    :add => "Added to"
+  }
+
 
   acts_as_taggable_on :tags
   acts_as_authorization_object

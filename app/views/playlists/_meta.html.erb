@@ -1,8 +1,12 @@
 <p>
-  <label>Total Words:</label>
+  <label>Last Updated:</label>
+  <span id="autosave"><%= @playlist.updated_at.strftime("%B %d, %Y") %></span>
+</p>
+<% if false -%>
+<p>
   <%= number_with_delimiter(@shown_words, ',') %> layered,  <%= number_with_delimiter(@total_words - @shown_words, ',') %> unlayered
 </p>
-
+<% end -%>
 <% if @playlist.tags.any? -%>
 <p>
   <label>Tags:</label>
@@ -12,6 +16,7 @@
 </p>
 <% end -%>
 
+<% if false -%>
 <p><label>Playlist Children</label></p>
 <ul class="lineage">
 <%= render :partial => 'playlist_children',
@@ -28,4 +33,5 @@
 </li>
 <% end -%>
 </ul>
+<% end -%>
 <% end -%>

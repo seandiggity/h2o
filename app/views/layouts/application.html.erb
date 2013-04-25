@@ -84,7 +84,7 @@ var UTC_OFFSET = #{Time.zone.now.utc_offset * 1000};") %>
 <% flash.delete(:error) %>
 
 <script type="text/javascript">
-  <% if current_user || ["base#search", "playlists#index", "collages#index", "medias#index", "text_blocks#index", "cases#index"].include?("#{params[:controller]}##{params[:action]}") -%>
+  <% if current_user && ["base#search", "playlists#index", "collages#index", "medias#index", "text_blocks#index", "cases#index"].include?("#{params[:controller]}##{params[:action]}") -%>
   var user_bookmarks = <%= raw(current_user.bookmarks_map.to_json) %>;
   <% else -%>
   var user_bookmarks = {};

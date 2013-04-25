@@ -6,9 +6,11 @@
   <div class="inner-wrapper <%= "dd-handle" if recursive_level == 0 %>">
     <span class="number"><%= parent_index == '' ? "#{index}" : "#{parent_index}.#{index}" %></span>
     <% if item.resource_item_type == 'ItemMedia' && actual_object -%>
-    <span class="icon icon-media-<%= actual_object.media_type.slug %>"></span>
+    <a href="#" class="tooltip icon icon-media-<%= actual_object.media_type.slug %>" title="<%= actual_object.media_type.label %>"></a>
+    <% elsif actual_object.nil? -%>
+    <a href="#" class="tooltip icon icon-<%= item.clean_type %>" title="Link"></a>
     <% else -%>
-    <span class="icon icon-<%= item.clean_type %>"></span>
+    <a href="#" class="tooltip icon icon-<%= item.clean_type %>" title="<%= actual_object.class %>"></a>
     <% end -%>
     <% if item.resource_item_type == 'ItemDefault' -%>
     <%= link_to resource_item.name, resource_item.url, :target => '_blank', :class => "title" %>
@@ -43,15 +45,6 @@
 		    <% end -%>
 		  </p>
       <% if recursive_level == 0 -%>
-		  <span class="requires_logged_in">
-      <% if actual_object.is_a?(Playlist) -%>
-		  <%= link_to raw('<span class="icon icon-remix"></span>'), prepare_copy_playlist_path(object), :class => "tooltip link-remix remix-action", :title => "Remix" %>
-      <% elsif actual_object.is_a?(Collage) -%>
-		  <%= link_to raw('<span class="icon icon-remix"></span>'), copy_collage_path(object), :class => "tooltip link-copy", :title => "Remix" %>
-      <% end -%>
-		  <%= link_to raw('<span class="icon icon-add"></span>'), '#', "data-item_id" => actual_object.id, "data-type" => item.clean_type, :class => 'link-add tooltip', :title => "Add to a Playlist" %>
-		  <%= link_to raw('<span class="icon icon-bookmark"></span>'), '#', :class => "tooltip link-bookmark bookmark-action", :title => "Bookmark #{actual_object.name}" %>
-		  </span>
 		  <%= render :partial => "shared/barcode", :locals => { :object => actual_object } %>
       <% end -%>
       <% if actual_object.class.respond_to?(:format_content) && actual_object.respond_to?(:description) -%>

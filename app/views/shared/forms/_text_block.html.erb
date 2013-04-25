@@ -8,9 +8,7 @@
 
 <div class="standard-form" id="text-block-form">
   <div id="text_block-error" style="display:none;" class="error"></div>
-<% unless request.xhr? %>
-  <h3><%= (@text_block.new_record?) ? 'Add New Text Block' : %Q|Edit "#{@text_block}"| %></h3>
-<% end %>
+  <h1><%= (@text_block.new_record?) ? 'Add New Text Block' : %Q|Edit "#{@text_block}"| %></h1>
 <% semantic_form_for(@text_block, :html => {:id => 'text_block-form'}) do |form| %>
   <% form.inputs do %>
     <%= form.input :name %>
@@ -29,7 +27,6 @@
                      :selected => 'text/html',
                      :include_blank => false %>
     <% end %>
-    <hr />
     <%= form.input :tag_list,
       :as => :string,
       :hint => 'Please define the tags for this text block in a comma-separated list.',
@@ -37,16 +34,12 @@
       :input_html => {:class => 'tagging-autofill-tags'},
       :required => false
     %>
-    <hr />
-      <%= render :partial => 'shared/forms/metadatum', :locals => {:form => form } %>
-    <hr />
+    <%= render :partial => 'shared/forms/metadatum', :locals => {:form => form } %>
     <%= render :partial => 'shared/forms/visibility_selectors', :locals => { :form => form } %>
     <% if @text_block.new_record? %><%= render :partial => 'shared/forms/captcha' %><% end %>
   <% end %>
-  <% unless request.xhr? %>
-    <% form.buttons do %>
-      <%= form.commit_button 'Save' %>
-    <% end %>
+  <% form.buttons do %>
+    <%= form.commit_button 'SAVE' %>
   <% end %>
 <% end %>
 </div>

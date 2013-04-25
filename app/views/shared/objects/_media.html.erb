@@ -15,7 +15,7 @@
         <%= link_to 'DELETE', media, :class => "icon icon-delete tooltip", :title => "Delete" %>
       <% end %>
       <% if current_user && (@is_admin[:media] || @my_belongings[:medias].include?(media)) %>
-        <%= link_to 'EDIT', edit_media_path(media), :class => "icon edit-action icon-edit tooltip", :title => "Edit" %>
+        <%= link_to 'EDIT', edit_media_path(media), :class => "icon edit-external icon-edit tooltip", :title => "Edit" %>
       <% end %>
     </h4>
     <% cache "media-#{media.id}-index" do %>

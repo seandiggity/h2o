@@ -7,9 +7,9 @@
 
 <aside id="singleitem_toolbar">
   <% if current_user -%>
-  <%= link_to raw('<span class="icon icon-collage"></span>'), new_collage_path(:annotatable_type => 'Case', :annotatable_id => @case), :class => 'collage-this new-action' %>
-  <%= link_to raw('<span class="icon icon-add"></span>'), '#', "data-item_id" => @case.id, "data-type" => "case", :class => 'link-add tooltip requires_logged_in', :title => "Add to a Playlist" %>
-  <%= link_to raw('<span class="icon icon-bookmark"></span>'), '#', :class => "bookmark-action tooltip requires_logged_in", :title => "Bookmark #{@case.name}", "data-type" => "case", "data-itemid" => @case.id %>
+  <%= link_to raw('<span class="icon icon-tocollage-large"></span>'), new_collage_path(:annotatable_type => 'Case', :annotatable_id => @case), :class => 'collage-this new-action' %>
+  <%= link_to raw('<span class="icon icon-add-large"></span>'), '#', "data-item_id" => @case.id, "data-type" => "case", :class => 'link-add tooltip requires_logged_in', :title => "Add to a Playlist" %>
+  <%= link_to raw('<span class="icon icon-favorite-large"></span>'), '#', :class => "bookmark-action tooltip requires_logged_in", :title => "Bookmark #{@case.name}", "data-type" => "case", "data-itemid" => @case.id %>
   <% end -%>
 </aside>
 
@@ -17,9 +17,11 @@
   <div id="main_details">
     <h1><%= @case.display_name %></h1>
   </div>
+  <% if current_user && (current_user.is_case_admin || current_user.cases.include?(@case)) %>
   <div id="description">
-    <%= link_to raw('<span class="icon icon-edit"></span>EDIT CASE INFORMATION<span class="icon icon-arrow"></span>'), edit_case_path(@case), :class => "edit-action" %>
+    <%= link_to raw('<span class="icon icon-edit"></span>EDIT CASE INFORMATION<span class="icon icon-arrow"></span>'), edit_case_path(@case), :class => "edit-external" %>
   </div>
+  <% end -%>
   <article>
     <%= raw @case.content %>
   </article>
@@ -27,12 +29,12 @@
 
 <div id="stats" class="right_panel">
   <a href="#" class="right_panel_close"></a>
-  <h3>Author Stats</h3>
-  <%= render :partial => "shared/author_stats", :locals => { :user => @case.owners.first } %>
-  <h3>Case Stats</h3>
+  <h3 class="info">Case Information<span class="icon icon-panel"></span></h3>
   <div class="stats_panel">
   <%= render :partial => "meta" %>
   </div>
+  <h3>Author Stats</h3>
+  <%= render :partial => "shared/author_stats", :locals => { :user => @case.owners.first } %>
 </div>
 
 <div class="cl"></div>

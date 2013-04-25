@@ -151,7 +151,7 @@ class AnnotationsController < BaseController
     deleteable_tags = @annotation.collage.deleteable_tags
     @annotation.layers.each do |layer|
       if deleteable_tags.include?(layer.id)
-        to_delete = @collage.color_mappings.detect { |cm| cm.tag_id == layer.id } 
+        to_delete = @annotation.collage.color_mappings.detect { |cm| cm.tag_id == layer.id } 
         ColorMapping.destroy(to_delete) if to_delete
       end
     end

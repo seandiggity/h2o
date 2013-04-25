@@ -8,19 +8,15 @@
 </div>
 
 <aside id="singleitem_toolbar">
-  <%= link_to raw('<span class="icon icon-remix"></span>'), prepare_copy_playlist_path(@playlist), :class => "tooltip link-remix remix-action requires_logged_in", :title => "Remix #{@playlist.name}" %>
-  <%= link_to raw('<span class="icon icon-add"></span>'), '#', "data-item_id" => @playlist.id, "data-type" => "collage", :class => 'link-add tooltip requires_logged_in', :title => "Add to a Playlist" %>
-    <%= link_to raw('<span class="icon icon-bookmark"></span>'), '#', :class => "bookmark-action tooltip requires_logged_in", :title => "Bookmark #{@playlist.name}", "data-type" => "playlist", "data-itemid" => @playlist.id %>
+  <%= link_to raw('<span class="icon icon-remix-large"></span>'), prepare_copy_playlist_path(@playlist), :class => "tooltip link-remix remix-action requires_logged_in", :title => "Remix #{@playlist.name}" %>
+  <%= link_to raw('<span class="icon icon-add-large"></span>'), '#', "data-item_id" => @playlist.id, "data-type" => "collage", :class => 'link-add tooltip requires_logged_in', :title => "Add to a Playlist" %>
+    <%= link_to raw('<span class="icon icon-favorite-large"></span>'), '#', :class => "bookmark-action tooltip requires_logged_in", :title => "Bookmark #{@playlist.name}", "data-type" => "playlist", "data-itemid" => @playlist.id %>
 </aside>
 
 <div id="playlist" class="singleitem" data-itemid="<%= @playlist.id %>">
   <div id="main_details">
 	  <h1><span><%= raw @playlist.name %></span></h1>
 	  <h3><span>by </span><%= raw @playlist.owners.collect { |u| link_to(u.display, user_path(u)) }.join(', ') %></h3>
-	  <h5>
-	  <span class="smaller">Updated at: <%= @playlist.updated_at.to_s(:simpledatetime) %></span>
-	  <span class="smaller">Created at: <%= @playlist.created_at.to_s(:simpledatetime) %></span>
-	  </h5>
   </div>
   <div id="description">
     <%= Playlist.format_content(@playlist.description) %>
@@ -33,9 +29,9 @@
 
 <div id="stats" class="right_panel">
   <a href="#" class="right_panel_close"></a>
-  <h3>Playlist Stats</h3>
+  <h3 class="info">Playlist Information<span class="icon icon-panel"></span></h3>
   <div class="stats_panel">
-  <%= render :partial => 'playlist_meta' %>
+  <%= render :partial => 'meta' %>
   </div>
   <h3>Author Stats</h3>
   <%= render :partial => "shared/author_stats", :locals => { :user => @playlist.owners.first } %>
@@ -47,7 +43,7 @@
 
 <div id="edit_item" class="requires_edit right_panel">
   <a href="#" class="right_panel_close"></a>
-  <h3>Edit, Search for and Add Items</h3>
+  <h3>Find Items</h3>
   <div id="search_wrapper_outer">
     <a id="add_item_search" class="no_adjust" href="#">SEARCH</a>
     <div id="select_wrapper">
@@ -63,6 +59,11 @@
     <div id="search_wrapper">
     <input id="add_item_term" class="no_adjust" />
     </div>
+    <p class="instruction">
+      Drag and drop items to move within the playlist.
+      Or search to find new items, then drag and drop items from this list onto your playlist.
+      Note, you may only drop items into this playlist. To edit nested playlists, click on the playlist title and edit on that playlist page.
+    </p>
   </div>
   <%#= link_to 'ADD ITEM +', new_playlist_item_path, :class => 'btn-a new-playlist-item-control' %>
   <div id="add_item_results"></div>

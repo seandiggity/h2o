@@ -117,7 +117,7 @@ jQuery.extend({
       return false;
     });
     jQuery('#add_new_layer').live('click', function() {
-      var new_layer = jQuery('<div class="new_layer"><p>LAYER: <input type="text" name="new_layer_list[][layer]" /></p><p class="hex_input">HEX:<input type="hidden" name="new_layer_list[][hex]" /></p><a href="#" class="remove_layer">- REMOVE</a></div>');
+      var new_layer = jQuery('<div class="new_layer"><p>Enter Layer Name <input type="text" name="new_layer_list[][layer]" /></p><p class="hex_input">Choose a Color<input type="hidden" name="new_layer_list[][hex]" /></p><a href="#" class="remove_layer">Cancel &raquo;</a></div>');
       var hexes = jQuery.getHexes();
       hexes.insertBefore(new_layer.find('.remove_layer'));
       jQuery('#new_layers').append(new_layer);
@@ -849,15 +849,14 @@ jQuery.extend({
         jQuery.hideGlobalSpinnerNode();
         var annotation = jQuery.parseJSON(response.annotation);
         var color_map = jQuery.parseJSON(response.color_map);
-        jQuery('#edit_item > div').remove();
+        jQuery('#edit_item div.dynamic').html('').hide();
         if(response.type == "update") {
           jQuery.editAnnotationMarkup(annotation.annotation, color_map);
-          jQuery('<div>').attr('id', 'status_message').html('ANNOTATION UPDATED').appendTo(jQuery('#edit_item'));
+          jQuery('#edit_item').append(jQuery('<div>').attr('id', 'status_message').html('Annotation Updated'));
         } else {
           jQuery.markupAnnotation(annotation.annotation, color_map, false);
-          jQuery('<div>').attr('id', 'status_message').html('ANNOTATION CREATED').appendTo(jQuery('#edit_item'));
+          jQuery('#edit_item').append(jQuery('<div>').attr('id', 'status_message').html('Annotation Created'));
         }
-        jQuery('#edit_item .instructions').show();
       }
     });
   },
@@ -886,13 +885,12 @@ jQuery.extend({
           jQuery('div.ajax-error').show().append(xhr.responseText);
         },
         success: function(html){
+          jQuery('#edit_item #status_message').remove();
           jQuery.hideGlobalSpinnerNode();
-          jQuery('#edit_item > div').remove();
-          jQuery('<div>').attr('id', 'annotation_details').html(html).appendTo(jQuery('#edit_item'));
-          jQuery('#edit_item .instructions').hide();
+          jQuery('#annotation_edit .dynamic').html(html).show();
 
           if(access_results.can_edit_annotations) {
-            jQuery('#edit_item .tabs a').show();
+            jQuery('#edit_item #annotation_edit .tabs a').show();
           }
         }
       });
@@ -1025,8 +1023,6 @@ jQuery.extend({
           var collageId = jQuery.getItemId();
           text += '...';
 
-          jQuery('#edit_item > div').remove();
-          var header = '<div class="tabs"><a id="new_annotation" class="current" href="#">Annotation</a>';
           jQuery.openAnnotationForm('annotations/new', {
             collage_id: collageId,
             annotation_start: new_annotation_start,
@@ -1037,10 +1033,10 @@ jQuery.extend({
             jQuery('#abstract_type_annotation').click();
             jQuery('#collage_linking').show();
             jQuery('#collage_non_linking').hide(); 
+            //Add error message here
           } else {
             jQuery('#collage_linking').hide(); 
             jQuery('#collage_non_linking').show();
-            header += '<a id="new_link" href="#">Link</a>';
             jQuery.openCollageLinkForm('collage_links/embedded_pager', {
               host_collage: collageId,
               link_start: new_annotation_start,
@@ -1048,8 +1044,6 @@ jQuery.extend({
               text: text
             });
           }
-          header += '</div>';
-          jQuery(header).insertAfter('i.instructions');
 
           jQuery("#tooltip").fadeOut();
           new_annotation_start = '';
@@ -1067,11 +1061,12 @@ jQuery.extend({
     }
   }, 
   initializeAnnotationEditListeners: function() {
-    jQuery('#edit_item .tabs a').live('click', function(e) {
+    jQuery('#edit_item .tabs a:not(.current)').live('click', function(e) {
       e.preventDefault();
-      jQuery(this).siblings().removeClass('current');
+      var tabs_table = jQuery(this).parentsUntil('table').parent().first();
+      tabs_table.find('.current').removeClass('current');
       jQuery(this).addClass('current');
-      jQuery('#edit_item div.tab_panel').hide();
+      tabs_table.siblings('.tab_panel').hide();
       jQuery('#edit_item div.' + jQuery(this).attr('id')).show();
     });
     jQuery('#annotation_submit').live('click', function(e) {
@@ -1097,8 +1092,8 @@ jQuery.extend({
           },
           success: function(response){
             jQuery.deleteAnnotationMarkup(clean_annotations["a" + annotationId]);
-            jQuery('#annotation_details').hide();
-            jQuery('.instructions').show();
+            jQuery('#edit_item #annotation_edit .dynamic').hide().html('');
+            jQuery('#edit_item').append(jQuery('<div>').attr('id', 'status_message').html('Annotation Deleted'));
             jQuery.hideGlobalSpinnerNode();
           }
         });
@@ -1121,7 +1116,6 @@ jQuery.extend({
         success: function(html){
           jQuery.hideGlobalSpinnerNode();
           jQuery('<div>').attr('id', 'annotation_edit').html(html).appendTo(jQuery('#edit_item'));
-          jQuery('.instructions').hide();
           var filtered = jQuery('#annotation_annotation').val().replace(/&quot;/g, '"');
           jQuery('#annotation_annotation').val(filtered);
           jQuery("#annotation_annotation").markItUp(h2oTextileSettings);
@@ -1140,7 +1134,6 @@ jQuery.extend({
     });
   },
   openAnnotationForm: function(url_path, data){
-    jQuery('.instructions').hide();
     jQuery.ajax({
         type: 'GET',
         url: jQuery.rootPath() + url_path,
@@ -1153,7 +1146,8 @@ jQuery.extend({
         success: function(html){
           jQuery.hideGlobalSpinnerNode();
           jQuery('#edit_item #status_message').remove();
-          jQuery('<div>').attr('id', 'annotation_edit').addClass('tab_panel new_annotation').html(html).appendTo(jQuery('#edit_item'));
+          jQuery('#annotation_edit .dynamic').html(html).show();
+          //jQuery('<div>').attr('id', 'annotation_edit').addClass('tab_panel new_annotation').html(html).appendTo(jQuery('#edit_item'));
         },
         error: function(xhr){
           jQuery.hideGlobalSpinnerNode();
@@ -1255,8 +1249,7 @@ jQuery.extend({
       dataType: 'html',
       success: function(html){
         jQuery.hideGlobalSpinnerNode();
-        jQuery('#edit_item .instructions').hide();
-        jQuery('<div>').attr('id', 'link_edit').addClass('tab_panel new_link').html(html).css('display', 'none').appendTo(jQuery('#edit_item'));
+        jQuery('#link_edit .dynamic').html(html).show();
       }
     });
   }

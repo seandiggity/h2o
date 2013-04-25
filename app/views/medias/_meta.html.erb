@@ -1,3 +1,8 @@
+<p>
+  <label>Last Updated:</label>
+  <%= @media.updated_at.strftime("%B %d, %Y") %>
+</p>
+
 <% cache "media-#{@media.id}-tags" do -%>
 <% if @media.tags.any? -%>
 <p>

@@ -9,7 +9,7 @@
   position: absolute;
   top: 0px;
   right: 0px;
-  padding: 0px 10px 0px 11px;
+  padding: 0px 13px 0px 14px;
 }
 .barcode a {
   background-color: #999;
@@ -17,7 +17,7 @@
   text-indent: -4000px;
   display: block;
   float: left;
-  height: 13px;
+  height: 14px;
   width: 0px;
   margin-left: 1px;
   width: 5px;
@@ -27,26 +27,27 @@
   top: 0px;
   height: 14px;
   color: #FFF;
-  background: #000; /* TODO REPLACE WITH ICON */
+  background: url(/images/icons.png) 0px 0px;
   z-index: 2;
   overflow: hidden;
-  width: 10px;
+  width: 13px;
 }
 .barcode span.overflow:hover {
   cursor: pointer;
 }
 .barcode span.inactive {
-  background-color: #e3e3e3;
-  color: #000;
+  opacity: 0.3;
 }
 .barcode span.inactive:hover {
   cursor: default;
 }
 .barcode span.left_overflow {
   left: 0px;
+  background-position: -255px -14px;
 }
 .barcode span.right_overflow {
   right: 0px;
+  background-position: -282px -14px;
 }
 .barcode a:hover {
   opacity: 1.0;
@@ -109,7 +110,7 @@
 }
 
 .barcode a.user_case_collaged {
-  width: 15px;
+  width: 9px;
   background-color: #669999;
 }
 .user_case_collaged .tipsy-inner {
@@ -131,7 +132,7 @@
 }
 
 .barcode a.user_text_block_collaged {
-  width: 15px;
+  width: 9px;
   background-color: #663366;
 }
 .user_text_block_collaged .tipsy-inner {
@@ -197,8 +198,8 @@
 }
 
 .barcode a.user_playlist_added {
-  background-color: #99ff33;
   width: 9px;
+  background-color: #99ff33;
 }
 .user_playlist_added .tipsy-inner {
   background-color: #99ff33;
@@ -208,8 +209,8 @@
 }
 
 .barcode a.user_collage_added {
-  background-color: #669900;
   width: 15px;
+  background-color: #669900;
 }
 .user_collage_added .tipsy-inner {
   background-color: #669900;
@@ -230,8 +231,8 @@
 }
 
 .barcode a.user_media_added {
-  background-color: #006600;
   width: 6px;
+  background-color: #006600;
 }
 .user_media_added .tipsy-inner {
   background-color: #006600;

@@ -20,14 +20,19 @@ Your annotation will start here. Please click another word to set the end point.
 <aside id="singleitem_toolbar">
   <a href="#" id="heatmap_toggle" title="Show Heatmap" class="link-heatmap tooltip<%= ' inactive' if @collage.annotations.inject(0) { |s, a| s + a.annotation_word_count } == 0 %>"><span class="icon icon-heatmap"></a>
   <a href="<%= copy_collage_path(@collage) %>" class="tooltip link-copy requires_logged_in" id="copy-collage" title="Make a Copy of <%= @collage.name %>">
-    <span class="icon icon-remix"></span>
+    <span class="icon icon-remix-large"></span>
   </a>
-  <%= link_to raw('<span class="icon icon-add"></span>'), '#', "data-item_id" => @collage.id, "data-type" => "collage", :class => 'link-add tooltip requires_logged_in', :title => "Add to a Playlist" %>
-  <%= link_to raw('<span class="icon icon-bookmark"></span>'), '#', :class => "bookmark-action tooltip requires_logged_in", :title => "Bookmark #{@collage.name}", "data-type" => "collage", "data-itemid" => @collage.id %>
+  <%= link_to raw('<span class="icon icon-add-large"></span>'), '#', "data-item_id" => @collage.id, "data-type" => "collage", :class => 'link-add tooltip requires_logged_in', :title => "Add to a Playlist" %>
+  <%= link_to raw('<span class="icon icon-favorite-large"></span>'), '#', :class => "bookmark-action tooltip requires_logged_in", :title => "Bookmark #{@collage.name}", "data-type" => "collage", "data-itemid" => @collage.id %>
 </aside>
 
 <div id="collage" class="singleitem" data-itemid="<%= @collage.id %>">
   <div id="main_details">
+    <h1><%= @collage.name %></h1>
+    <h3>
+      <span>by </span>
+      <%= raw @collage.owners.collect { |u| link_to(u.display, user_path(u)) }.join(', ') %>
+    </h3>
     <aside id="buttons">
       <ul>
         <li class="btn-li afterload">
@@ -72,15 +77,7 @@ Your annotation will start here. Please click another word to set the end point.
         </li>
       </ul>
     </aside>
-    <h1><span><%= @collage.name %></span></h1>
-    <h3>
-      <span>by </span>
-      <%= raw @collage.owners.collect { |u| link_to(u.display, user_path(u)) }.join(', ') %>
-    </h3>
-    <h5>
-      <span id="autosave">Updated at: <%= @collage.updated_at.to_s(:simpledatetime) %></span>
-      <span>Created at: <%= @collage.created_at.to_s(:simpledatetime) %></span>
-    </h5>
+    <div class="clear"></div>
   </div>
   <div id="description">
     <%= Collage.format_content(@collage.description) %>
@@ -97,20 +94,35 @@ Your annotation will start here. Please click another word to set the end point.
 
 <div id="stats" class="right_panel">
   <a href="#" class="right_panel_close"></a>
-  <h3>Author Stats</h3>
-  <%= render :partial => "shared/author_stats", :locals => { :user => @collage.owners.first } %>
-  <h3>Collage Stats</h3>
+  <h3 class="info">Collage Information<span class="icon icon-panel"></span></h3>
   <div class="stats_panel">
     <%= render :partial => 'meta' %>
   </div>
+  <h3>Author Stats</h3>
+  <%= render :partial => "shared/author_stats", :locals => { :user => @collage.owners.first } %>
   <% if false -%>
   <h3>Related Collages</h3>
   <% end -%>
 </div>
 <div id="edit_item" class="requires_edit right_panel">
   <a href="#" class="right_panel_close"></a>
-  <h3 class="instructions">Edit Collage Elements</h3>
-  <i class="instructions">To create a new annotation or collage link, select a starting and end point. To edit an existing annotation, click on the colored bar or asterisk.</i>
+  <table class="tabs" width="100%" cellpadding="0" cellspacing="0"><tr>
+    <td width="50%"><a id="new_annotation" class="current" href="#">Annotate</a></td>
+    <td><a id="new_link" href="#">Link</a></td>
+  </tr></table>
+  <div id="annotation_edit" class="tab_panel new_annotation">
+    <p class="instruction">
+      To create an annotation, click at the beginning and end of text that you would like
+      to highlight, select layer, and enter annotation.
+      <div class="dynamic"></div>
+    </p>
+  </div>
+  <div id="link_edit" class="tab_panel new_link" style="display:none;">
+    <p class="instruction">
+      To create a link, MODIFIED INSTRUCTIONS.
+      <div class="dynamic"></div>
+    </p>
+  </div>
 </div>
 
 <div class="cl"></div>
