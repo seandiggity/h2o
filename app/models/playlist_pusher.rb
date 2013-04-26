@@ -290,5 +290,7 @@ class PlaylistPusher
     PlaylistBuilder.execute!(self.build_role_versions_sql(role_ids))
   end
   
-  
+  def perform
+    self.push!
+  end
 end
