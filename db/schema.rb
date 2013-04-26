@@ -27,6 +27,7 @@ ActiveRecord::Schema.define(:version => 20130418012853) do
     t.boolean  "active",                                   :default => true
     t.integer  "annotation_word_count"
     t.integer  "collage_version"
+    t.integer  "pushed_from_id"
   end
 
   add_index "annotation_versions", ["annotation_id"], :name => "index_annotation_versions_on_annotation_id"
@@ -195,6 +196,7 @@ ActiveRecord::Schema.define(:version => 20130418012853) do
     t.integer  "case_request_id"
     t.integer  "case_jurisdiction_version"
     t.integer  "case_request_version"
+    t.integer  "pushed_from_id"
   end
 
   add_index "case_versions", ["case_id"], :name => "index_case_versions_on_case_id"
@@ -277,6 +279,7 @@ ActiveRecord::Schema.define(:version => 20130418012853) do
     t.string   "readable_state",      :limit => 5242880
     t.integer  "words_shown"
     t.integer  "annotatable_version"
+    t.integer  "pushed_from_id"
   end
 
   add_index "collage_versions", ["collage_id"], :name => "index_collage_versions_on_collage_id"
@@ -372,8 +375,8 @@ ActiveRecord::Schema.define(:version => 20130418012853) do
     t.integer  "user_id",            :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "reporter_version"
     t.integer  "reportable_version"
+    t.integer  "reporter_version"
     t.integer  "version"
   end
 
