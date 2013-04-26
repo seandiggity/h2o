@@ -53,9 +53,16 @@ class PlaylistPusher
     self.create_actual_objects!
     self.create_resource_items!
     self.create_playlist_items!
+    self.notify_completed
     true
   end
   
+  def notify_completed
+    playlist = Playlist.find(self.source_playlist_id)
+    sent_by = playlist.accepted_roles.find_by_name("owner").user
+    Notifier.deliver_playlist_push_completed(sent_by, playlist)
+  end
+
   def build_playlist_sql 
     user_ids = self.user_ids
     playlist_id = self.source_playlist_id
