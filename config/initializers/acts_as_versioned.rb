@@ -1,5 +1,6 @@
 Case.new
 Collage.new
+PlaylistPusher.new
 User.non_versioned_columns << 'persistence_token'
 User.non_versioned_columns << 'login_count'
 User.non_versioned_columns << 'last_login_at'
