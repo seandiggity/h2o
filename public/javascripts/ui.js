@@ -771,7 +771,7 @@ jQuery.extend({
   push_playlist: function(data) {  
     jQuery.hideGlobalSpinnerNode();
     jQuery('#generic-node').dialog('close');
-    jQuery("#case_edit_notification").text("Playlist is being pushed.  May take several minutes to complete.")
+    jQuery("#case_edit_notification").text("Playlist is being pushed.  May take several minutes to complete. You'll receive an email when the push is completed.")
     window.scrollTo(0, 0);  
   }
   
