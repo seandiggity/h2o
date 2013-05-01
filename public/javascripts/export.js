@@ -83,7 +83,7 @@ jQuery.extend({
       });
 
       jQuery.each(['a', 'em', 'sup', 'p', 'center', 'h2', 'pre'], function(i, selector) {
-        jQuery('#collage' + id + ' article ' + selector + ':not(:has(.ellipsis:visible)):not(:has(tt:visible))').addClass('no_visible_children');
+        jQuery('#collage' + id + ' article ' + selector + ':not(:has(.ellipsis:visible)):not(:has(tt:visible)):not(.paragraph-numbering)').addClass('no_visible_children');
       });
     });
   },
@@ -121,7 +121,7 @@ jQuery(document).ready(function(){
   jQuery('#printfonttype').selectbox({
     className: "jsb", replaceInvisible: true 
   }).change(function() {
-    jQuery.rule('body, tt { font-family: ' + jQuery(this).val() + '; }').appendTo('style');
+    jQuery.rule('body, .singleitem article tt { font-family: ' + jQuery(this).val() + '; }').appendTo('style');
   });
   jQuery('#printfontsize').selectbox({
     className: "jsb", replaceInvisible: true 

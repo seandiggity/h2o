@@ -7,7 +7,7 @@
     <% [:collage_id, :annotation_start, :annotation_end].each do |col| %>
       <%= form.input col, :as => :hidden %>
     <% end %>
-    <% if @annotation.new_record? -%>
+    <% if false && @annotation.new_record? -%>
     <li id="text_layer">
       <h5>TEXT</h5>
       <%= params[:text] %>
@@ -29,7 +29,10 @@
       :required => false
     %>
   <% end %>
-  <% form.buttons do %>
-    <%= form.commit_button 'SAVE' %>
-  <% end %>
+  <input type="submit" name="submit" class="button" id="annotation_submit" value="SAVE" />
+  <% if @annotation.new_record? -%>
+  <a class="mod_button" href="#" id="cancel_new_annotation">CANCEL</a>
+  <% else -%>
+  <a class="mod_button" href="#" data-id="<%= @annotation.id %>" id="delete_annotation">DELETE</a>
+  <% end -%>
 <% end %>

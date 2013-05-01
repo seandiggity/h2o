@@ -21,38 +21,35 @@
     <% end -%>
     <% if recursive_level == 0 %>
     <%= link_to raw('<span class="icon icon-delete"></span>'), url_for(:controller => item.resource_item_type.tableize, :action => 'destroy', :id => resource_item),
-      :class => "action delete-playlist-item requires_remove smaller" %>
+      :class => "action delete-playlist-item requires_remove" %>
     <%= link_to raw('<span class="icon edit-action icon-edit"></span>'), url_for(:controller => item.resource_item_type.tableize, :action => 'edit', :id => resource_item), 
-      :class => "action edit-playlist-item requires_edit smaller" %>
+      :class => "action edit-playlist-item requires_edit" %>
     <% end -%>
-    <div class="item_description smaller">
-      <%= PlaylistItem.format_content(resource_item.description) %>
-    </div>
     <% if item.notes.to_s != '' && item.public_notes -%>
     <div class="notes">
       <b>Additional Notes:</b><br /><%= PlaylistItem.format_content(item.notes) %>
     </div>
     <% end -%>
     <% if actual_object.present? -%>
-		<div class="additional_details">
-		  <p>
-		    <%= actual_object.created_at.to_s(:simpledatetime) %> by
-		    <%= raw actual_object.owners.collect{|u| link_to(u.display, user_path(u)) }.join(',') if actual_object.owners %>
-		    <% cache "#{item.clean_type}-#{actual_object.id}-tags" do -%>
-		    <% if actual_object.tag_list.any? -%>
-		    | <%= raw actual_object.tag_list.collect { |tag| link_to(tag, self.send("#{item.clean_type}_tag_path", CGI.escape(tag))) }.join(', ') %>
-		    <% end -%>
-		    <% end -%>
-		  </p>
+    <div class="additional_details">
+      <p>
+        <%= actual_object.created_at.to_s(:simpledatetime) %> by
+        <%= raw actual_object.owners.collect{|u| link_to(u.display, user_path(u)) }.join(',') if actual_object.owners %>
+        <% cache "#{item.clean_type}-#{actual_object.id}-tags" do -%>
+        <% if actual_object.tag_list.any? -%>
+        | <%= raw actual_object.tag_list.collect { |tag| link_to(tag, self.send("#{item.clean_type}_tag_path", CGI.escape(tag))) }.join(', ') %>
+        <% end -%>
+        <% end -%>
+      </p>
       <% if recursive_level == 0 -%>
-		  <%= render :partial => "shared/barcode", :locals => { :object => actual_object } %>
+      <%= render :partial => "shared/barcode", :locals => { :object => actual_object } %>
       <% end -%>
       <% if actual_object.class.respond_to?(:format_content) && actual_object.respond_to?(:description) -%>
-		  <div class="actual_description">
-		  <%= actual_object.class.format_content(actual_object.description) %>
-		  </div>
+      <div class="item_description">
+      <%= actual_object.class.format_content(actual_object.description) %>
+      </div>
       <% end -%>
-		</div>
+    </div>
     <% end -%>
     <div class="cl"></div>
   </div>

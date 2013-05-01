@@ -41,7 +41,7 @@
   margin-left: 79px;
 }
 .playlist div.item_description {
-  padding-left: 62px;
+  padding-top: 5px;
 }
 .playlists li.listing {
   height: 1px;
@@ -128,8 +128,6 @@
   width:12px; 
   height:12px; 
   background:url(/images/icons.png) -162px -46px no-repeat; 
-  font-size:0; 
-  line-height:0; 
   text-indent: -4000px;
 }
 .playlist .wrapper .rr-closed {
@@ -174,17 +172,6 @@
 #playlist .additional_details .actual_description {
   padding-top: 10px;
 }
-
-/*
-#url_review { -moz-border-radius: 4px; border: 1px solid #8B9EB3;
-  background: url(/images/ui/repeat_bg.png) repeat scroll 0px -21px;
-  padding: 5px 10px; color: #FFF; font-weight: bold; text-decoration:none; 
-  display: inline-block; margin-top: 10px; font-size: 11px; -webkit-border-radius: 4px; }
-#url_review:hover { color: #797979; background-color: #FFF; }
-#url_review.inactive {
-  opacity: 0.5;
-}
-*/
 
 /* Right Panels */
 #edit_item {
@@ -264,25 +251,7 @@
 #edit_item #add_item_results .listing_barcode {
   padding: 5px 0px 5px 24px;
 }
-#edit_item .pagination {
-  text-align: center;
-  padding: 10px;
-}
-#edit_item .pagination span,
-#edit_item .pagination a {
-  display: none;
-}
-#edit_item #top_pagination .pagination .prev_page,
-#edit_item #bottom_pagination .pagination .next_page {
-  display: inline-block;
-  background: none;
-  text-indent: 0px;
-  float: none;
-  font-weight: bold;
-}
-#edit_item .pagination span.disabled {
-  opacity: 0.5;
-}
+
 #edit_item #nestable2 {
   clear: both;
 }
@@ -439,8 +408,7 @@ button.inactive { opacity: 0.5; }
 
 .playlist .wrapper a.title,
 .dd-dragel .wrapper a.title {
-  font-size:14px;
-  line-height:1.3em;
+  font-size:1.4em;
   font-weight: bold;
   display:inline;
   text-decoration: none;
@@ -467,8 +435,18 @@ button.inactive { opacity: 0.5; }
 }
 #description a.public-notes,
 #description a.private-notes {
-  color: #036290;
   font-weight: bold;
   text-decoration: none;
-  font-size: 10px;
+  font-size: 9px;
+  display: inline-block;
+  padding-top: 6px;
+}
+#description a.public-notes span,
+#description a.private-notes span {
+ padding-right: 3px;
+ position: relative;
+ top: 4px;
+}
+#description a.public-notes {
+  padding-right: 10px;
 }

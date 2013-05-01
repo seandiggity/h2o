@@ -57,32 +57,60 @@ class UsersController < ApplicationController
     set_sort_lists
     params[:page] ||= 1
 
+    Rails.logger.warn "stephie: #{params.inspect}"
+
     if params[:id] == 'create_anon'
       @user = @current_user
     else
       @user = User.find_by_id(params[:id])
     end
 
-    @bookshelf = Sunspot.new_search(Playlist, Collage, Case, Media, TextBlock)
-    @bookshelf.build do
-      paginate :page => params[:page], :per_page => 10 
-      with :author, "stephskardal" #@user.login
-      with :public, true
-      with :active, true
-
-      order_by params[:sort].to_sym, params[:order].to_sym
-    end
-    @bookshelf.execute!
-
-    [Playlist, Collage, Case, Media, TextBlock].each do |model|
-      set_belongings model
-    end
-
     if request.xhr?
-      @results = @bookshelf
+      if params.has_key?("ajax_region")
+	      p = @user.send(params["ajax_region"]).sort_by { |p| p.send(params[:sort]).to_s.downcase }
+	      if(params[:order] == 'desc') 
+	        p = p.reverse
+	      end
+	      @collection = p.paginate(:page => params[:page], :per_page => 10)
+        @view = params[:ajax_region] == 'cases' ? 'case_obj' : params[:ajax_region].singularize
 
-      render :partial => 'base/search_ajax'
+        if params[:ajax_region] == "bookmarks"
+          [Playlist, Collage, Case, Media, TextBlock].each do |model|
+            set_belongings model
+          end
+          render :partial => 'shared/bookmarks_block'
+        else
+          render :partial => 'shared/generic_block'
+        end
+      else
+        @results = Sunspot.new_search(Playlist, Collage, Case, Media, TextBlock)
+        @results.build do
+          paginate :page => params[:page], :per_page => 10 
+          with :author, "stephskardal" #@user.login
+          with :public, true
+          with :active, true
+
+          order_by params[:sort].to_sym, params[:order].to_sym
+        end
+        @results.execute!
+        render :partial => 'base/search_ajax'
+      end
     else
+      @bookshelf = Sunspot.new_search(Playlist, Collage, Case, Media, TextBlock)
+      @bookshelf.build do
+        paginate :page => params[:page], :per_page => 10 
+        with :author, "stephskardal" #@user.login
+        with :public, true
+        with :active, true
+
+        order_by params[:sort].to_sym, params[:order].to_sym
+      end
+      @bookshelf.execute!
+
+      [Playlist, Collage, Case, Media, TextBlock].each do |model|
+        set_belongings model
+      end
+
       set_sort_lists
       if params["controller"] == "users" && params["action"] == "show"
         @sort_lists.each do |k, v|
@@ -92,9 +120,10 @@ class UsersController < ApplicationController
 
 	    @types = []
 	    if current_user && @user == current_user
-	      add_javascripts 'user_dashboard'
-
 	      @page_title = "Dashboard | H2O Classroom Tools"
+
+	      @paginated_bookmarks = @user.bookmarks.paginate(:page => params[:page], :per_page => 10)
+
 	      if @user.is_case_admin
 	        @types += [:case_requests, :pending_cases]
 	        @my_belongings[:case_requests] = current_user.case_requests
@@ -108,6 +137,7 @@ class UsersController < ApplicationController
 	      @page_title = "User #{@user.simple_display} | H2O Classroom Tools"
 	    end
 
+	    add_javascripts 'user_dashboard'
 	    add_stylesheets 'user_dashboard'
 
 	    @results = {}

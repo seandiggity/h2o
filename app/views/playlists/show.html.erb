@@ -1,7 +1,7 @@
 <a href="#" class="fixed_link left-tooltip" id="collapse_toggle" title="Toggle Right Panel">Collapse/Expand</a>
 <a href="#" class="fixed_link requires_edit left-tooltip" id="edit_toggle" title="Toggle Edit Mode">Edit/View</a>
 <a href="<%= export_playlist_path(@playlist) %>" class="fixed_link left-tooltip" id="fixed_print" title="Print <%= @playlist.name %>">Print</a>
-<a href="#" class="fixed_link left-tooltip btn-a" id="fixed_font" title="Change the size of the text">Font Settings</a>
+<a href="#" class="fixed_link left-tooltip btn-a dont_hide" id="fixed_font" title="Change the size of the text">Font Settings</a>
 
 <div id="singleitem_barcode" class="right_panel">
 <%= render :partial => "shared/barcode", :locals => { :object => @playlist } %>
@@ -15,14 +15,14 @@
 
 <div id="playlist" class="singleitem" data-itemid="<%= @playlist.id %>">
   <div id="main_details">
-	  <h1><span><%= raw @playlist.name %></span></h1>
-	  <h3><span>by </span><%= raw @playlist.owners.collect { |u| link_to(u.display, user_path(u)) }.join(', ') %></h3>
+	  <h1 class="scale1-5"><span><%= raw @playlist.name %></span></h1>
+	  <h3 class="scale1-5"><span>by </span><%= raw @playlist.owners.collect { |u| link_to(u.display, user_path(u)) }.join(', ') %></h3>
   </div>
-  <div id="description">
+  <div id="description" class="scale1-1">
     <%= Playlist.format_content(@playlist.description) %>
-    <%= link_to raw('<span class="icon icon-edit"></span>EDIT PLAYLIST INFORMATION<span class="icon icon-arrow"></span>'), edit_playlist_path(@collage), :class => "edit-action requires_edit collage_edit smaller" %>
-    <a href="#" class="public-notes requires_edit smaller" data-type="public">MAKE NOTES PUBLIC</a>
-    <a href="#" class="private-notes requires_edit smaller" data-type="private">MAKE NOTES PRIVATE</a>
+    <%= link_to raw('<span class="icon icon-edit"></span>EDIT PLAYLIST INFORMATION<span class="icon icon-arrow"></span>'), edit_playlist_path(@collage), :class => "edit-action requires_edit collage_edit" %>
+    <a href="#" class="public-notes requires_edit" data-type="public"><span class="icon icon-setup"></span>MAKE NOTES PUBLIC</a>
+    <a href="#" class="private-notes requires_edit" data-type="private"><span class="icon icon-setup"></span>MAKE NOTES PRIVATE</a>
   </div>
   <%= render :partial => 'playlist_items/playlist_items_block', :locals => {:playlist => @playlist} %>
 </div>
@@ -54,7 +54,7 @@
 	    Note, you may only drop items into this playlist. To edit nested playlists, click on the playlist title and edit on that playlist page.
 	  </p>
 	  <div id="search_wrapper_outer">
-	    <a id="add_item_search" class="no_adjust" href="#">SEARCH</a>
+	    <a id="add_item_search" href="#">SEARCH</a>
 	    <div id="select_wrapper">
 	    <select id="add_item_select">
 	      <option value="base">all</option>
@@ -66,11 +66,10 @@
 	    </select>
 	    </div>
 	    <div id="search_wrapper">
-	    <input id="add_item_term" class="no_adjust" />
+	    <input id="add_item_term" />
 	    </div>
 	  </div>
   </div>
-  <%#= link_to 'ADD ITEM +', new_playlist_item_path, :class => 'btn-a new-playlist-item-control' %>
   <div id="add_item_results"></div>
 </div>
 

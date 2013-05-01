@@ -10,7 +10,7 @@
     <% end -%>
     <%= pluralize @results.total, "Result" %>
     <aside class="pagination">
-    <%= will_paginate @results.hits, :container => false, :previous_label => '&laquo;', :next_label => '&raquo;' %>
+    <%= will_paginate @results.hits, :container => false, :previous_label => '', :next_label => '' %>
     </aside>
   </div>
   <ul id="results_set">

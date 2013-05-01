@@ -51,6 +51,8 @@ ActionController::Routing::Routes.draw do |map|
   map.playlist_tag "playlists/tag/:tag", :controller => :playlists, :action => :index
   map.notes_tag "playlists/:id/notes/:type", :controller => :playlists, :action => :notes
 
+  map.resources :links
+
   map.resources :medias, :collection => {:embedded_pager => :get}
   map.media_tag "media/tag/:tag", :controller => :medias, :action => :index
 

@@ -11,6 +11,52 @@ var panel_offset;
 var panel_width;
 var min_tick_width = 10;
 
+var font_map = {
+  'goudy' : 'sorts-mill-goudy',
+  'futura' : 'futura-pt',
+  'verdana' : 'Verdana'
+};
+var base_font_sizes = {
+  'goudy' : {
+    'small' : 13,
+    'medium' : 17,
+    'large' : 21,
+    'xlarge' : 25
+  },
+  'verdana' : {
+    'small' : 11,
+    'medium' : 15,
+    'large' : 19,
+    'xlarge' : 23
+  },
+  'futura' : {
+    'small' : 15,
+    'medium' : 19,
+    'large' : 24,
+    'xlarge' : 28
+  }
+};
+var base_line_heights = {
+  'goudy' : {
+    'small' : 18,
+    'medium' : 20,
+    'large' : 24,
+    'xlarge' : 30
+  },
+  'verdana' : {
+    'small' : 19,
+    'medium' : 24,
+    'large' : 28,
+    'xlarge' : 32
+  },
+  'futura' : {
+    'small' : 18,
+    'medium' : 22,
+    'large' : 25,
+    'xlarge' : 32
+  }
+};
+
 $.noConflict();
 
 jQuery.extend({
@@ -28,20 +74,39 @@ jQuery.extend({
   observeFontChange: function() {
     jQuery('#fixed_font').click(function(e) {
       if(jQuery(this).hasClass('active')) {
-        jQuery('#font-size-popup').hide();
+        jQuery('#font-popup').hide();
         jQuery(this).removeClass('active');
       } else {
         jQuery(this).addClass('active');
-        jQuery('#font-size-popup').show();
+        jQuery('#font-popup').css('top', jQuery(this).position().top).show();
       }
     });
-    jQuery('#fontsize a:not(.active)').click(function(e) {
+    jQuery('#fontsize a:not(.active)').live('click', function(e) {
+      e.preventDefault();
       jQuery('#fontsize a.active').removeClass('active');
       jQuery(this).addClass('active');
-      jQuery.setFontSize(jQuery(this).data('value')); 
+      jQuery.setFont();
+    });
+    jQuery('#fontface a:not(.active)').live('click', function(e) {
+      e.preventDefault();
+      jQuery('#fontface a.active').removeClass('active');
+      jQuery(this).addClass('active');
+      jQuery.setFont();
     });
     //var val = jQuery.cookie('font_size');
     //jQuery.cookie('font_size', element.val(), { path: "/" });
+  },
+  setFont: function() {
+    var font_size = jQuery('#fontsize a.active').data('value');
+    var font_face = jQuery('#fontface a.active').data('value');
+    var base_font_size = base_font_sizes[font_face][font_size];
+    var base_line_height = base_line_heights[font_face][font_size];
+    jQuery.rule("body .main_wrapper *, .singleitem article tt { font-family: '" + font_map[font_face] + "'; font-size: " + base_font_size + 'px; }').appendTo('style');
+    jQuery.rule('.main_wrapper *.scale1-5 { font-size: ' + base_font_size*1.5 + 'px; }').appendTo('style');
+    jQuery.rule('.main_wrapper *.scale1-1 { font-size: ' + base_font_size*1.1 + 'px; }').appendTo('style');
+    jQuery.rule('.main_wrapper *.scale0-9 { font-size: ' + base_font_size*0.9 + 'px; }').appendTo('style');
+    jQuery.rule('.main_wrapper *.scale1-4 { font-size: ' + base_font_size*1.4 + 'px; }').appendTo('style');
+    //jQuery.rule('.playlist .wrapper a.title, .dd-dragel .wrapper a.title { font-size: ' + base_font_size*1.4 + 'px; }').appendTo('style');
   },
   observeResultsHover: function() {
     jQuery('#results .listitem').hoverIntent(function() {
@@ -83,7 +148,7 @@ jQuery.extend({
           var listitem_element = jQuery('#listitem_' + popup_item_type + popup_item_id);
           listitem_element.addClass('with_popup');
           var position = listitem_element.offset();
-          jQuery('.add-popup').hide().css({ top: position.top - 47 }).fadeIn(100);
+          jQuery('.add-popup').hide().css({ top: position.top - 47, left: listitem_element.width() + position.left - 298 }).fadeIn(100);
         }
       }
 
@@ -199,17 +264,6 @@ jQuery.extend({
       });
     }
   },
-  setFontSize: function(value) {
-    //Adding backwards compatibility
-    if(value > 2) {
-      value = parseFloat(value) / 10;
-    }
-    jQuery.cookie('font_size', value, { path: "/" });
-    jQuery('.font-size-popup select').val(value);
-    jQuery('.jsb *').addClass('no_adjust');
-    jQuery('.singleitem *:not(.no_adjust,.smaller,:has(*)),.right_panel *:not(.no_adjust,:has(*))').css({ 'font-size' : (value*100) + '%', 'line-height' : (value*100) + '%' });
-    jQuery('.singleitem *.smaller').css('font-size', (value*100 - 20) + '%');
-  },
   observeViewerToggle: function() {
     jQuery('#collapse_toggle').click(function(e) {
       e.preventDefault();
@@ -295,16 +349,16 @@ jQuery.extend({
     if(jQuery('li.btn .active').length) {
       jQuery('li.btn .active').click();
     }
+    if(jQuery('#font-popup').is(':visible')) {
+      jQuery('#fixed_font').click();
+    }
     if(jQuery('.add-popup').is(':visible')) {
       jQuery('.with_popup').removeClass('with_popup');
       jQuery('.add-popup').hide();
       popup_item_id = 0;
     }
-    if(jQuery('#collage-stats-popup').is(':visible')) {
-      jQuery('#collage-stats').click();
-    }
-    if(jQuery('#playlist-stats-popup').is(':visible')) {
-      jQuery('#playlist-stats').click();
+    if(jQuery('.ui-dialog').is(':visible')) {
+      jQuery('.ui-dialog .ui-dialog-content').dialog('close');
     }
   },
   loadPopupCloseListener: function() {
@@ -323,17 +377,20 @@ jQuery.extend({
   },
   loadOuterClicks: function() {
     jQuery('html').click(function(event) {
-      var dont_hide = jQuery('.font-size-popup,.add-popup,.tools-popup,#collage-stats-popup,#playlist-stats-popup').has(event.target).length > 0 ? true : false;
-      if(jQuery(event.target).hasClass('jsb-moreButton')) {
+      var dont_hide = jQuery('#login-popup,.text-popup,.layers-popup,#font-popup').has(event.target).length > 0 ? true : false;
+      if(jQuery(event.target).hasClass('dont_hide')) {
         dont_hide = true;
       }
+      //if(jQuery(event.target).hasClass('jsb-moreButton')) {
+      //  dont_hide = true;
+      //}
       if(!dont_hide) {
         jQuery.hideVisiblePopups();
       }
     });
   },
   loadGenericEditability: function() {
-    if(jQuery('ul#logged-in').size()) {
+    if(jQuery('a#logged-in').size()) {
       jQuery('.requires_logged_in').animate({ opacity: 1.0 });
     }
   },
@@ -359,7 +416,7 @@ jQuery.extend({
         access_results = results;
         if(results.logged_in) {
           var data = jQuery.parseJSON(results.logged_in);
-          jQuery('.requires_logged_in .user_account').append(jQuery('<a>').html(data.user.login + ' Dashboard').attr('href', "/users/" + data.user.id));
+          jQuery('#user_account').append(jQuery('<a>').html(data.user.login + ' Dashboard').attr('href', "/users/" + data.user.id));
           jQuery('#defect_user_id').val(data.user.id);
           jQuery('.requires_logged_in').animate({ opacity: 1.0 });
           jQuery('#header_login').remove();
@@ -447,10 +504,14 @@ jQuery.extend({
     }
   },
   observeLoginPanel: function() {
-    jQuery('#header_login').click(function(e) {
-      jQuery(this).toggleClass('active');
-      jQuery('#login-popup').toggle();
+    jQuery('#header_login').live('click', function(e) {
       e.preventDefault();
+      jQuery('#login-popup').dialog({
+        title: '',
+        modal: true,
+        width: 700,
+        height: 'auto'
+      });
     });
   },
   addItemToPlaylistDialog: function(itemController, itemName, itemId, playlistId) {
@@ -521,13 +582,17 @@ jQuery.extend({
            jQuery.hideGlobalSpinnerNode();
       },
       success: function(html){
-        jQuery.address.value(href);
-        jQuery.hideGlobalSpinnerNode();
-        jQuery('#results_set').html(html);
-        jQuery('.pagination').html(jQuery('#new_pagination').html());
-        jQuery('#new_pagination').remove();
-        jQuery.initializeBarcodes();
-        jQuery.observeResultsHover();
+	      jQuery.hideGlobalSpinnerNode();
+        if(href.match('collage_links')) { //TODO: Find out a more elegant way to represent this logic
+          jQuery('#link_edit .dynamic').html(html).show();    
+        } else {
+	        jQuery.address.value(href);
+	        jQuery('#results_set').html(html);
+	        jQuery('.pagination').html(jQuery('#new_pagination').html());
+	        jQuery('#new_pagination').remove();
+	        jQuery.initializeBarcodes();
+	        jQuery.observeResultsHover();
+        }
       }
     });
   },

@@ -250,11 +250,17 @@ form.formtastic fieldset > ol > li.text textarea.markItUpEditor { width: 100%; }
 #link_edit {
   background: #d5d5d5; 
 }
-#annotation_edit .dynamic,
-#link_edit .dynamic {
+#annotation_edit .dynamic {
   background: #FFF;
   padding: 10px;
   display: none;
+}
+#link_edit .dynamic {
+  background: #FFF;
+  display: none;
+}
+#link_edit #collage_link_list {
+  margin: 10px;
 }
 #text_layer {
   margin-bottom: 10px;
@@ -308,22 +314,87 @@ form.formtastic fieldset > ol > li.layer_check input {
 #new_annotation .buttons {
   padding-left: 0px;
 }
-#new_annotation .buttons input {
+.mod_button {
   font-size:13px; 
   line-height:30px; 
-  color:#fff; 
+  background-color:#fff; 
   font-weight:bold; 
-  background: #036290;
+  color: #036290;
   text-decoration: none;
   display: inline-block;
-  padding: 5px 10px;
+  padding: 0px 10px;
+  border: none;
+  margin-left: 5px;
+}
+#link_edit #link_search {
+  color: #FFF;
+  float: right;
+  display: block;
+  background: #036290;
+  line-height: 30px;
+  padding: 0px 12px;
+  font-weight: bold;
+  text-decoration: none;
+}
+#link_edit #search_wrapper_outer {
+  padding: 0px 10px 10px 10px;
+  height: 28px;
+  display: none;
+}
+#link_edit #search_wrapper {
+  background: #FFF;
+  padding-right: 90px;
+}
+#link_edit #collage-keyword-search {
+  height: 18px;
+  padding: 5px;
   border: none;
 }
+#link_edit #linking_error {
+  color: red;
+  display: none;
+  font-style: italic;
+  padding: 10px;
+  font-weight: bold;
+}
+#link_edit ol li {
+  margin-bottom: 5px;
+  clear: both;
+}
+#link_edit table button {
+  color: #FFF;
+  background: #036290;
+  padding: 5px;
+  font-weight: bold;
+  text-decoration: none;
+  font-size: 9px;
+  border: none;
+  display: inline-block;
+  margin-right: 5px;
+}
+#link_edit table td {
+  padding-bottom: 10px;
+}
+#link_edit table td.title {
+  width: 200px;
+  font-size: 11px;
+}
 
-/* Annotation Edit */
-#annotation_details .tab_panel {
+.annotation-info,
+.edit_annotation_link {
   padding: 10px;
 }
-#annotation_details .tab_panel h3 {
-  margin: 0px;
+.annotation-info .stats_panel {
+  padding: 10px 0px;
+}
+.annotation-info h4 {
+  padding-bottom: 4px;
+}
+.annotation-info .annotation-content {
+  padding-bottom: 10px;
+}
+.annotation-info .annotation-content,
+.annotation-info .annotated-content {
+  font-size: 11px;
+  line-height: 16px;
 }

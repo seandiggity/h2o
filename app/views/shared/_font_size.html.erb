@@ -1,15 +1,15 @@
 <% if @single_resource && [Playlist, Collage].include?(@single_resource.class) -%>
-<div id="font-size-popup">
+<div id="font-popup">
   <div id="fontface">
-    <a href="#" data-value="1.0">font1</a>
-    <a href="#" data-value="1.3">font2</a>
-    <a href="#" data-value="1.6">font3</a>
+    <a href="#" data-value="goudy">Goudy</a>
+    <a href="#" data-value="futura">Futura</a>
+    <a href="#" class="active" data-value="verdana">Verdana</a>
   </div>
   <div id="fontsize">
-    <a href="#" data-value="1.0">small</a>
-    <a href="#" data-value="1.3">medium</a>
-    <a href="#" data-value="1.6">large</a>
-    <a href="#" data-value="1.9">extra-large</a>
+    <a href="#" class="active" data-value="small">small</a>
+    <a href="#" data-value="medium">medium</a>
+    <a href="#" data-value="large">large</a>
+    <a href="#" data-value="xlarge">extra-large</a>
   </div>
 </div>
 <% end -%>

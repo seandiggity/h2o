@@ -887,7 +887,7 @@ jQuery.extend({
         success: function(html){
           jQuery('#edit_item #status_message').remove();
           jQuery.hideGlobalSpinnerNode();
-          jQuery('#annotation_edit .dynamic').html(html).show();
+          jQuery('#annotation_edit .dynamic').css('padding', '2px 0px 0px 0px').html(html).show();
 
           if(access_results.can_edit_annotations) {
             jQuery('#edit_item #annotation_edit .tabs a').show();
@@ -1033,8 +1033,12 @@ jQuery.extend({
             jQuery('#abstract_type_annotation').click();
             jQuery('#collage_linking').show();
             jQuery('#collage_non_linking').hide(); 
-            //Add error message here
+            jQuery('#linking_error').show();
+            jQuery('#link_edit .instructions,#link_edit #search_wrapper_outer').hide();
+            jQuery('#link_edit .dynamic').hide().html('');
           } else {
+            jQuery('#linking_error').hide();
+            jQuery('#link_edit .instructions,#link_edit #search_wrapper_outer').show();
             jQuery('#collage_linking').hide(); 
             jQuery('#collage_non_linking').show();
             jQuery.openCollageLinkForm('collage_links/embedded_pager', {
@@ -1050,7 +1054,7 @@ jQuery.extend({
           new_annotation_end = '';
         } else {
           var pos = el.position();
-          jQuery("#tooltip").css({ left: pos.left - 100 + el.width()/2, top: pos.top + 30 }).fadeIn();
+          jQuery("#tooltip").css({ left: pos.left - 106 + el.width()/2, top: pos.top - 20 }).fadeIn();
           new_annotation_start = el.attr('id');
         }
       }
@@ -1072,6 +1076,10 @@ jQuery.extend({
     jQuery('#annotation_submit').live('click', function(e) {
       e.preventDefault();
       jQuery.submitAnnotation();
+    });
+    jQuery('#cancel_new_annotation').live('click', function() {
+      jQuery('#edit_item .dynamic').hide().html('');
+      jQuery('#link_edit #search_wrapper_outer').hide();
     });
     jQuery('#delete_annotation').live('click', function(e) {
       e.preventDefault();
@@ -1146,7 +1154,7 @@ jQuery.extend({
         success: function(html){
           jQuery.hideGlobalSpinnerNode();
           jQuery('#edit_item #status_message').remove();
-          jQuery('#annotation_edit .dynamic').html(html).show();
+          jQuery('#annotation_edit .dynamic').css('padding', '10px').html(html).show();
           //jQuery('<div>').attr('id', 'annotation_edit').addClass('tab_panel new_annotation').html(html).appendTo(jQuery('#edit_item'));
         },
         error: function(xhr){
@@ -1168,7 +1176,7 @@ jQuery.extend({
   },
 
   initKeywordSearch: function(){
-    jQuery('.collage-button').live('click', function(e) {
+    jQuery('#link_search').live('click', function(e) {
       e.preventDefault();
       jQuery.ajax({
         method: 'GET',
@@ -1186,37 +1194,15 @@ jQuery.extend({
         dataType: 'html',
         success: function(html){
           jQuery.hideGlobalSpinnerNode();
-          jQuery('#link_edit').html(html);
+          jQuery('#link_edit .dynamic').html(html);
         },
         error: function(xhr){
           jQuery.hideGlobalSpinnerNode();
-          //jQuery('#new-annotation-error').show().append(xhr.responseText);
         }
       });
     });
   },
   
-  initPlaylistItemPagination: function(){
-    jQuery('#edit_item .pagination a').live('click', function(e) {
-      e.preventDefault();
-      jQuery.ajax({
-        type: 'GET',
-        dataType: 'html',
-        beforeSend: function(){
-           jQuery.showGlobalSpinnerNode();
-        },
-        data: {
-          keywords: jQuery('#collage-keyword-search').val()
-        },
-        url: jQuery(this).attr('href'),
-        success: function(html){
-          jQuery.hideGlobalSpinnerNode();
-          jQuery('#link_edit').html(html);
-        }
-      });
-    });
-  },
-
   submitCollageLink: function(linked_collage, link_start, link_end, host_collage){
     jQuery.ajax({
       type: 'POST',
@@ -1231,7 +1217,9 @@ jQuery.extend({
       url: jQuery.rootPath() + 'collage_links/create',
       success: function(results){
         jQuery.hideGlobalSpinnerNode();
-        jQuery('#annotation-form').dialog('close');
+        jQuery('#link_edit .dynamic,#annotation_edit .dynamic').hide().html('');
+        jQuery('#link_edit #search_wrapper_outer').hide();
+        jQuery('#edit_item').append(jQuery('<div>').attr('id', 'status_message').html('Link Created'));
         jQuery.markupCollageLink(results.collage_link);
       }
     });
@@ -1295,7 +1283,6 @@ jQuery(document).ready(function(){
     jQuery.observeHeaderAdjust();
 
     /* Collage Search */
-    jQuery.initPlaylistItemPagination();
     jQuery.initKeywordSearch();
     jQuery.initPlaylistItemAddButton();
 

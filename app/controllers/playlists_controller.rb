@@ -76,7 +76,7 @@ class PlaylistsController < BaseController
   # GET /playlists/1
   def show
     add_javascripts ['playlists', 'jquery.tipsy', 'jquery.nestable']
-    add_stylesheets 'playlists'
+    add_stylesheets ['playlists']
 
     @owner = @playlist.owners.first
     @author_playlists = @playlist.owners.first.playlists.paginate(:page => 1, :per_page => 5)

@@ -2,22 +2,15 @@
 <input type="hidden" value="<%= params[:link_end] %>" name="link_end" />
 <input type="hidden" value="<%= params[:host_collage] %>" name="host_collage" />
 <input type="hidden" value="<%= params[:text] %>" name="text" />
-<div class="h2o-playlistable-collage playlistable-list">
-  <h5>Text</h5>
-  <%= params[:text] %>
-  <hr />
-  <strong>Keywords:</strong>
-  <%= text_field_tag :keywords, params[:keywords], :id => "collage-keyword-search" %>
-  <button class="collage-button">Go</button>
-  <% if @objects -%>
-  <ol>
-    <% @objects.each do |hit| -%>
-    <li>
-      <%= hit[1] %> 
-      <button class="add-collage-button" id="collage-<%= hit[0] %>">Select</button>
-    </li>
-    <% end %>
-  </ol>
-  <%= will_paginate @objects, :previous_label => '&laquo;', :next_label => '&raquo;' %>
+<% if @objects -%>
+<%= will_paginate @objects, :previous_label => '', :next_label => '' %>
+<table width="95%" id="collage_link_list">
+  <% @objects.each do |hit| -%>
+  <tr>
+    <td valign="top"><button class="add-collage-button" id="collage-<%= hit[0] %>">SELECT</button></td>
+    <td class="title"><%= hit[1] %></td>
+  </tr>
   <% end %>
-</div>
+</table>
+<%= will_paginate @objects, :previous_label => '', :next_label => '' %>
+<% end %>

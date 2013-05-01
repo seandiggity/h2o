@@ -4,7 +4,7 @@
   <% if breakdown_data.has_key?(k) -%>
   <div class="<%= k %>">
     <span class="icon icon-<%= k %>"></span>
-    <span class="detail">
+    <span class="detail scale0-9">
       <b><%= v %></b> <%= pluralize breakdown_data[k], (k == :add ? 'playlist' : 'time') %>
     </span>
   </div>

@@ -25,7 +25,7 @@
   font-weight: normal;
   font-family: Georgia, serif;
   font-size: 21pt;
-  padding: 0px;
+  padding: 8px 0px 0px 0px;
   display: inline-block;
 }
 #results #profile_panel .header a,
@@ -88,12 +88,14 @@ ul.user_list li a.item {
 #results #bookmarks_panel li.listitem .details {
   width: 400px;
 }
-#results .sort {
+#results .sort,
+#results .special_sort {
   position: absolute;
   top: 0px;
   right: 10px;
 }
-#results .pagination {
+#results .pagination,
+#results .special_pagination {
   position: absolute;
   bottom: 10px;
   right: 10px;

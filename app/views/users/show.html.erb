@@ -18,7 +18,7 @@
         <%= render :partial => 'shared/sort', :locals => { :list => @sort_lists[:all] } %>
       </aside>
       <aside class="pagination">
-        <%= will_paginate @bookshelf.hits, :container => false, :previous_label => '&laquo;', :next_label => '&raquo;' %>
+        <%= will_paginate @bookshelf.hits, :container => false, :previous_label => '', :next_label => '' %>
       </aside>
     </div>
     <ul id="results_set">
@@ -101,9 +101,12 @@
 	<div id="bookmarks_panel" class="panel special_panel">
 	  <div class="header">
 	    <h3>Bookmarks</h3>
+      <aside class="special_pagination" id="pagination_bookmarks" data-region="bookmarks">
+        <%= will_paginate @paginated_bookmarks, :container => false, :previous_label => '', :next_label => '', :params => { :ajax_region => "bookmarks" } %>
+      </aside>
 	  </div>
-		<ul id="bookmarks" class="playlists">
-			<% @user.bookmarks.each do |bookmark| -%>
+		<ul id="results_bookmarks" class="playlists">
+			<% @paginated_bookmarks.each do |bookmark| -%>
       <% item = bookmark.resource_item.actual_object %>
       <%= render :partial => "shared/objects/#{item.class == Case ? 'case_obj' : item.class.to_s.downcase}",
                  :locals => { (item.class == Case ? :case_obj : item.class.to_s.downcase.to_sym) => item } %>
@@ -117,13 +120,14 @@
 	<div class="panel special_panel">
 	  <div class="header">
 	    <h3><%= type.to_s.humanize %></h3>
+      <aside class="special_sort" data-region="<%= type %>">
+        <%= render :partial => 'shared/sort', :locals => { :list => @sort_lists[type] } %>
+      </aside>
+      <aside class="special_pagination" id="pagination_<%= type.to_s %>" data-region="<%= type %>">
+        <%= will_paginate @results[type], :container => false, :previous_label => '', :next_label => '', :params => { :ajax_region => "#{type.to_s}" } %>
+      </aside>
 	  </div>
-    <% if false -%>
-		<div id="all_<%= type.to_s %>_sort" data-type="<%= type.to_s %>">
-			<%= render :partial => 'shared/sort', :locals => { :list => @sort_lists[type] } %>
-		</div>
-    <% end -%>
-		<ul id="all_<%= type.to_s %>">
+		<ul id="results_<%= type.to_s %>">
 	    <%= render :partial => "shared/objects/#{type == :cases ? 'case_obj' : type.to_s.singularize}", :collection => @results[type] %>
 		</ul>
 	</div>
