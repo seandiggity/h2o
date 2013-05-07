@@ -59,40 +59,33 @@ class PlaylistPusher
   end
   
   def push_children!
-    created_playlists = Playlist.find(self.created_playlist_ids)
-    
-    created_playlists.each do |created_playlist|
-      created_playlist.child_playlists.each do |child_playlist|
-        
-        source_playlist = Playlist.find(child_playlist.pushed_from_id)
-        @source_playlist_id = source_playlist.id
-        @created_playlist_ids = [child_playlist.id]
-        
-        
-        self.create_actual_objects!
+   created_playlists = Playlist.find(self.created_playlist_ids)
+   puts self.created_playlist_ids
+      created_playlists.first.child_playlists.each do |child_playlist|
 
+        @source_playlist_id = child_playlist.pushed_from_id
+        created_child_playlists_for_all_users = created_playlists.map(&:child_playlists).flatten.find_all{|pi| pi.pushed_from_id == self.source_playlist_id}
+        @created_playlist_ids = created_child_playlists_for_all_users.map(&:id)
+
+
+        self.create_actual_objects!
         self.create_resource_items!
         self.create_playlist_items!
-        puts self.created_actual_objects.inspect
-        puts source_playlist.actual_objects.inspect
-        puts "pushing child #{child_playlist.name}"
-        
-        
-        self.created_actual_objects.each do |grandchild_object|
-          if grandchild_object.is_a? Playlist
-            @source_playlist_id = grandchild_object.pushed_from_id
-            @created_playlist_ids = [grandchild_object.id]
-            self.create_actual_objects!
-            self.create_resource_items!
-            self.create_playlist_items!
-            puts "push grandchild object #{grandchild_object.name}"
-          end
-        end  
-        
+        puts "pushed child #{child_playlist.name}"
+
+        grandchild_playlists_for_all_users = created_child_playlists_for_all_users.map(&:child_playlists).flatten
+        child_playlist.child_playlists.each do |gcp|
+        puts "push grandchild object #{gcp.name}"
+          @source_playlist_id = gcp.pushed_from_id
+          @created_playlist_ids = grandchild_playlists_for_all_users.map(&:id)
+          self.create_actual_objects!
+          self.create_resource_items!
+          self.create_playlist_items!
+        end
+
       end
-    end
   end
-  
+
   def child_playlists
      arr = []
      recursive_playlists(self){|x| arr << x}
@@ -250,7 +243,6 @@ class PlaylistPusher
         playlist = playlists.detect{|playlist| playlist.author == resource_item.author}
         
         playlist_item = resource_item.class.find(resource_item.pushed_from_id).playlist_item
-        
         tn = PlaylistItem.table_name
         sql = "SELECT #{PlaylistItem.insert_value_names(:overrides => {:resource_item_id => resource_item.id, 
                                                                        :resource_item_type => resource_item.class.to_s,

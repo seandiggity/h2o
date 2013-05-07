@@ -89,10 +89,11 @@ class Playlist < ActiveRecord::Base
 
 
   def child_playlists
-    arr = []
-    recursive_playlists(self){|x| arr << x}
-    arr = arr - [self]
-    arr
+    self.actual_objects.find_all{|ao| ao.class == Playlist}
+    #arr = []
+    #recursive_playlists(self){|x| arr << x}
+    #arr = arr - [self]
+    #arr
   end
 
   def collage_word_count
