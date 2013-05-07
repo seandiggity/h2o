@@ -128,7 +128,7 @@ jQuery.extend({
 			var url = document.location.pathname + '?ajax_region=' + region + '&sort=' + sort;
 			jQuery.listResultsSpecial(url, region);
 		});
-		jQuery('.special_pagination a').live('click', function(e) {
+		jQuery('.users_pagination a').live('click', function(e) {
 			e.preventDefault();
 			var href = jQuery(this).attr('href');
 			var region = jQuery(this).parent().data('region');

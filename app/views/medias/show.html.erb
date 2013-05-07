@@ -1,10 +1,9 @@
+<div id="fixed_links">
 <a href="#" class="fixed_link left-tooltip" id="collapse_toggle" title="Toggle Right Panel">Collapse/Expand</a>
+</div>
 
-<aside id="singleitem_barcode" class="right_panel">
-<%= render :partial => "shared/barcode", :locals => { :object => @media } %>
-</aside>
-
-<aside id="singleitem_toolbar">
+<aside id="singleitem_barcode_toolbar">
+  <%= render :partial => "shared/barcode", :locals => { :object => @media } %>
   <% if current_user -%>
   <%= link_to raw('<span class="icon icon-add-large"></span>'), '#', "data-item_id" => @media.id, "data-type" => "media", :class => 'link-add tooltip requires_logged_in', :title => "Add to a Playlist" %>
   <%= link_to raw('<span class="icon icon-favorite-large"></span>'), '#', :class => "bookmark-action tooltip requires_logged_in", :title => "Bookmark #{@media.name}", "data-type" => "media", "data-itemid" => @media.id %>
@@ -36,6 +35,6 @@
   <%= render :partial => "shared/author_stats", :locals => { :user => @media.owners.first } %>
 </div>
 
-<div class="cl"></div>
+<div class="clear"></div>
 
 <%= render :partial => "shared/popup", :locals => { :type => "media" } %>

@@ -45,8 +45,11 @@ var UTC_OFFSET = #{Time.zone.now.utc_offset * 1000};") %>
     <%= render :partial => 'shared/login' %>
   </section>
 
+<% if current_user && @single_resource && [Case, TextBlock].include?(@single_resource.class) -%>
 <%= render :partial => 'shared/forms/defect' %>
-<%= render :partial => "shared/font_size" %>
+<% end -%>
+
+<%= render :partial => "shared/font_selectors" %>
 <%= javascript_include_tag 'jquery.min.js' %>
 <%= javascript_include_tag 'jquery-ui.min.js' %>
 <%= javascript_include_tag 'jquery.selectbox-0.6.1.pack', 'jquery.rating.pack', 'modernizr.custom.86311',

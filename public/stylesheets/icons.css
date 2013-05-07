@@ -6,7 +6,8 @@
   background-image: url(/images/icons.png); 
   text-indent: -4000px;
 }
-.icon-default {
+.icon-default,
+.icon-itemdefault {
   background-position: -578px -154px;
 }
 .icon-default.hover {
@@ -137,7 +138,7 @@
   height: 25px;
 }
 .icon-collage-this {
-  background-position: -4px -39px;
+  background-position: -11px -46px;
   width: 16px;
   height: 16px;
 }
@@ -166,7 +167,7 @@
   height: 26px;
 }
 .icon-tocollage-large {
-  background-position: -667px -66px;
+  background-position: -667px -70px;
   width: 23px;
   height: 30px;
 }

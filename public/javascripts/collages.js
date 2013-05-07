@@ -233,9 +233,20 @@ jQuery.extend({
     return x1 + x2;
   },
   observeToolListeners: function () {
-    jQuery("#collage #buttons .btn-li > a").click(function() {
-      jQuery(this).siblings('.popup').toggle();
-      jQuery(this).toggleClass("btn-a-active");
+    jQuery("#collage #buttons a.btn-a:not(.btn-a-active)").live('click', function() {
+      if(jQuery(this).siblings('.btn-a-active').size()) {
+        var sibling = jQuery(this).siblings('.btn-a-active');
+        sibling.click();
+      }
+      var top_pos = jQuery(this).position().top + jQuery(this).height() + 10;
+      var left_pos = jQuery(this).position().left;
+      jQuery(this).next('.popup').css({ top: top_pos, left: left_pos }).show();
+      jQuery(this).addClass("btn-a-active");
+      return false;
+    });
+    jQuery("#collage #buttons a.btn-a-active").live('click', function() {
+      jQuery(this).next('.popup').hide();
+      jQuery(this).removeClass("btn-a-active");
       return false;
     });
     jQuery('#layers li').each(function(i, el) {
@@ -1135,6 +1146,7 @@ jQuery.extend({
       e.preventDefault();
       if(jQuery('#edit_toggle').length && jQuery('#edit_toggle').hasClass('edit_mode')) {
         jQuery.annotationButton(jQuery(this).data('id'));
+        jQuery('#annotation-content-' + jQuery(this).data('id')).css('display', 'inline-block');
       } else {
         jQuery.toggleAnnotation(jQuery(this).data('id'));
         jQuery.hideShowAnnotationOptions();

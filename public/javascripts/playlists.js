@@ -47,11 +47,11 @@ jQuery.extend({
       if(!jQuery(this).parent().hasClass('adding-item')) {
         if(jQuery('.adding-item').size()) {
           jQuery('.add-popup').hide();
-          jQuery('.adding-item > .wrapper > .inner-wrapper > .additional_details').slideToggle();
+          jQuery('.adding-item > .wrapper > .inner-wrapper > .additional_details').slideToggle(1000);
           jQuery('.adding-item').removeClass('adding-item');
         }
         if(!jQuery('div.dd').hasClass('playlists-edit-mode') && !jQuery(this).parent().hasClass('expanded')) {
-          jQuery(this).find('> .inner-wrapper > .additional_details').slideToggle();
+          jQuery(this).find('> .inner-wrapper > .additional_details').slideToggle(1000);
           jQuery(this).find('.icon').addClass('hover');
         }
       }
@@ -311,9 +311,6 @@ jQuery.extend({
 
           dropped_item = listing_el;
           dropped_original_position = new_item.index + 1; 
-			    if(new_item.type == "default") {
-			      url_string = itemId;
-			    }
 			    jQuery.ajax({
 			      method: 'GET',
 			      cache: false,
@@ -410,6 +407,8 @@ jQuery.extend({
 });
 
 jQuery(document).ready(function(){
+  jQuery.setPlaylistFontHierarchy(14);
+
   jQuery('.toolbar, .buttons').css('visibility', 'visible');
   jQuery.loadEditability();
   jQuery.observeStats();

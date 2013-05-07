@@ -17,7 +17,7 @@
       <aside class="sort">
         <%= render :partial => 'shared/sort', :locals => { :list => @sort_lists[:all] } %>
       </aside>
-      <aside class="pagination">
+      <aside class="pagination standard_pagination">
         <%= will_paginate @bookshelf.hits, :container => false, :previous_label => '', :next_label => '' %>
       </aside>
     </div>
@@ -88,7 +88,7 @@
 	      <div class="details">
 	        <h4><a href="<%= new_user_collection_path %>" class="new-action">Create a New User Collection</a></h4>
 	      </div>
-	      <div class="cl"></div>
+	      <div class="clear"></div>
 	    </li>
 	    <%= render :partial => "shared/objects/user_collection", :collection => @user.collections %>
 	  </ul>
@@ -101,7 +101,7 @@
 	<div id="bookmarks_panel" class="panel special_panel">
 	  <div class="header">
 	    <h3>Bookmarks</h3>
-      <aside class="special_pagination" id="pagination_bookmarks" data-region="bookmarks">
+      <aside class="pagination users_pagination" id="pagination_bookmarks" data-region="bookmarks">
         <%= will_paginate @paginated_bookmarks, :container => false, :previous_label => '', :next_label => '', :params => { :ajax_region => "bookmarks" } %>
       </aside>
 	  </div>
@@ -123,7 +123,7 @@
       <aside class="special_sort" data-region="<%= type %>">
         <%= render :partial => 'shared/sort', :locals => { :list => @sort_lists[type] } %>
       </aside>
-      <aside class="special_pagination" id="pagination_<%= type.to_s %>" data-region="<%= type %>">
+      <aside class="pagination users_pagination" id="pagination_<%= type.to_s %>" data-region="<%= type %>">
         <%= will_paginate @results[type], :container => false, :previous_label => '', :next_label => '', :params => { :ajax_region => "#{type.to_s}" } %>
       </aside>
 	  </div>

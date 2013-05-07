@@ -123,29 +123,12 @@ class Collage < ActiveRecord::Base
 
   def barcode
     Rails.cache.fetch("collage-barcode-#{self.id}") do
-      barcode_elements = []
+      barcode_elements = self.barcode_bookmarked_added
       self.children.each do |child|
         barcode_elements << { :type => "remix", 
                               :date => child.created_at, 
                               :title => "Remixed to Collage #{child.name}",
                               :link => collage_path(child.id) }
-      end
-      ItemCollage.find_all_by_actual_object_id(self.id).each do |item_playlist|
-        next if item_playlist.playlist_item.nil?
-        next if item_playlist.playlist_item.playlist.nil?
-        playlist = item_playlist.playlist_item.playlist
-        if playlist.name == "Your Bookmarks"
-          playlist_owner = playlist.accepted_roles.find_by_name('owner')
-          barcode_elements << { :type => "bookmark", 
-                                :date => item_playlist.created_at, 
-                                :title => "Bookmarked by #{playlist_owner.user.display}",
-                                :link => user_path(playlist_owner.user) }
-        else
-          barcode_elements << { :type => "add", 
-                                :date => item_playlist.created_at, 
-                                :title => "Added to playlist #{playlist.name}",
-                                :link => playlist_path(playlist.id) }
-        end
       end
       barcode_elements.sort_by { |a| a[:date] }
     end

@@ -57,12 +57,14 @@ class UsersController < ApplicationController
     set_sort_lists
     params[:page] ||= 1
 
-    Rails.logger.warn "stephie: #{params.inspect}"
-
     if params[:id] == 'create_anon'
       @user = @current_user
     else
       @user = User.find_by_id(params[:id])
+    end
+
+    [Playlist, Collage, Case, Media, TextBlock, Default].each do |model|
+      set_belongings model
     end
 
     if request.xhr?
@@ -75,9 +77,6 @@ class UsersController < ApplicationController
         @view = params[:ajax_region] == 'cases' ? 'case_obj' : params[:ajax_region].singularize
 
         if params[:ajax_region] == "bookmarks"
-          [Playlist, Collage, Case, Media, TextBlock].each do |model|
-            set_belongings model
-          end
           render :partial => 'shared/bookmarks_block'
         else
           render :partial => 'shared/generic_block'
@@ -106,10 +105,6 @@ class UsersController < ApplicationController
         order_by params[:sort].to_sym, params[:order].to_sym
       end
       @bookshelf.execute!
-
-      [Playlist, Collage, Case, Media, TextBlock].each do |model|
-        set_belongings model
-      end
 
       set_sort_lists
       if params["controller"] == "users" && params["action"] == "show"
@@ -192,9 +187,7 @@ class UsersController < ApplicationController
       raise "not logged in" if !current_user
 
       klass = nil
-      if params[:type] == 'default'
-        klass = ItemDefault
-      elsif params[:type] == 'media'
+      if params[:type] == 'media'
         klass = Media
       else
         klass = params[:type].classify.constantize
@@ -206,16 +199,19 @@ class UsersController < ApplicationController
         render :json => { :already_bookmarked => true, :user_id => current_user.id }
       else
         item_klass = "Item#{klass.to_s}".constantize
+
         item = item_klass.new(:name => actual_object.respond_to?(:name) ? actual_object.name : actual_object.bookmark_name,
-          :url => params[:type] == 'default' ? actual_object.url : url_for(actual_object))
-        item.actual_object = actual_object if params[:type] != 'default'
+          :url => url_for(actual_object))
+        item.actual_object = actual_object
         item.save
-        
+
         playlist_item = PlaylistItem.new(:playlist_id => playlist.id,
           :resource_item_type => item_klass.to_s,
           :resource_item_id => item.id)
         playlist_item.accepts_role!(:owner, current_user)
         playlist_item.save
+
+        Rails.logger.warn "stephie: #{playlist_item.inspect}"
 
         render :json => { :already_bookmarked => false, :user_id => current_user.id }
       end

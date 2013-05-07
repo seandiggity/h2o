@@ -14,7 +14,7 @@
 				</li>
 			</ul>
 		</aside>
-		<div class="cl"></div>
+		<div class="clear"></div>
 	</hgroup>
 	<div class="details">
 		<% cache "journal_article-#{@journal_article.id}-tags" do -%>
@@ -24,7 +24,7 @@
 			<% end -%>
 		</div>
 		<% end -%>
-		<div class="cl"></div>
+		<div class="clear"></div>
     <% @display_map.each do |f| %>
     <% if @journal_article.send(f[:key]).present? -%>
     <%= f[:display] %>: <%= @journal_article.send(f[:key]) %>

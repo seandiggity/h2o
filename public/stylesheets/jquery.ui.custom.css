@@ -12,7 +12,7 @@
 ----------------------------------*/
 .ui-helper-hidden { display: none; }
 .ui-helper-hidden-accessible { position: absolute; left: -99999999px; }
-.ui-helper-reset { margin: 0; padding: 0; border: 0; outline: 0; line-height: 1.3; text-decoration: none; font-size: 100%; list-style: none; }
+.ui-helper-reset { margin: 0; padding: 0; border: 0; outline: 0; line-height: 1.3; text-decoration: none; list-style: none; }
 .ui-helper-clearfix:after { content: "."; display: block; height: 0; clear: both; visibility: hidden; }
 .ui-helper-clearfix { display: inline-block; }
 /* required comment for clearfix to work in Opera \*/
@@ -57,9 +57,9 @@
 
 /* Component containers
 ----------------------------------*/
-.ui-widget { font-family: Verdana, Arial, sans-serif; font-size: 1.1em; }
-.ui-widget .ui-widget { font-size: 1em; }
-.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button { font-family: Verdana, Arial, sans-serif; font-size: 1em; }
+.ui-widget { }
+.ui-widget .ui-widget { }
+.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button { }
 .ui-widget-content { border: 1px solid #666; background: #fbfbfb; color: #333333; }
 .ui-widget-content a { color: #333333; }
 .ui-widget-header { border: none; background: #FFF; color: #333; font-weight: bold; }
@@ -71,9 +71,7 @@
   color: #FFF; 
   text-transform: uppercase; 
   font-weight: bold; 
-  font-size: 11px;
   background: #036290;
-  padding-top: 2px;
   border: none;
 }
 .ui-state-default a, .ui-state-default a:link, .ui-state-default a:visited { color: #7d909d; text-decoration: none; }
@@ -130,7 +128,7 @@ font-weight: normal; color: #000; }
  * http://docs.jquery.com/UI/Resizable#theming
  */
 .ui-resizable { position: relative;}
-.ui-resizable-handle { position: absolute;font-size: 0.1px;z-index: 99999; display: block;}
+.ui-resizable-handle { position: absolute; z-index: 99999; display: block;}
 .ui-resizable-disabled .ui-resizable-handle, .ui-resizable-autohide .ui-resizable-handle { display: none; }
 .ui-resizable-n { cursor: n-resize; height: 7px; width: 100%; top: -5px; left: 0; }
 .ui-resizable-s { cursor: s-resize; height: 7px; width: 100%; bottom: -5px; left: 0; }
@@ -166,7 +164,7 @@ font-weight: normal; color: #000; }
 .ui-accordion .ui-accordion-header { cursor: pointer; position: relative; margin-top: 1px; zoom: 1; }
 .ui-accordion .ui-accordion-li-fix { display: inline; }
 .ui-accordion .ui-accordion-header-active { border-bottom: 0 !important; }
-.ui-accordion .ui-accordion-header a { display: block; font-size: 1em; padding: .5em .5em .5em .7em; }
+.ui-accordion .ui-accordion-header a { display: block; padding: .5em .5em .5em .7em; }
 .ui-accordion-icons .ui-accordion-header a { padding-left: 2.2em; }
 .ui-accordion .ui-accordion-header .ui-icon { position: absolute; left: .5em; top: 50%; margin-top: -8px; }
 .ui-accordion .ui-accordion-content { padding: 1em 2.2em; border-top: 0; margin-top: -2px; position: relative; top: 1px; margin-bottom: 2px; overflow: auto; display: none; zoom: 1; }
@@ -281,7 +279,7 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
   z-index: 100;
 }
 .ui-dialog .ui-dialog-titlebar { padding: .5em 1em .3em; position: relative;  }
-.ui-dialog .ui-dialog-title { float: left; margin: .1em 16px .2em 0; font-size: 14px; } 
+.ui-dialog .ui-dialog-title { float: left; margin: .1em 16px .2em 0; }
 .ui-dialog .ui-dialog-titlebar-close {
   position: absolute;
   right: .3em; 
@@ -331,7 +329,7 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
  */
 .ui-slider { position: relative; text-align: left; }
 .ui-slider .ui-slider-handle { position: absolute; z-index: 2; width: 1.2em; height: 1.2em; cursor: default; }
-.ui-slider .ui-slider-range { position: absolute; z-index: 1; font-size: .7em; display: block; border: 0; background-position: 0 0; }
+.ui-slider .ui-slider-range { position: absolute; z-index: 1; display: block; border: 0; background-position: 0 0; }
 
 .ui-slider-horizontal { height: .8em; }
 .ui-slider-horizontal .ui-slider-handle { top: -.3em; margin-left: -.6em; }
@@ -380,11 +378,11 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
 .ui-datepicker .ui-datepicker-next-hover { right:1px; }
 .ui-datepicker .ui-datepicker-prev span, .ui-datepicker .ui-datepicker-next span { display: block; position: absolute; left: 50%; margin-left: -8px; top: 50%; margin-top: -8px;  }
 .ui-datepicker .ui-datepicker-title { margin: 0 2.3em; line-height: 1.8em; text-align: center; }
-.ui-datepicker .ui-datepicker-title select { font-size:1em; margin:1px 0; }
+.ui-datepicker .ui-datepicker-title select { margin:1px 0; }
 .ui-datepicker select.ui-datepicker-month-year {width: 100%;}
 .ui-datepicker select.ui-datepicker-month, 
 .ui-datepicker select.ui-datepicker-year { width: 49%;}
-.ui-datepicker table {width: 100%; font-size: .9em; border-collapse: collapse; margin:0 0 .4em; }
+.ui-datepicker table {width: 100%; border-collapse: collapse; margin:0 0 .4em; }
 .ui-datepicker th { padding: .7em .3em; text-align: center; font-weight: bold; border: 0;  }
 .ui-datepicker td { border: 0; padding: 1px; }
 .ui-datepicker td span, .ui-datepicker td a { display: block; padding: .2em; text-align: right; text-decoration: none; }

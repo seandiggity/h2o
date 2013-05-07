@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130220143047) do
+ActiveRecord::Schema.define(:version => 20130503145202) do
 
   create_table "annotations", :force => true do |t|
     t.integer  "collage_id"
@@ -167,6 +167,18 @@ ActiveRecord::Schema.define(:version => 20130220143047) do
     t.datetime "updated_at"
   end
 
+  create_table "defaults", :force => true do |t|
+    t.string   "name",        :limit => 1024
+    t.string   "title"
+    t.string   "url"
+    t.string   "description", :limit => 5242880
+    t.boolean  "active",                         :default => true
+    t.boolean  "public",                         :default => true
+    t.integer  "karma"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "defects", :force => true do |t|
     t.text     "description",     :null => false
     t.integer  "reportable_id",   :null => false
@@ -255,13 +267,16 @@ ActiveRecord::Schema.define(:version => 20130220143047) do
 
   create_table "item_defaults", :force => true do |t|
     t.string   "title"
-    t.string   "name",        :limit => 1024
-    t.string   "url",         :limit => 1024
+    t.string   "name",               :limit => 1024
+    t.string   "url",                :limit => 1024
     t.text     "description"
-    t.boolean  "active",                      :default => true
+    t.boolean  "active",                             :default => true
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "public",                      :default => true
+    t.boolean  "public",                             :default => true
+    t.integer  "karma"
+    t.string   "actual_object_type"
+    t.integer  "actual_object_id"
   end
 
   add_index "item_defaults", ["active"], :name => "index_item_defaults_on_active"
@@ -850,8 +865,8 @@ ActiveRecord::Schema.define(:version => 20130220143047) do
     t.string   "login"
     t.string   "crypted_password"
     t.string   "password_salt"
-    t.string   "persistence_token",                       :null => false
-    t.integer  "login_count",              :default => 0, :null => false
+    t.string   "persistence_token",                          :null => false
+    t.integer  "login_count",              :default => 0,    :null => false
     t.datetime "last_request_at"
     t.datetime "last_login_at"
     t.datetime "current_login_at"
@@ -867,7 +882,7 @@ ActiveRecord::Schema.define(:version => 20130220143047) do
     t.string   "perishable_token"
     t.boolean  "default_show_annotations"
     t.boolean  "tab_open_new_items"
-    t.string   "default_font_size"
+    t.string   "default_font_size",        :default => "16"
     t.string   "title"
     t.string   "affiliation"
     t.string   "url"

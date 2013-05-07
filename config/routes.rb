@@ -18,11 +18,13 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :item_images
   map.resources :item_youtubes
   map.resources :item_medias
-  map.resources :item_defaults
+  map.resources :item_defaults, :collection => { :embedded_pager => :get }
 
   map.resources :influences
 
   map.resources :annotations, :collection => {:embedded_pager => :get}
+
+  map.add_link_to_playlist "/add_link_to_playlist", :controller => :item_defaults, :action => :add_link_to_playlist, :via => :post
 
   map.resources :case_jurisdictions
   map.resources :case_docket_numbers
@@ -51,7 +53,7 @@ ActionController::Routing::Routes.draw do |map|
   map.playlist_tag "playlists/tag/:tag", :controller => :playlists, :action => :index
   map.notes_tag "playlists/:id/notes/:type", :controller => :playlists, :action => :notes
 
-  map.resources :links
+  map.resources :defaults, :collection => {:embedded_pager => :get}
 
   map.resources :medias, :collection => {:embedded_pager => :get}
   map.media_tag "media/tag/:tag", :controller => :medias, :action => :index
@@ -93,6 +95,7 @@ ActionController::Routing::Routes.draw do |map|
   map.bookmark_item "/bookmark_item/:type/:id", :controller => :users, :action => :bookmark_item
 
   map.search_all "/all_materials", :controller => :base, :action => :search
+  map.quick_collage "/quick_collage", :controller => :base, :action => :quick_collage
   map.root :controller => "base"
   map.partial_results "/partial_results", :controller => :base, :action => :partial_results
   map.partial_results_show "/partial_results/:dummy/:id", :controller => :base, :action => :partial_results

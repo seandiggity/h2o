@@ -3,7 +3,7 @@ class ItemBaseController < BaseController
   cache_sweeper :item_base_sweeper
 
   before_filter :set_model
-  before_filter :load_object_and_playlist, :except => [:new, :create]
+  before_filter :load_object_and_playlist, :except => [:new, :create, :add_link_to_playlist, :embedded_pager]
   before_filter :create_object_and_load_playlist, :only => [:new, :create]
   before_filter :require_user, :except => [:index, :show]
 
@@ -24,18 +24,9 @@ class ItemBaseController < BaseController
 
   def index
     @objects = @model_class.all
-
-    respond_to do |format|
-      format.html # index.html.erb
-      format.xml  { render :xml => @item_defaults }
-    end
   end
 
   def show
-    respond_to do |format|
-      format.html # show.html.erb
-      format.xml  { render :xml => @item_default }
-    end
   end
 
   def new
@@ -43,9 +34,10 @@ class ItemBaseController < BaseController
     @can_edit_notes = false
 
     @object.url = params[:url_string]
-    if @model_class == ItemCollage
-      collage_id = @object.url.match(/[0-9]+$/).to_s
-      actual_item = Collage.find(collage_id)
+    if [ItemCollage, ItemDefault].include?(@model_class)
+      item_id = @object.url.match(/[0-9]+$/).to_s
+      actual_item = @base_model_class.find(item_id)
+      @url_display = actual_item.url if @base_model_class == Default
       @object.name = actual_item.name
       @object.description = actual_item.description
     end
@@ -74,8 +66,9 @@ class ItemBaseController < BaseController
           #This looks like it's a local object we can link directly to.
           @object.actual_object = @base_object
         end
+
         rescue Exception => e
-          logger.warn('oopsy.' + e.inspect)
+          logger.warn('Failed to set actual object: ' + e.inspect)
         end
     end
 

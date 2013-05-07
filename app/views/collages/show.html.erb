@@ -5,6 +5,7 @@ Your annotation will start here. Please click another word to set the end point.
 </div>
 </div>
 
+<div id="fixed_links">
 <a href="#" class="fixed_link left-tooltip" id="collapse_toggle" title="Toggle Right Panel">Collapse/Expand</a>
 <a href="#" class="fixed_link requires_edit left-tooltip" id="edit_toggle" title="Toggle Edit Mode">Edit/View</a>
 <a href="#" class="fixed_link left-tooltip" id="fixed_print" title="Print <%= @collage.name %>">Print</a>
@@ -12,12 +13,10 @@ Your annotation will start here. Please click another word to set the end point.
 <input type="hidden" id="state" name="state" value="" />
 </form>
 <a href="#" class="fixed_link left-tooltip btn-a dont_hide" id="fixed_font" title="Change the size of the text">Font Settings</a>
-
-<div id="singleitem_barcode" class="right_panel">
-<%= render :partial => "shared/barcode", :locals => { :object => @collage } %>
 </div>
 
-<aside id="singleitem_toolbar">
+<aside id="singleitem_barcode_toolbar">
+  <%= render :partial => "shared/barcode", :locals => { :object => @collage } %>
   <a href="#" id="heatmap_toggle" title="Show Heatmap" class="afterload link-heatmap tooltip<%= ' inactive' if @collage.annotations.inject(0) { |s, a| s + a.annotation_word_count } == 0 %>"><span class="icon icon-heatmap"></a>
   <a href="<%= copy_collage_path(@collage) %>" class="tooltip link-copy requires_logged_in" id="copy-collage" title="Make a Copy of <%= @collage.name %>">
     <span class="icon icon-remix-large"></span>
@@ -34,50 +33,36 @@ Your annotation will start here. Please click another word to set the end point.
       <%= raw @collage.owners.collect { |u| link_to(u.display, user_path(u), :class => "scale1-5") }.join(', ') %>
     </h3>
     <aside id="buttons">
-      <ul>
-        <li class="btn-li afterload">
-          <a href="#" class="btn-a" id="text-tools">TEXT</a>
-          <div class="popup text-popup">
-            <ul>
-              <li>
-                <a href="#" class="tooltip" title="Show the entire text of <%= @collage.name %>" id="full_text">SHOW FULL TEXT</a>
-              </li>
-              <li>
-                <a href="#" class="tooltip" title="Show <%= @collage.author %>'s version of the collage" id="author_edits">SHOW AUTHOR'S LAYERS</a>
-              </li>
-              <li>
-                <a href="#" title="View all annotations" class="tooltip" id="show_annotations" <%= raw 'class="inactive"' if @collage.annotations.inject(0) { |s, a| s + a.annotation_word_count } == 0 %>>SHOW ANNOTATIONS</a>
-                <a href="#" title="Hide all annotations" class="tooltip" id="hide_annotations" <%= raw 'class="inactive"' if @collage.annotations.inject(0) { |s, a| s + a.annotation_word_count } == 0 %>>HIDE ANNOTATIONS</a>
-              </li>
-            </ul>
-          </div>
-        </li>
-        <li class="btn-li afterload">
-          <a href="#" class="btn-a" id="layer-tools">LAYERS</a>
-          <div class="popup layers-popup">
-            <ul id="layers">
-               <% @collage.layers.each do |layer| %>
-              <li data-id="l<%= layer.id %>" data-name="<%= layer.name %>" data-hex="<%= @color_map["l#{layer.id}"] ? @color_map["l#{layer.id}"] : cycle('ffcc00', '99ccff', '99cc33', 'ff9999', 'b2c1d0', 'ff9933', 'cc99cc') %>">
-                <strong><%= layer.name %></strong>
-                <a href="#" class="hide_show shown tooltip" title="Hide the <%= layer.name %> layer" >HIDE</a>
-                <a href="#" title="Highlight the <%= layer.name %> Layer" class="tooltip link-o">HIGHLIGHT</a>
-                <div class="cl">&nbsp;</div>
-              </li>
-               <% end -%>
-              <li id="unlayered_li">
-                <a href="#" id="show_unlayered" class="tooltip"  title="Show All Unlayered">SHOW UNLAYERED</a>
-                <a href="#" id="hide_unlayered" class="tooltip"  title="Hide All Unlayered">HIDE UNLAYERED</a>
-              </li>
-            </ul>
-          </div>
-        </li>
-      </ul>
+      <a href="#" class="btn-a afterload dont_hide" id="text-tools">TEXT</a>
+      <div class="popup text-popup">
+        <a href="#" class="tooltip scale0-9" title="Show the entire text of <%= @collage.name %>" id="full_text">SHOW FULL TEXT</a>
+        <a href="#" class="tooltip scale0-9" title="Show <%= @collage.author %>'s version of the collage" id="author_edits">SHOW AUTHOR'S LAYERS</a>
+        <a href="#" title="View all annotations" class="tooltip scale0-9" id="show_annotations" <%= raw 'class="inactive"' if @collage.annotations.inject(0) { |s, a| s + a.annotation_word_count } == 0 %>>SHOW ANNOTATIONS</a>
+        <a href="#" title="Hide all annotations" class="tooltip scale0-9" id="hide_annotations" <%= raw 'class="inactive"' if @collage.annotations.inject(0) { |s, a| s + a.annotation_word_count } == 0 %>>HIDE ANNOTATIONS</a>
+      </div>
+      <a href="#" class="btn-a afterload dont_hide" id="layer-tools">LAYERS</a>
+      <div class="popup layers-popup">
+        <ul id="layers">
+           <% @collage.layers.each do |layer| %>
+          <li data-id="l<%= layer.id %>" data-name="<%= layer.name %>" data-hex="<%= @color_map["l#{layer.id}"] ? @color_map["l#{layer.id}"] : cycle('ffcc00', '99ccff', '99cc33', 'ff9999', 'b2c1d0', 'ff9933', 'cc99cc') %>">
+            <strong><%= layer.name %></strong>
+            <a href="#" class="hide_show shown tooltip" title="Hide the <%= layer.name %> layer" >HIDE</a>
+            <a href="#" title="Highlight the <%= layer.name %> Layer" class="tooltip link-o">HIGHLIGHT</a>
+            <div class="clear">&nbsp;</div>
+          </li>
+           <% end -%>
+          <li id="unlayered_li">
+            <a href="#" id="show_unlayered" class="tooltip"  title="Show All Unlayered">SHOW UNLAYERED</a>
+            <a href="#" id="hide_unlayered" class="tooltip"  title="Hide All Unlayered">HIDE UNLAYERED</a>
+          </li>
+        </ul>
+      </div>
     </aside>
     <div class="clear"></div>
   </div>
   <div id="description" class="scale1-1">
     <%= Collage.format_content(@collage.description) %>
-    <%= link_to raw('<span class="icon icon-edit"></span>EDIT COLLAGE INFORMATION<span class="icon icon-arrow"></span>'), edit_collage_path(@collage), :class => "edit-action requires_edit collage_edit" %>
+    <%= link_to raw('<span class="icon icon-edit"></span>EDIT COLLAGE INFORMATION<span class="icon icon-arrow"></span>'), edit_collage_path(@collage), :class => "edit-action requires_edit collage_edit scale0-8" %>
   </div>
 
   <div class="ajax-error" id="ajax-error-<%= @collage.id %>" style="display: none;"></div>
@@ -103,7 +88,7 @@ Your annotation will start here. Please click another word to set the end point.
 <div id="edit_item" class="requires_edit right_panel">
   <a href="#" class="right_panel_close"></a>
   <table class="tabs" width="100%" cellpadding="0" cellspacing="0"><tr>
-    <td width="50%"><a id="new_annotation" class="current" href="#">Annotate</a></td>
+    <td width="50%"><a id="new_annotation" class="current" href="#">Edit</a></td>
     <td><a id="new_link" href="#">Link</a></td>
   </tr></table>
   <div id="annotation_edit" class="tab_panel new_annotation">
@@ -131,7 +116,7 @@ Your annotation will start here. Please click another word to set the end point.
   </div>
 </div>
 
-<div class="cl"></div>
+<div class="clear"></div>
   
 <%= render :partial => "shared/popup", :locals => { :type => "collage" } %>
  

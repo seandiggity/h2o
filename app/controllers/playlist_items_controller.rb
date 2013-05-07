@@ -17,7 +17,7 @@ class PlaylistItemsController < BaseController
     render :partial => 'shared/objects/playlist_item',
       :locals => { :item => playlist_item,
       :resource_item => playlist_item.resource_item,
-      :actual_object => (playlist_item.resource_item_type == "ItemDefault" ? nil : playlist_item.resource_item.actual_object),
+      :actual_object => playlist_item.resource_item.actual_object,
       :parent_index => '', 
       :index => params[:playlist_index],
       :recursive_level => 0,

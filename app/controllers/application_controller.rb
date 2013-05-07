@@ -110,24 +110,24 @@ class ApplicationController < ActionController::Base
       "karma" => { :display => "SORT BY KARMA", :selected => false },
       "display_name" => { :display => "SORT BY DISPLAY NAME", :selected => false }
     }
-    @sort_lists[:all] = generate_sort_list(base_sort.merge!({
+    @sort_lists[:all] = generate_sort_list(base_sort.merge({
       "decision_date" => { :display => "SORT BY DECISION DATE (IF APPLIES)", :selected => false },
       "created_at" => { :display => "SORT BY DATE CREATED", :selected => false },
       "author" => { :display => "SORT BY AUTHOR", :selected => false }
     }))
-    @sort_lists[:cases] = @sort_lists[:pending_cases] = @sort_lists[:case_requests] = generate_sort_list(base_sort.merge!({
+    @sort_lists[:cases] = @sort_lists[:pending_cases] = @sort_lists[:case_requests] = generate_sort_list(base_sort.merge({
       "decision_date" => { :display => "SORT BY DECISION DATE", :selected => false }
     }))
-    @sort_lists[:text_blocks] = generate_sort_list(base_sort.merge!({
+    @sort_lists[:text_blocks] = generate_sort_list(base_sort.merge({
       "author" => { :display => "SORT BY AUTHOR", :selected => false }
     }))
     if ["index", "search"].include?(params[:action])
-      @sort_lists[:playlists] = @sort_lists[:collages] = @sort_lists[:medias] = generate_sort_list(base_sort.merge!({
+      @sort_lists[:defaults] = @sort_lists[:playlists] = @sort_lists[:collages] = @sort_lists[:medias] = generate_sort_list(base_sort.merge({
         "created_at" => { :display => "SORT BY DATE", :selected => false },
         "author" => { :display => "SORT BY AUTHOR", :selected => false }
       }))
     else
-      @sort_lists[:playlists] = @sort_lists[:collages] = @sort_lists[:medias] = @sort_lists[:defects] = generate_sort_list(base_sort.merge!({
+      @sort_lists[:defaults] = @sort_lists[:playlists] = @sort_lists[:collages] = @sort_lists[:medias] = @sort_lists[:defects] = generate_sort_list(base_sort.merge({
         "created_at" => { :display => "SORT BY DATE", :selected => false }
       }))
     end
@@ -138,6 +138,7 @@ class ApplicationController < ActionController::Base
 
     @page_title = "#{model.to_s.pluralize} | H2O Classroom Tools"
     @page_title = "Media Items | H2O Classroom Tools" if model == Media
+    @page_title = "Links | H2O Classroom Tools" if model == Default
     @view = model == Case ? 'case_obj' : "#{model.to_s.downcase}"
     @model = model
 

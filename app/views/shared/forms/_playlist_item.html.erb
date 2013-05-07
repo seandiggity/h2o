@@ -3,7 +3,10 @@
   <% semantic_form_for @object, :html => { :class => (@object.new_record? ? 'new' : 'edit') } do |form| %>
     <% form.inputs do %>
       <% if @base_model_class == Default -%>
-      <li><%= form.input :url,  :as => :string, :input_html => {:class => "ui-widget-content ui-corner-all"} %></li>
+      <li>
+        <label>Url</label>
+        <span style="clear:both;"><%= @url_display %></span>
+      </ul>
       <% end -%>
       <% if @can_edit_all -%>
       <li><%= form.input :name,  :as => :string, :input_html => {:class => "ui-widget-content ui-corner-all"} %></li>
@@ -24,9 +27,7 @@
         <input type="checkbox" name="playlist_item[public_notes]" <%= raw 'checked="checked"' if @object.playlist_item.public_notes %> />
       </li>
       <% end -%>
-      <% if @base_model_class != Default -%>
       <%= form.input(:url, :as => :hidden) %>
-      <% end -%>
       <%= hidden_field_tag 'container_id', params[:container_id] %>
       <%= hidden_field_tag 'position', params[:position] %>
     <% end -%>

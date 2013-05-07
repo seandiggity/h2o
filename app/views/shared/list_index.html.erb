@@ -1,12 +1,13 @@
+<% if flash[:notice] %>
+<p id="notice"><%= flash[:notice] %></p>
+<% end %>
+
 <section id="results" class="multiitems">
-  <aside class="breadcrumb">
-    Breadcrumb
-  </aside>
   <aside class="sort">
 	  <%= render :partial => 'shared/sort', :locals => { :list => @sort_lists[@model.to_s.tableize.to_sym] } %>
   </aside>
   <div class="search_details">
-	  <aside class="pagination">
+	  <aside class="pagination standard_pagination">
 		  <%= will_paginate @collection, :container => false, :previous_label => '', :next_label => '' %>
 	  </aside>
 		<% if params[:tag] -%>

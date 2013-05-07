@@ -30,7 +30,7 @@ namespace :h2o do
     end
     # Cache does not need to be cleared for playlists
     # and collages, because it is cleared in sweepers
-    [Playlist, Collage, TextBlock, Media, Case].each do |model|
+    [Playlist, Collage, TextBlock, Media, Case, Default].each do |model|
       model.find_in_batches do |items|
         items.each do |i|
           i.update_karma

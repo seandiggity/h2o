@@ -13,7 +13,7 @@
 		<b>Additional Notes:</b><br /><%= PlaylistItem.format_content(item.notes) %>
 	</div>
   <% end -%>
-	<div class="cl"></div>
+	<div class="clear"></div>
   <% if ['ItemCollage', 'ItemCase', 'ItemPlaylist'].include?(item.resource_item_type) && !item.resource_item.actual_object.nil? -%>
   <% if item.resource_item_type == 'ItemCollage' -%>
     <%= render :partial => 'shared/objects/collage_print', :locals => { :collage => item.resource_item.actual_object } %>

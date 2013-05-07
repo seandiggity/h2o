@@ -5,7 +5,7 @@ class BaseController < ApplicationController
     params[:page] ||= 1
 
     if params[:keywords].present?
-      @objects = model.nil? ? Sunspot.new_search(Playlist, Collage, Case, Media, TextBlock) : Sunspot.new_search(model)
+      @objects = model.nil? ? Sunspot.new_search(Playlist, Collage, Case, Media, TextBlock, Default) : Sunspot.new_search(model)
       @objects.build do
         keywords params[:keywords]
         paginate :page => params[:page], :per_page => 10 || nil
@@ -16,7 +16,7 @@ class BaseController < ApplicationController
       cache_key = model.present? ? "#{model.to_s.tableize}-embedded-search-#{params[:page]}--display_name-asc" :
         "embedded-search-#{params[:page]}--display_name-asc"
       @objects = Rails.cache.fetch(cache_key) do
-        obj = model.nil? ? Sunspot.new_search(Playlist, Collage, Case, Media, TextBlock) : Sunspot.new_search(model)
+        obj = model.nil? ? Sunspot.new_search(Playlist, Collage, Case, Media, TextBlock, Default) : Sunspot.new_search(model)
         obj.build do
           paginate :page => params[:page], :per_page => 10 || nil
 
@@ -86,12 +86,12 @@ class BaseController < ApplicationController
     end
   end
 
-  def search
+  def common_search(models)
     set_sort_params
     set_sort_lists
     params[:page] ||= 1
 
-    @results = Sunspot.new_search(Playlist, Collage, Media, TextBlock, Case)
+    @results = Sunspot.new_search(models)
     @results.build do
       if params.has_key?(:keywords)
         keywords params[:keywords]
@@ -106,20 +106,29 @@ class BaseController < ApplicationController
       order_by params[:sort].to_sym, params[:order].to_sym
     end
     @results.execute!
-    [Playlist, Collage, Case, Media, TextBlock].each do |model|
+    models.each do |model|
       set_belongings model
     end
+    @results
+  end
 
-    #@formatted_bookmarks = 
+  def search
+    common_search [Playlist, Collage, Media, TextBlock, Case, Default]
 
-    respond_to do |format|
-      format.html do
-        if request.xhr?
-          render :partial => 'base/search_ajax' 
-        else
-          render 'search'
-        end
-      end
+    if request.xhr?
+      render :partial => 'base/search_ajax' 
+    else
+      render 'search'
+    end
+  end
+
+  def quick_collage
+    common_search [TextBlock, Case]
+
+    if params.has_key?(:ajax)
+      render :partial => 'base/search_ajax' 
+    else
+      render :partial => 'base/quick_collage'
     end
   end
 

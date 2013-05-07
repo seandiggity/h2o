@@ -13,8 +13,16 @@
 	  	<%= link_to "sign in", crossroad_user_session_path, :id => 'header_login', :class => "dont_hide" %>
 	  	<% end -%>
 	  	<% end -%>
-	  	<div class="cl"></div>
+	  	<div class="clear"></div>
 	  </nav>
+    <nav id="object_types">
+      <%= link_to raw('<span class="icon icon-playlist"></span>'), playlists_path, { :title => "Playlists", :class => "bottom-tooltip" } %>
+      <%= link_to raw('<span class="icon icon-collage"></span'), collages_path, { :title => "Collages", :class => "bottom-tooltip" } %>
+      <%= link_to raw('<span class="icon icon-case"></span>'), cases_path, { :title => "Cases", :class => "bottom-tooltip" } %>
+      <%= link_to raw('<span class="icon icon-textblock"></span>'), text_blocks_path, { :title => "Text Blocks", :class => "bottom-tooltip" } %>
+      <%= link_to raw('<span class="icon icon-media-audio"></span>'), medias_path, { :title => "Media Items", :class => "bottom-tooltip" } %>
+      <%= link_to raw('<span class="icon icon-default"></span>'), defaults_path, { :title => "Links", :class => "bottom-tooltip" } %>
+    </nav>
 		<h1 id="logo"><%= link_to "H2O", "/" %></h1>
 	  <section id="search">
 	  <% form_tag(url_for, :method => :get, :class => "search") do -%>
@@ -29,8 +37,8 @@
 	      <td valign="middle" class="search">
 	        <select id="search_all">
 	          <option value="all_materials">all</option>
-	          <% ["playlists", "collages", "cases", "text_blocks", "medias"].each do |type| -%>
-	          <option value="<%= type %>" <%= raw 'selected="selected"' if params[:controller] == type %>><%= type == "medias" ? "media items" : type.gsub('_', ' ') %></option>
+	          <% ["playlists", "collages", "cases", "text_blocks", "medias", "defaults"].each do |type| -%>
+	          <option value="<%= type %>" <%= raw 'selected="selected"' if params[:controller] == type %>><%= type == "defaults" ? "links" : (type == "medias" ? "media items" : type.gsub('_', ' ')) %></option>
 	          <% end -%>
 	        </select>
 	      </td>
@@ -43,10 +51,9 @@
 	  </table>
 	  <% end -%>
 	  <div class="popup" id="create_all_popup">
-	    <%#= link_to 'Start a Playlist', new_playlist_path, :class => 'new-action' %>
-	    <%#= link_to 'Start a Collage', collages_path %>
-	    <%#= link_to 'Link', '#' %>
 	    <div class="left">
+	    <%= link_to raw('<span class="icon icon-playlist"></span>Playlist'), new_playlist_path, :class => "new-action" %> 
+	    <%= link_to raw('<span class="icon icon-collage"></span>Collage'), quick_collage_path, :id => 'quick-collage' %>
 	    <%= link_to raw('<span class="icon icon-case"></span>Case'), new_case_path %>
 	    <%= link_to raw('<span class="icon icon-textblock"></span>Text'), new_text_block_path %>
 	    <%= link_to raw('<span class="icon icon-media-pdf"></span>PDF'), new_media_path, :class => "last" %> 
@@ -54,9 +61,11 @@
 	    <div class="right">
 	    <%= link_to raw('<span class="icon icon-media-audio"></span>Audio'), new_media_path %> 
 	    <%= link_to raw('<span class="icon icon-media-image"></span>Image'), new_media_path %> 
-	    <%= link_to raw('<span class="icon icon-media-video"></span>Video'), new_media_path, :class => "last" %> 
+	    <%= link_to raw('<span class="icon icon-media-video"></span>Video'), new_media_path %>
+	    <%= link_to raw('<span class="icon icon-default"></span>Link'), new_default_path, :class => "last" %>
 	    </div>
 	  </div>
 	  </section>
+    <div class="clear"></div>
   </div>
 </header>

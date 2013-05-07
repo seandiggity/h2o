@@ -1,10 +1,8 @@
 #collage article {
   opacity: 1.0;
-  font-size:11px;
   color:#000;
-  padding:13px 9px 0 35px;
+  padding:13px 19px 0 45px;
   height:100%; 
-  font-family: Verdana, Arial, Helvetica, sans-serif;
   background: #FFF;
 }
 #collage article p,
@@ -72,9 +70,9 @@
   left:0; 
   z-index:1;
   background: #333;
-  padding: 10px;
+  padding: 0.5em 1.0em;
   display:none;
-  top: 21px;
+  top: 38px;
   left: 0px;
   width: 150px;
   color: #FFF;
@@ -87,12 +85,15 @@
   padding-bottom: 5px;
   text-transform: uppercase;
 }
-.singleitem .popup ul li a { 
+.singleitem .popup ul li a,
+.singleitem .popup a { 
   text-decoration: none; 
   display: block;
   font-weight: normal; 
-  font-size: 9px; 
   color: #FFF;
+}
+.singleitem .text-popup a {
+  margin: 0.5em 0px;
 }
 .singleitem .popup ul li a.inactive {
   opacity: 0.5;
@@ -157,12 +158,12 @@
 
 .annotation-asterisk { background: url(/images/ui/asterisk.jpg) no-repeat; display: inline-block; width: 14px; height: 17px; }
 .annotation-empty { background: #FFF; height: 13px; width: 0px; position: relative; left: -3px; }
-.unlayered-ellipsis { padding-right: 10px; display: none; font-size: 11px; font-weight: normal; color: #336699; font-style: normal; }
+.unlayered-ellipsis { padding-right: 10px; display: none; font-weight: normal; color: #336699; font-style: normal; }
 .unlayered-control-start,
 .layered-control-start { display: none; background: url(/images/ui/fcollapse.png) no-repeat; height: 16px; width: 9px; margin: 0px 3px 0px 0px; position: relative; top: 2px; }
 .unlayered-control-end,
 .layered-control-end { display: none; background: url(/images/ui/collapse.png) no-repeat; height: 16px; width: 9px; margin: 0px 3px 0px 0px; position: relative; top: 2px; }
-.paragraph-numbering { position: absolute; left: 10px; color: #369; text-decoration: none; }
+.paragraph-numbering { position: absolute; left: 20px; color: #369; text-decoration: none; }
 
 /* Hiding while page is loading */
 .singleitem .details .edit-action,
@@ -186,7 +187,6 @@ form.formtastic fieldset > ol > li.text textarea.markItUpEditor { width: 100%; }
 /* Annotation Layers */
 .new_layer {
   padding: 10px 0px; 
-  font-size: 9px;
 }
 .new_layer p,
 .new_layer a {
@@ -198,7 +198,6 @@ form.formtastic fieldset > ol > li.text textarea.markItUpEditor { width: 100%; }
   margin-top: 3px;
 }
 .remove_layer {
-  font-size: 9px;
 }
 .hexes a {
   display: inline-block;
@@ -278,8 +277,6 @@ form.formtastic fieldset > ol > li.layer_check label {
   display: inline-block;
   float: none;
   text-transform: uppercase;
-  line-height: 17px;
-  font-size: 10px;
 }
 form.formtastic fieldset > ol > li.layer_check input {
   position: relative;
@@ -293,7 +290,6 @@ form.formtastic fieldset > ol > li.layer_check input {
 }
 #new_layers #add_new_layer {
   font-weight: bold;
-  font-size: 10px;
   color: #333;
   text-decoration: none;
 }
@@ -305,7 +301,6 @@ form.formtastic fieldset > ol > li.layer_check input {
   margin-bottom: 5px;
   font-weight: bold;
   text-transform: uppercase;
-  font-size: 10px;
   color: #333;
 }
 #annotation_annotation_input textarea {
@@ -315,7 +310,6 @@ form.formtastic fieldset > ol > li.layer_check input {
   padding-left: 0px;
 }
 .mod_button {
-  font-size:13px; 
   line-height:30px; 
   background-color:#fff; 
   font-weight:bold; 
@@ -346,9 +340,9 @@ form.formtastic fieldset > ol > li.layer_check input {
   padding-right: 90px;
 }
 #link_edit #collage-keyword-search {
-  height: 18px;
   padding: 5px;
   border: none;
+  width: 160px;
 }
 #link_edit #linking_error {
   color: red;
@@ -367,7 +361,6 @@ form.formtastic fieldset > ol > li.layer_check input {
   padding: 5px;
   font-weight: bold;
   text-decoration: none;
-  font-size: 9px;
   border: none;
   display: inline-block;
   margin-right: 5px;
@@ -377,7 +370,6 @@ form.formtastic fieldset > ol > li.layer_check input {
 }
 #link_edit table td.title {
   width: 200px;
-  font-size: 11px;
 }
 
 .annotation-info,
@@ -395,6 +387,30 @@ form.formtastic fieldset > ol > li.layer_check input {
 }
 .annotation-info .annotation-content,
 .annotation-info .annotated-content {
-  font-size: 11px;
   line-height: 16px;
+}
+
+/* Buttons */
+.singleitem #buttons {
+  float: right;
+  visibility: hidden;
+  padding-top: 10px;
+  position: relative;
+}
+.singleitem #buttons .btn-a { 
+  float:left; 
+  display:inline; 
+  background: #747474;
+  color: #c45027; 
+  text-decoration:none; 
+  padding: 5px 9px;
+  position:relative; 
+  color: #FFF;
+  font-weight: bold;
+}
+.singleitem #buttons .btn-a-active {
+  background: #333;
+}
+.singleitem #buttons #text-tools {
+  margin-right: 10px;
 }

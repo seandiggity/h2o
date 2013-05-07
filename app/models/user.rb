@@ -148,6 +148,11 @@ class User < ActiveRecord::Base
       self.roles.find(:all, :conditions => {:authorizable_type => 'Media', :name => ['owner','creator']}).collect(&:authorizable).uniq.compact.sort_by{|a| a.updated_at}
     end
   end
+  def defaults
+    Rails.cache.fetch("user-defaults-#{self.id}") do
+      self.roles.find(:all, :conditions => {:authorizable_type => 'Default', :name => ['owner','creator']}).collect(&:authorizable).uniq.compact.sort_by{|a| a.updated_at}
+    end
+  end
 
   def case_requests
     self.is_case_admin ? CaseRequest.find_all_by_status("new") : []
@@ -180,7 +185,11 @@ class User < ActiveRecord::Base
   end
 
   def bookmarks_map
-    self.bookmarks.inject({}) { |h, i| h["listitem_#{i.resource_item_type.tableize.singularize.gsub('item_', '')}#{i.resource_item.actual_object_id}"] = 1; h }
+    map = {}
+    self.bookmarks.each do |i|
+      map["listitem_#{i.resource_item_type.tableize.singularize.gsub('item_', '')}#{i.resource_item.actual_object_id}"] = 1
+    end
+    map
   end
 
   def bookmarks_type(klass, item_klass)

@@ -23,10 +23,12 @@
 }
 #results .panel .header h3 {
   font-weight: normal;
-  font-family: Georgia, serif;
-  font-size: 21pt;
   padding: 8px 0px 0px 0px;
   display: inline-block;
+  font-size: 21pt;
+}
+#results .panel .header span {
+  margin-left: 3px;
 }
 #results #profile_panel .header a,
 #results #settings_panel .header a {
@@ -80,13 +82,16 @@ ul.user_list li a.item {
 }
 
 #results li.listitem .details {
-  width: 380px;
+  width: 360px;
 }
 #results .special_panel li.listitem .details {
   width: 85%;
 }
 #results #bookmarks_panel li.listitem .details {
   width: 400px;
+}
+#results #bookmarks_panel .bookmark-action {
+  display: none;
 }
 #results .sort,
 #results .special_sort {

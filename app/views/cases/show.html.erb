@@ -1,11 +1,10 @@
+<div id="fixed_links">
 <a href="#" class="fixed_link left-tooltip" id="collapse_toggle" title="Toggle Right Panel">Collapse/Expand</a>
 <a href="<%= export_case_path(@case) %>" class="fixed_link left-tooltip" id="fixed_print" title="Print <%= @case.name %>">Print</a>
+</div>
 
-<aside id="singleitem_barcode" class="right_panel">
-<%= render :partial => "shared/barcode", :locals => { :object => @case } %>
-</aside>
-
-<aside id="singleitem_toolbar">
+<aside id="singleitem_barcode_toolbar">
+  <%= render :partial => "shared/barcode", :locals => { :object => @case } %>
   <% if current_user -%>
   <%= link_to raw('<span class="icon icon-tocollage-large"></span>'), new_collage_path(:annotatable_type => 'Case', :annotatable_id => @case), :class => 'collage-this new-action' %>
   <%= link_to raw('<span class="icon icon-add-large"></span>'), '#', "data-item_id" => @case.id, "data-type" => "case", :class => 'link-add tooltip requires_logged_in', :title => "Add to a Playlist" %>
@@ -37,6 +36,6 @@
   <%= render :partial => "shared/author_stats", :locals => { :user => @case.owners.first } %>
 </div>
 
-<div class="cl"></div>
+<div class="clear"></div>
 
 <%= render :partial => "shared/popup", :locals => { :type => "case" } %>
